@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>北京 3 天 2 夜歷史景點美食行</title>
+  <meta name="description" content="北京 3 天 2 夜歷史景點美食行：紫禁城、萬里長城、市區補逛，重點是不太早起、中等節奏、交通方便。" />
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --brand: #2563eb;
+      --brand-soft: #eaf2ff;
+      --meal: #fff4e8;
+      --meal-line: #f59e0b;
+      --ok: #10b981;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, #dbeafe 0, transparent 22%),
+        radial-gradient(circle at top left, #fde68a 0, transparent 18%),
+        var(--bg);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1d4ed8, #3b82f6 60%, #60a5fa);
+      color: #fff;
+      border-radius: 24px;
+      padding: 26px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .hero .meta {
+      font-size: 14px;
+      opacity: .95;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 15px;
+      opacity: .98;
+    }
+
+    .tags, .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .tag, .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tag {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.2);
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2, .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .chip {
+      background: var(--brand-soft);
+      color: var(--brand);
+    }
+
+    .days {
+      display: grid;
+      gap: 18px;
+    }
+
+    .day {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.6);
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .day-title {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .day-sub {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .badge {
+      background: #eff6ff;
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 6px 10px;
+      white-space: nowrap;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .item {
+      border-left: 3px solid var(--line);
+      padding: 2px 0 2px 14px;
+    }
+
+    .item.meal {
+      border-left-color: var(--meal-line);
+      background: var(--meal);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+
+    .time {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 4px;
+    }
+
+    .item-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 4px;
+    }
+
+    .desc {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .tips {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tips span {
+      display: inline-block;
+      font-size: 12px;
+      color: #92400e;
+      background: rgba(245, 158, 11, 0.12);
+      padding: 5px 9px;
+      border-radius: 999px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+    }
+
+    .footer-note ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--ok);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 720px) {
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .day-header {
+        flex-direction: column;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="kicker">● Beijing History & Food MVP</div>
+      <h1>北京 3 天 2 夜歷史景點美食行</h1>
+      <div class="meta">2026-06-01 ～ 2026-06-03｜3 人｜中等預算</div>
+      <p>核心路線：紫禁城 → 萬里長城 → 市區補逛收尾。這趟行程以歷史景點與代表性餐食為主，節奏設定為不太早起、9 點多出門、中等密度，最後一天保留回程彈性。</p>
+      <div class="tags">
+        <span class="tag">歷史景點</span>
+        <span class="tag">美食</span>
+        <span class="tag">不太早起</span>
+        <span class="tag">回程日保留彈性</span>
+      </div>
+    </section>
+
+    <section class="summary">
+      <div class="card">
+        <h2>旅程摘要</h2>
+        <p>這是一趟以北京核心歷史景點為主的 3 天 2 夜行程，先處理紫禁城與天安門周邊，再把萬里長城獨立成主力日，最後一天保留市區補逛與回程空間。整體安排不追極限踩點，而是把重要景點與代表性餐食走得順、走得穩。</p>
+        <div class="chips">
+          <span class="chip">紫禁城主線</span>
+          <span class="chip">長城主力日</span>
+          <span class="chip">市區收尾</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>安排原則</h2>
+        <p>以歷史景點 + 美食為主，不把每天塞成趕場清單。萬里長城獨立成主力日，最後一天只安排順路、可彈性收尾的市區行程。餐飲以北京烤鴨、蘭州拉麵為明確目標，其餘以順路、穩定、交通方便為優先。</p>
+        <div class="chips">
+          <span class="chip">中等節奏</span>
+          <span class="chip">9 點多出門</span>
+          <span class="chip">交通方便優先</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="days">
+      <article class="day">
+        <div class="day-header">
+          <div>
+            <h2 class="day-title">Day 1｜紫禁城歷史主線＋北京烤鴨</h2>
+            <div class="day-sub">6/01・核心日・先把北京最代表性的歷史主線走穩</div>
+          </div>
+          <span class="badge">核心日</span>
+        </div>
+        <div class="timeline">
+          <div class="item">
+            <div class="time">09:30–10:00</div>
+            <div class="item-title">從住宿區出發前往天安門周邊</div>
+            <p class="desc">以 9 點多出門為節奏，不刻意早起，先進入北京最核心的歷史景點區域。</p>
+          </div>
+          <div class="item">
+            <div class="time">10:00–13:00</div>
+            <div class="item-title">天安門廣場＋紫禁城主線</div>
+            <p class="desc">第一天先處理北京最具代表性的歷史景點，作為整趟旅程的主軸開場。</p>
+          </div>
+          <div class="item meal">
+            <div class="time">13:00–14:00</div>
+            <div class="item-title">景點周邊午餐</div>
+            <p class="desc">以順路、穩定、可休息的店家為主，不追熱門排隊名店，重點是補充體力。</p>
+            <div class="tips">
+              <span>順路為主</span>
+              <span>有座位、可休息優先</span>
+            </div>
+          </div>
+          <div class="item">
+            <div class="time">14:30–16:30</div>
+            <div class="item-title">景山公園或王府井周邊慢走</div>
+            <p class="desc">下午保留彈性，可選景山公園做視野收尾，也可改走王府井周邊。</p>
+          </div>
+          <div class="item meal">
+            <div class="time">18:00–20:00</div>
+            <div class="item-title">北京烤鴨晚餐</div>
+            <p class="desc">安排代表性的正式晚餐，作為第一天收尾。</p>
+            <div class="tips">
+              <span>建議提早選店或預約</span>
+              <span>以回住宿方便為優先</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="day">
+        <div class="day-header">
+          <div>
+            <h2 class="day-title">Day 2｜萬里長城主力日</h2>
+            <div class="day-sub">6/02・主力日・整天留給長城，不再塞其他重景點</div>
+          </div>
+          <span class="badge">主力日</span>
+        </div>
+        <div class="timeline">
+          <div class="item">
+            <div class="time">09:00–10:30</div>
+            <div class="item-title">從市區前往萬里長城</div>
+            <p class="desc">第二天獨立做長城主力日，不和市區重景點混排。</p>
+          </div>
+          <div class="item">
+            <div class="time">10:30–15:30</div>
+            <div class="item-title">萬里長城主行程</div>
+            <p class="desc">把整天主力放在長城，保留拍照、休息與體力調整空間。</p>
+          </div>
+          <div class="item meal">
+            <div class="time">12:30–13:30</div>
+            <div class="item-title">長城周邊簡單午餐</div>
+            <p class="desc">以方便、快速、補充體力為主，不把餐食變成另一個任務。</p>
+            <div class="tips">
+              <span>順路補體力</span>
+              <span>不繞路找名店</span>
+            </div>
+          </div>
+          <div class="item">
+            <div class="time">16:00–17:30</div>
+            <div class="item-title">返回北京市區</div>
+            <p class="desc">結束長城主行程後回市區，避免晚上再安排高強度活動。</p>
+          </div>
+          <div class="item meal">
+            <div class="time">18:30–20:00</div>
+            <div class="item-title">市區輕鬆晚餐</div>
+            <p class="desc">以回住宿方便、輕鬆收尾為主，不再安排高壓排隊餐廳。</p>
+            <div class="tips">
+              <span>近住宿區優先</span>
+              <span>重點是休息</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="day">
+        <div class="day-header">
+          <div>
+            <h2 class="day-title">Day 3｜市區補逛＋蘭州拉麵＋回程</h2>
+            <div class="day-sub">6/03・回程日・不把最後一天做成趕場日</div>
+          </div>
+          <span class="badge">回程日</span>
+        </div>
+        <div class="timeline">
+          <div class="item meal">
+            <div class="time">09:30–10:30</div>
+            <div class="item-title">早午餐或晚一點出門</div>
+            <p class="desc">維持不太早起節奏，不把回程日做成趕場日。</p>
+            <div class="tips">
+              <span>舒服、順路為主</span>
+              <span>不追早餐名店</span>
+            </div>
+          </div>
+          <div class="item">
+            <div class="time">11:00–13:00</div>
+            <div class="item-title">市區補逛一個順路歷史／老街區</div>
+            <p class="desc">補一個不太重的市區點，保留散步與收尾感。</p>
+          </div>
+          <div class="item meal">
+            <div class="time">13:00–14:00</div>
+            <div class="item-title">蘭州拉麵午餐</div>
+            <p class="desc">安排一餐明確想吃的麵食，作為整趟旅程的輕鬆收尾。</p>
+            <div class="tips">
+              <span>順路優先</span>
+              <span>回程方便最重要</span>
+            </div>
+          </div>
+          <div class="item">
+            <div class="time">15:00–18:00</div>
+            <div class="item-title">返回機場或車站</div>
+            <p class="desc">預留足夠交通與整理時間，讓最後一天收得穩。</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="card footer-note">
+      <h3>提醒</h3>
+      <ul>
+        <li>住宿若選在市區交通方便的地段，整體移動會順很多。</li>
+        <li>長城那天建議提前確認交通方案，不然容易把時間浪費在臨場決策上。</li>
+        <li>這份行程故意保留空白，不追北京景點全蒐集，而是先把最有代表性的歷史主線走穩。</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

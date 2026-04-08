@@ -1,0 +1,208 @@
+{
+  "title": "北京 3 天 2 夜歷史景點美食行",
+  "destination": "北京",
+  "dateStart": "2026-06-01",
+  "dateEnd": "2026-06-03",
+  "travelers": 3,
+  "budget": "中等",
+  "style": ["歷史景點", "美食"],
+  "notes": ["不想太早起", "約 9 點多出門", "最後一天是回程日"],
+  "days": [
+    {
+      "date": "2026-06-01",
+      "theme": "紫禁城歷史主線＋北京烤鴨",
+      "items": [
+        {
+          "timeStart": "09:30",
+          "timeEnd": "10:00",
+          "type": "departure",
+          "title": "從住宿區出發前往天安門周邊",
+          "area": "北京市區",
+          "description": "以 9 點多出門為節奏，避免太早起，先進入市區主景點區域。",
+          "foodStrategy": null,
+          "transport": "地鐵／計程車",
+          "notes": ["住宿建議以交通方便的市區區域為主"]
+        },
+        {
+          "timeStart": "10:00",
+          "timeEnd": "13:00",
+          "type": "sightseeing",
+          "title": "天安門廣場＋紫禁城主線",
+          "area": "東城區",
+          "description": "第一天先處理北京最核心的歷史景點，作為整趟旅程的主軸開場。",
+          "foodStrategy": null,
+          "transport": "步行",
+          "notes": ["核心歷史景點優先", "避免同天再塞太多重景點"]
+        },
+        {
+          "timeStart": "13:00",
+          "timeEnd": "14:00",
+          "type": "meal",
+          "title": "景點周邊午餐",
+          "area": "紫禁城周邊",
+          "description": "以順路、穩定、休息方便的店家為主，不追熱門排隊名店。",
+          "foodStrategy": {
+            "preferredTypes": ["北方家常菜", "簡單中式套餐", "麵食"],
+            "avoid": ["超長排隊名店", "需特地繞路的餐廳"],
+            "tips": ["以景點周邊順路店為主", "優先有座位、可休息的店"]
+          },
+          "transport": "步行",
+          "notes": []
+        },
+        {
+          "timeStart": "14:30",
+          "timeEnd": "16:30",
+          "type": "sightseeing",
+          "title": "景山公園或王府井周邊慢走",
+          "area": "東城區",
+          "description": "下午保留彈性，可選景山公園收視野，或改走王府井一帶做城市感補充。",
+          "foodStrategy": null,
+          "transport": "步行",
+          "notes": ["依體力與天氣彈性調整"]
+        },
+        {
+          "timeStart": "18:00",
+          "timeEnd": "20:00",
+          "type": "meal",
+          "title": "北京烤鴨晚餐",
+          "area": "北京市區",
+          "description": "安排代表性正餐，作為第一天收尾。",
+          "foodStrategy": {
+            "preferredTypes": ["北京烤鴨", "經典京菜"],
+            "avoid": ["太遠的餐廳", "高峰時段超長排隊店"],
+            "tips": ["建議提早選店或預約", "以交通回住宿方便為優先"]
+          },
+          "transport": "地鐵／計程車",
+          "notes": ["第一天安排一餐正式主餐"]
+        }
+      ]
+    },
+    {
+      "date": "2026-06-02",
+      "theme": "萬里長城主力日",
+      "items": [
+        {
+          "timeStart": "09:00",
+          "timeEnd": "10:30",
+          "type": "departure",
+          "title": "從市區前往萬里長城",
+          "area": "北京近郊",
+          "description": "第二天獨立做長城主力日，避免與市區重景點硬排在同一天。",
+          "foodStrategy": null,
+          "transport": "包車／旅遊巴士／高鐵轉接駁",
+          "notes": ["建議前一天先確認交通方案"]
+        },
+        {
+          "timeStart": "10:30",
+          "timeEnd": "15:30",
+          "type": "sightseeing",
+          "title": "萬里長城主行程",
+          "area": "萬里長城",
+          "description": "把整天主力放在長城，不再額外塞其他高體力景點。",
+          "foodStrategy": null,
+          "transport": "步行",
+          "notes": ["全日主力景點", "依體力決定停留長度"]
+        },
+        {
+          "timeStart": "12:30",
+          "timeEnd": "13:30",
+          "type": "meal",
+          "title": "長城周邊簡單午餐",
+          "area": "長城周邊",
+          "description": "以方便、快速、補充體力為主，不把重點放在這餐。",
+          "foodStrategy": {
+            "preferredTypes": ["簡餐", "麵食", "熱食套餐"],
+            "avoid": ["繞遠路找名店"],
+            "tips": ["以順路補充體力為優先"]
+          },
+          "transport": "步行",
+          "notes": []
+        },
+        {
+          "timeStart": "16:00",
+          "timeEnd": "17:30",
+          "type": "return",
+          "title": "返回北京市區",
+          "area": "北京市區",
+          "description": "結束長城主力行程後回市區，避免晚上再安排高強度活動。",
+          "foodStrategy": null,
+          "transport": "包車／旅遊巴士／高鐵轉接駁",
+          "notes": []
+        },
+        {
+          "timeStart": "18:30",
+          "timeEnd": "20:00",
+          "type": "meal",
+          "title": "市區輕鬆晚餐",
+          "area": "住宿區附近",
+          "description": "以回住宿方便、輕鬆收尾為主，不再安排高壓排隊餐廳。",
+          "foodStrategy": {
+            "preferredTypes": ["家常菜", "麵食", "地方小吃"],
+            "avoid": ["跨區找餐廳", "高強度熱門店"],
+            "tips": ["以近住宿區為優先", "重點是休息"]
+          },
+          "transport": "步行／短程車程",
+          "notes": []
+        }
+      ]
+    },
+    {
+      "date": "2026-06-03",
+      "theme": "市區補逛＋蘭州拉麵＋回程",
+      "items": [
+        {
+          "timeStart": "09:30",
+          "timeEnd": "10:30",
+          "type": "meal",
+          "title": "早午餐或晚一點出門",
+          "area": "住宿區附近",
+          "description": "最後一天維持不太早起節奏，不把回程日做成趕場日。",
+          "foodStrategy": {
+            "preferredTypes": ["咖啡店", "簡單早餐", "麵食"],
+            "avoid": ["需要特地排隊的早餐名店"],
+            "tips": ["以舒適、順路為主"]
+          },
+          "transport": "步行",
+          "notes": []
+        },
+        {
+          "timeStart": "11:00",
+          "timeEnd": "13:00",
+          "type": "free_walk",
+          "title": "市區補逛一個順路歷史／老街區",
+          "area": "北京市區",
+          "description": "最後一天補一個不太重的市區點，保留散步與收尾感。",
+          "foodStrategy": null,
+          "transport": "地鐵／步行",
+          "notes": ["可依住宿與回程動線決定地點"]
+        },
+        {
+          "timeStart": "13:00",
+          "timeEnd": "14:00",
+          "type": "meal",
+          "title": "蘭州拉麵午餐",
+          "area": "北京市區",
+          "description": "安排一餐明確想吃的麵食，作為回程日前的輕鬆收尾。",
+          "foodStrategy": {
+            "preferredTypes": ["蘭州拉麵", "牛肉麵", "麵食館"],
+            "avoid": ["太遠的名店"],
+            "tips": ["以回程方便、順路為主"]
+          },
+          "transport": "步行／短程車程",
+          "notes": []
+        },
+        {
+          "timeStart": "15:00",
+          "timeEnd": "18:00",
+          "type": "departure",
+          "title": "返回機場或車站",
+          "area": "北京市區",
+          "description": "預留足夠時間處理交通與整理，避免最後一天過度壓縮。",
+          "foodStrategy": null,
+          "transport": "市區到機場／車站交通",
+          "notes": ["以回程穩定為優先"]
+        }
+      ]
+    }
+  ]
+}
