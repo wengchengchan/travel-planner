@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>東京 3 天 2 夜慢走美食行</title>
-  <meta name="description" content="東京 3 天 2 夜慢走美食行：淺草、上野、晴空塔，重點是不早起、少趕路、少排隊。" />
+  <meta name="description" content="核心路線：淺草 → 上野 → 晴空塔。以慢走、美食、少趕路為主，重點是把旅行節奏做舒服。" />
   <style>
     :root {
       --bg: #f4f7fb;
@@ -16,11 +16,19 @@
       --brand-soft: #eaf2ff;
       --meal: #fff4e8;
       --meal-line: #f59e0b;
-      --ok: #10b981;
+      --note: #fff8e7;
+      --note-line: #fbbf24;
+      --warn-bg: #fff1f2;
+      --warn-text: #be123c;
+      --good-bg: #ecfdf5;
+      --good-text: #047857;
+      --tip-bg: #eff6ff;
+      --tip-text: #1d4ed8;
+      --neutral-bg: #f3f4f6;
+      --neutral-text: #374151;
       --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
       --radius: 18px;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -32,299 +40,175 @@
         var(--bg);
       line-height: 1.6;
     }
-
-    .wrap {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 20px 16px 40px;
-    }
-
+    .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 40px; }
     .hero {
       background: linear-gradient(135deg, #1d4ed8, #3b82f6 60%, #60a5fa);
-      color: #fff;
-      border-radius: 24px;
-      padding: 26px 20px;
-      box-shadow: var(--shadow);
-      margin-bottom: 18px;
+      color: #fff; border-radius: 24px; padding: 26px 20px; box-shadow: var(--shadow); margin-bottom: 18px;
     }
-
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
-      line-height: 1.2;
-    }
-
-    .hero .meta {
-      font-size: 14px;
-      opacity: .95;
-      margin-bottom: 12px;
-    }
-
-    .hero p {
-      margin: 0;
-      font-size: 15px;
-      opacity: .98;
-    }
-
-    .tags, .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .tag, .chip {
-      display: inline-flex;
-      align-items: center;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .tag {
-      background: rgba(255,255,255,.18);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,.2);
-    }
-
-    .grid {
-      display: grid;
-      gap: 16px;
-    }
-
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .card h2, .card h3 {
-      margin: 0 0 10px;
-      font-size: 18px;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .chip {
-      background: var(--brand-soft);
-      color: var(--brand);
-    }
-
-    .days {
-      display: grid;
-      gap: 18px;
-    }
-
-    .day {
-      background: var(--card);
-      border-radius: 22px;
-      padding: 18px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,.6);
-    }
-
-    .day-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .day-title {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .day-sub {
-      color: var(--muted);
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .badge {
-      background: #eff6ff;
-      color: var(--brand);
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 999px;
-      padding: 6px 10px;
-      white-space: nowrap;
-    }
-
-    .timeline {
-      display: grid;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .item {
-      border-left: 3px solid var(--line);
-      padding: 2px 0 2px 14px;
-    }
-
-    .item.meal {
-      border-left-color: var(--meal-line);
-      background: var(--meal);
-      border-radius: 14px;
-      padding: 12px 14px;
-    }
-
-    .time {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--brand);
-      margin-bottom: 4px;
-    }
-
-    .item-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin: 0 0 4px;
-    }
-
-    .desc {
-      color: var(--muted);
-      font-size: 14px;
-      margin: 0;
-    }
-
-    .tips {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tips span {
-      display: inline-block;
-      font-size: 12px;
-      color: #92400e;
-      background: rgba(245, 158, 11, 0.12);
-      padding: 5px 9px;
-      border-radius: 999px;
-    }
-
-    .footer-note {
-      margin-top: 18px;
-      background: #f8fafc;
-      border: 1px dashed #cbd5e1;
-    }
-
-    .footer-note ul {
-      margin: 10px 0 0;
-      padding-left: 18px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--ok);
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
+    .hero h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
+    .hero .meta { font-size: 14px; opacity: .95; margin-bottom: 12px; }
+    .hero p { margin: 0; font-size: 15px; opacity: .98; }
+    .tags, .chips, .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tags, .chips { margin-top: 14px; }
+    .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+    .tag { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.2); }
+    .summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+    .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .chip { background: var(--brand-soft); color: var(--brand); }
+    .days { display: grid; gap: 18px; }
+    .day { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); }
+    .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .day-title { margin: 0; font-size: 20px; }
+    .day-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .badge { background: #eff6ff; color: var(--brand); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 6px 10px; white-space: nowrap; }
+    .day-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 16px; }
+    .subcard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; }
+    .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
+    .empty { margin: 0; color: var(--muted); font-size: 13px; }
+    .timeline { display: grid; gap: 12px; margin-top: 12px; }
+    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; }
+    .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
+    .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
+    .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+    .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+    .item-meta span { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-text); font-size: 12px; font-weight: 600; }
+    .desc { color: var(--muted); font-size: 14px; margin: 0; }
+    .food-block { margin-top: 10px; background: rgba(255,255,255,.55); }
+    .notes-block { margin-top: 10px; background: var(--note); border-color: #fde68a; }
+    .note-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .note-list.compact { font-size: 13px; }
+    .pill { font-size: 12px; }
+    .pill.neutral { background: var(--neutral-bg); color: var(--neutral-text); }
+    .pill.good { background: var(--good-bg); color: var(--good-text); }
+    .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
+    .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
+    .footer-note { margin-top: 18px; background: #f8fafc; border: 1px dashed #cbd5e1; }
+    .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
     @media (max-width: 720px) {
-      .summary {
-        grid-template-columns: 1fr;
-      }
-
-      .day-header {
-        flex-direction: column;
-      }
-
-      .hero h1 {
-        font-size: 24px;
-      }
+      .summary { grid-template-columns: 1fr; }
+      .day-header { flex-direction: column; }
+      .day-panels { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 24px; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="hero">
-      <div class="kicker">● Tokyo Slow Travel MVP</div>
       <h1>東京 3 天 2 夜慢走美食行</h1>
       <div class="meta">2026-05-10 ～ 2026-05-12｜2 人｜中等預算</div>
-      <p>核心路線：淺草 → 上野 → 晴空塔。這趟行程的設計原則是：不早起、少趕路、少排隊，保留散步與吃飯的舒適節奏。</p>
+      <p>第一天下午到、不想太早起、不想排隊太久</p>
       <div class="tags">
-        <span class="tag">美食</span>
-        <span class="tag">散步</span>
-        <span class="tag">少趕路</span>
-        <span class="tag">第一天下午到</span>
+        <span class="tag">美食</span><span class="tag">散步</span><span class="tag">少趕路</span><span class="tag">第一天下午到</span><span class="tag">不想太早起</span>
       </div>
     </section>
 
     <section class="summary">
       <div class="card">
         <h2>旅程摘要</h2>
-        <p>這是一趟偏東東京的慢走型行程，集中在淺草、上野、晴空塔周邊，減少跨區轉車，把體力留給散步、覓食與夜景。</p>
+        <p>核心路線：淺草 → 上野 → 晴空塔。以慢走、美食、少趕路為主，重點是把旅行節奏做舒服。</p>
         <div class="chips">
-          <span class="chip">少轉車</span>
-          <span class="chip">少排隊</span>
-          <span class="chip">手機友善</span>
+          <span class="chip">美食</span><span class="chip">散步</span><span class="chip">少趕路</span>
         </div>
       </div>
       <div class="card">
         <h2>安排原則</h2>
-        <p>整體規劃由主控完成；餐飲策略偏向穩定型、順路型、中價位，不追爆紅名店。每天保留空白，避免把行程做成趕場清單。</p>
+        <p>這份頁面由結構化資料自動整理成草稿，重點是先把骨架做穩，再把交通、用餐與注意事項補到夠實用。</p>
         <div class="chips">
-          <span class="chip">1 餐正式</span>
-          <span class="chip">1 餐彈性</span>
-          <span class="chip">夜景放 Day 2</span>
+          <span class="chip">以重點景點與整體節奏優先</span><span class="chip">避免把每天塞成趕場清單</span><span class="chip">餐飲安排以順路、穩定、可執行為主</span>
         </div>
       </div>
     </section>
 
+    
+    <section class="summary prep-grid">
+      <div class="card">
+        <h2>票券 / 預約</h2>
+        <div class="subcard-label">預約</div><ul class="note-list"><li>若想上晴空塔展望台，可先看是否需要預約或先買票</li></ul>
+        <div class="subcard-label">票券</div><ul class="note-list"><li>機場到市區交通票券可先決定要用哪種方案</li></ul>
+      </div>
+      <div class="card">
+        <h2>行前提醒</h2>
+        <ul class="note-list"><li>第一天下午抵達，行程不要排太硬</li><li>熱門用餐時段盡量提早或延後</li></ul>
+      </div>
+    </section>
+
     <section class="days">
+      
       <article class="day">
         <div class="day-header">
           <div>
             <h2 class="day-title">Day 1｜淺草輕鬆開場</h2>
-            <div class="day-sub">5/10・暖身日・重點是恢復節奏，不衝硬景點</div>
+            <div class="day-sub">05/10・行程安排</div>
           </div>
-          <span class="badge">慢啟動</span>
+          <span class="badge">Day 1</span>
+        </div>
+        
+        <div class="day-panels">
+          <div class="subcard">
+            <div class="subcard-title">今日重點區域</div>
+            <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日交通</div>
+            <div class="pill-row"><span class="pill neutral">機場到市區交通</span><span class="pill neutral">步行</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日提醒</div>
+            <ul class="note-list compact"><li>保留彈性，避免第一天太趕</li><li>若太累可直接縮短停留</li><li>可選行程，不強制</li></ul>
+          </div>
         </div>
         <div class="timeline">
           <div class="item">
             <div class="time">14:00–16:00</div>
             <div class="item-title">抵達東京、進市區、入住</div>
-            <p class="desc">先放行李、休息，不安排高強度行程，保留第一天的彈性。</p>
+            <div class="item-meta"><span>區域：東京市區</span><span>交通：機場到市區交通</span></div>
+            <p class="desc">抵達後先進市區、放行李、休息，不安排高強度行程。</p>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>保留彈性，避免第一天太趕</li>
+              </ul>
+            </div>
           </div>
           <div class="item">
             <div class="time">16:30–18:30</div>
             <div class="item-title">淺草寺＋仲見世商店街散步</div>
-            <p class="desc">輕鬆散步，先進入旅行節奏，不追硬景點與拍照清單。</p>
+            <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
+            <p class="desc">輕鬆散步，先進入旅行節奏，不排硬景點。</p>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>若太累可直接縮短停留</li>
+              </ul>
+            </div>
           </div>
           <div class="item meal">
             <div class="time">18:30–20:00</div>
             <div class="item-title">淺草晚餐</div>
-            <p class="desc">建議類型：天婦羅／定食／老店日料。以穩定、順路、翻桌快為主，不追排隊名店。</p>
-            <div class="tips">
-              <span>避開 18:00–19:30 高峰</span>
-              <span>主街太擠就轉旁巷</span>
+            <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
+            <p class="desc">以天婦羅、日式定食、老店型餐廳為主，不追排隊名店。</p>
+            <div class="subcard food-block">
+              <div class="subcard-title">用餐策略</div>
+              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">天婦羅</span><span class="pill good">日式定食</span><span class="pill good">老店日料</span><span class="pill good">和風小吃</span></div>
+              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">超熱門排隊店</span><span class="pill warn">跨區找餐廳</span></div>
+              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">避開 18:00–19:30 最尖峰</span><span class="pill tip">主街太擠可轉旁邊巷弄</span></div>
             </div>
           </div>
           <div class="item">
             <div class="time">20:00–21:00</div>
             <div class="item-title">隅田川夜間散步（可選）</div>
-            <p class="desc">若體力還行就飯後散步看夜景；若累，直接回飯店更合理。</p>
+            <div class="item-meta"><span>區域：淺草／隅田川</span><span>交通：步行</span></div>
+            <p class="desc">飯後輕鬆散步看夜景，若累可直接回飯店。</p>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>可選行程，不強制</li>
+              </ul>
+            </div>
           </div>
         </div>
       </article>
@@ -333,48 +217,91 @@
         <div class="day-header">
           <div>
             <h2 class="day-title">Day 2｜上野散步＋阿美橫町＋晴空塔夜景</h2>
-            <div class="day-sub">5/11・主力日・白天散步，晚上收在晴空塔</div>
+            <div class="day-sub">05/11・行程安排</div>
           </div>
-          <span class="badge">主力日</span>
+          <span class="badge">Day 2</span>
+        </div>
+        
+        <div class="day-panels">
+          <div class="subcard">
+            <div class="subcard-title">今日重點區域</div>
+            <div class="pill-row"><span class="pill neutral">住宿區</span><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span><span class="pill neutral">東京市區</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日交通</div>
+            <div class="pill-row"><span class="pill neutral">步行／電車</span><span class="pill neutral">步行</span><span class="pill neutral">電車＋步行</span><span class="pill neutral">電車</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日提醒</div>
+            <ul class="note-list compact"><li>館舍可依當天體力與興趣決定</li><li>可穿插小吃與咖啡休息</li><li>若要上展望台，當天再看排隊情況</li></ul>
+          </div>
         </div>
         <div class="timeline">
           <div class="item">
             <div class="time">10:00–10:30</div>
             <div class="item-title">晚一點出門</div>
-            <p class="desc">保持不早起節奏，旅行舒適度比多塞一個景點更重要。</p>
+            <div class="item-meta"><span>區域：住宿區</span><span>交通：步行／電車</span></div>
+            <p class="desc">維持不早起節奏，保留旅行舒適感。</p>
           </div>
           <div class="item">
             <div class="time">10:30–12:30</div>
             <div class="item-title">上野公園散步＋館舍擇一</div>
-            <p class="desc">可依興趣與體力選博物館、美術館或動物園，不必貪多。</p>
+            <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
+            <p class="desc">在上野公園散步，再視興趣選一個館進去參觀。</p>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>館舍可依當天體力與興趣決定</li>
+              </ul>
+            </div>
           </div>
           <div class="item meal">
             <div class="time">12:30–14:00</div>
             <div class="item-title">上野午餐</div>
-            <p class="desc">建議類型：拉麵／海鮮丼／燒肉／商店街小吃。以座位流動快、現場好進的店為優先。</p>
-            <div class="tips">
-              <span>先逛再選店</span>
-              <span>不追網紅爆紅店</span>
+            <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
+            <p class="desc">以商店街小吃、拉麵、燒肉、海鮮丼等中等預算選擇為主。</p>
+            <div class="subcard food-block">
+              <div class="subcard-title">用餐策略</div>
+              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">拉麵</span><span class="pill good">海鮮丼</span><span class="pill good">燒肉</span><span class="pill good">商店街小吃</span><span class="pill good">居酒屋午餐</span></div>
+              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">網紅爆紅排隊店</span></div>
+              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">先逛再選店</span><span class="pill tip">以座位流動快的店為優先</span></div>
             </div>
           </div>
           <div class="item">
             <div class="time">14:00–16:30</div>
             <div class="item-title">阿美橫町自由逛街</div>
-            <p class="desc">逛街、買零食、看伴手禮，也可穿插小吃與咖啡休息。</p>
+            <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
+            <p class="desc">逛街、買零食、看伴手禮，保持機動彈性。</p>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>可穿插小吃與咖啡休息</li>
+              </ul>
+            </div>
           </div>
           <div class="item meal">
             <div class="time">17:30–20:30</div>
             <div class="item-title">晴空塔商場晚餐＋夜景</div>
-            <p class="desc">建議類型：商場餐廳／景觀餐廳／咖啡館。把這區當穩定收尾區，不需要為名店硬排。</p>
-            <div class="tips">
-              <span>展望台人多就先吃飯</span>
-              <span>非熱門樓層通常更穩</span>
+            <div class="item-meta"><span>區域：押上／晴空塔</span><span>交通：電車＋步行</span></div>
+            <p class="desc">傍晚移動到晴空塔，先逛商場、吃晚餐，再視情況看夜景。</p>
+            <div class="subcard food-block">
+              <div class="subcard-title">用餐策略</div>
+              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">商場餐廳</span><span class="pill good">景觀餐廳</span><span class="pill good">咖啡館</span><span class="pill good">家庭式日料</span></div>
+              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">高峰時硬排熱門名店</span></div>
+              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">若展望台人多先吃飯</span><span class="pill tip">可選非熱門樓層餐廳避開尖峰</span></div>
+            </div>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>若要上展望台，當天再看排隊情況</li>
+              </ul>
             </div>
           </div>
           <div class="item">
             <div class="time">21:00–21:30</div>
             <div class="item-title">返回住宿</div>
-            <p class="desc">結束主力行程日，回飯店休息，避免隔天疲勞感堆疊。</p>
+            <div class="item-meta"><span>區域：東京市區</span><span>交通：電車</span></div>
+            <p class="desc">結束主力行程日，回飯店休息。</p>
           </div>
         </div>
       </article>
@@ -383,38 +310,73 @@
         <div class="day-header">
           <div>
             <h2 class="day-title">Day 3｜輕鬆收尾與伴手禮時間</h2>
-            <div class="day-sub">5/12・收尾日・不安排遠距離跳點</div>
+            <div class="day-sub">05/12・行程安排</div>
           </div>
-          <span class="badge">收尾日</span>
+          <span class="badge">Day 3</span>
+        </div>
+        
+        <div class="day-panels">
+          <div class="subcard">
+            <div class="subcard-title">今日重點區域</div>
+            <div class="pill-row"><span class="pill neutral">住宿區附近</span><span class="pill neutral">淺草／押上</span><span class="pill neutral">淺草／上野／押上擇一</span><span class="pill neutral">東京市區</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日交通</div>
+            <div class="pill-row"><span class="pill neutral">步行</span><span class="pill neutral">步行／短程電車</span><span class="pill neutral">市區到機場／車站交通</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日提醒</div>
+            <ul class="note-list compact"><li>依住宿地點彈性選區域</li><li>預留交通與托運時間</li></ul>
+          </div>
         </div>
         <div class="timeline">
           <div class="item meal">
             <div class="time">09:30–10:30</div>
             <div class="item-title">早午餐</div>
-            <p class="desc">以舒服、順路、可久坐為主，不需要特地排隊追名店。</p>
-            <div class="tips">
-              <span>咖啡店或輕食最穩</span>
-              <span>以住宿區附近優先</span>
+            <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
+            <p class="desc">不早起，悠閒吃早午餐再出發。</p>
+            <div class="subcard food-block">
+              <div class="subcard-title">用餐策略</div>
+              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">咖啡店</span><span class="pill good">輕食</span><span class="pill good">日式早餐</span><span class="pill good">商場早午餐</span></div>
+              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要特地排隊的熱門店</span></div>
+              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以順路、舒適、可久坐為主</span></div>
             </div>
           </div>
           <div class="item">
             <div class="time">11:00–13:00</div>
             <div class="item-title">補逛淺草／押上周邊</div>
-            <p class="desc">補逛前兩天沒走完的地方，保留最後拍照與散步時間。</p>
+            <div class="item-meta"><span>區域：淺草／押上</span><span>交通：步行／短程電車</span></div>
+            <p class="desc">補逛前兩天沒走完的地方，保留最後的散步與拍照時間。</p>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>依住宿地點彈性選區域</li>
+              </ul>
+            </div>
           </div>
           <div class="item meal">
             <div class="time">13:00–14:30</div>
             <div class="item-title">最後一餐＋伴手禮採買</div>
-            <p class="desc">安排一頓輕鬆收尾型餐食，順手買最後伴手禮，優先選離回程動線近的區域。</p>
-            <div class="tips">
-              <span>不打最後一餐硬仗</span>
-              <span>以回程方便為先</span>
+            <div class="item-meta"><span>區域：淺草／上野／押上擇一</span><span>交通：步行</span></div>
+            <p class="desc">安排一頓輕鬆收尾型餐食，順手買最後伴手禮。</p>
+            <div class="subcard food-block">
+              <div class="subcard-title">用餐策略</div>
+              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">簡單日料</span><span class="pill good">咖啡簡餐</span><span class="pill good">商場餐廳</span><span class="pill good">小吃補完</span></div>
+              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要長時間排隊的名店</span></div>
+              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以離回程動線近的區域優先</span></div>
             </div>
           </div>
           <div class="item">
             <div class="time">15:00–18:00</div>
             <div class="item-title">前往機場或下一站</div>
-            <p class="desc">預留足夠交通與整理時間，避免最後一天變成趕場收尾。</p>
+            <div class="item-meta"><span>區域：東京市區</span><span>交通：市區到機場／車站交通</span></div>
+            <p class="desc">依回程班機或下一段移動安排離開。</p>
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                <li>預留交通與托運時間</li>
+              </ul>
+            </div>
           </div>
         </div>
       </article>
@@ -423,9 +385,9 @@
     <section class="card footer-note">
       <h3>提醒</h3>
       <ul>
-        <li>住宿若在淺草／上野／押上附近，整體移動會更順。</li>
-        <li>這份行程故意保留空白，不把你逼成打卡機器。</li>
-        <li>若之後要升級，可從 `trip.json` 自動生成頁面，並再接 Google Calendar。</li>
+        <li>這是一份由 JSON 資料產生的 HTML 草稿，可再人工微調。</li>
+        <li>目前已把交通、區域、用餐策略、注意事項呈現出來，作為更實用的旅程頁基礎。</li>
+        <li>若 JSON 裡有 prep.booking、prep.tickets、prep.reminders，頁面會自動顯示票券 / 預約 / 行前提醒。</li>
       </ul>
     </section>
   </div>

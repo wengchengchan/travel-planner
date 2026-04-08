@@ -10,24 +10,45 @@ function escapeHtml(str = '') {
     .replace(/'/g, '&#39;');
 }
 
+function renderPills(items = [], className = 'tag') {
+  if (!items.length) return '';
+  return items.map(item => `<span class="${className}">${escapeHtml(item)}</span>`).join('');
+}
+
 function buildCard(trip, index) {
   const tags = (trip.style || []).slice(0, 3);
   const meta = `${trip.dateStart} ～ ${trip.dateEnd}｜${trip.travelers} 人｜${trip.budget}預算`;
   const summary = trip.summary || `${trip.destination} 行程，重點是 ${tags.join('、') || '旅程安排'}。`;
+  const prep = trip.prep || {};
+  const hasBooking = (prep.booking || []).length > 0;
+  const hasTickets = (prep.tickets || []).length > 0;
+  const noteBadges = [];
+
+  if (hasBooking) noteBadges.push('需留意預約');
+  if (hasTickets) noteBadges.push('有票券 / 入場提醒');
+  if ((trip.notes || []).length) noteBadges.push(trip.notes[0]);
 
   return `
         <a class="card" href="${escapeHtml(trip.page)}">
-          <div class="eyebrow">Trip ${String(index + 1).padStart(2, '0')}</div>
+          <div class="card-top">
+            <div class="eyebrow">Trip ${String(index + 1).padStart(2, '0')}</div>
+            <div class="status-row">${renderPills(noteBadges.slice(0, 2), 'status-pill')}</div>
+          </div>
           <h2>${escapeHtml(trip.title)}</h2>
           <div class="meta">${escapeHtml(meta)}</div>
           <p class="desc">${escapeHtml(summary)}</p>
           <div class="tags">
-            ${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+            ${renderPills(tags, 'tag')}
+          </div>
+          <div class="card-footer">
+            <span class="footer-label">${escapeHtml(trip.destination)}</span>
+            <span class="footer-link">查看行程 →</span>
           </div>
         </a>`;
 }
 
 function buildHtml(trips) {
+  const tripCount = `${trips.length} 個行程`;
   return `<!doctype html>
 <html lang="zh-Hant">
 <head>
@@ -43,8 +64,11 @@ function buildHtml(trips) {
       --muted: #6b7280;
       --brand: #2563eb;
       --brand-soft: #eaf2ff;
+      --brand-deep: #1d4ed8;
       --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
       --radius: 20px;
+      --status-bg: #eff6ff;
+      --status-text: #1d4ed8;
     }
     * { box-sizing: border-box; }
     body {
@@ -64,7 +88,10 @@ function buildHtml(trips) {
     }
     .hero h1 { margin: 0 0 10px; font-size: 30px; line-height: 1.2; }
     .hero p { margin: 0; font-size: 15px; opacity: .97; }
-    .section-title { font-size: 20px; margin: 0 0 14px; }
+    .hero-meta { margin-top: 12px; font-size: 13px; opacity: .95; }
+    .section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .section-title { font-size: 20px; margin: 0; }
+    .section-meta { color: var(--muted); font-size: 13px; }
     .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     .card {
       display: block; text-decoration: none; color: inherit; background: var(--card);
@@ -72,14 +99,27 @@ function buildHtml(trips) {
       transition: transform .15s ease, box-shadow .15s ease;
     }
     .card:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12); }
-    .eyebrow { font-size: 12px; font-weight: 700; color: var(--brand); margin-bottom: 8px; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .eyebrow { font-size: 12px; font-weight: 700; color: var(--brand); }
+    .status-row { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .status-pill, .tag {
+      display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+    }
+    .status-pill { background: var(--status-bg); color: var(--status-text); }
     .card h2 { margin: 0 0 8px; font-size: 22px; line-height: 1.3; }
     .meta { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
     .desc { font-size: 14px; color: var(--muted); margin: 0 0 14px; }
-    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .tag {
-      display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px;
-      font-size: 12px; font-weight: 600; background: var(--brand-soft); color: var(--brand);
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .tag { background: var(--brand-soft); color: var(--brand); }
+    .card-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; }
+    .footer-label { font-size: 13px; color: var(--muted); }
+    .footer-link { font-size: 13px; font-weight: 700; color: var(--brand-deep); }
+    @media (max-width: 720px) {
+      .hero h1 { font-size: 26px; }
+      .section-head { flex-direction: column; align-items: flex-start; }
+      .card-top { flex-direction: column; }
+      .status-row { justify-content: flex-start; }
     }
   </style>
 </head>
@@ -87,11 +127,15 @@ function buildHtml(trips) {
   <div class="wrap">
     <section class="hero">
       <h1>Travel Planner</h1>
-      <p>把每一趟旅程整理成可展示、可延續、可後續再優化的頁面。首頁由資料自動整理，減少手工維護成本。</p>
+      <p>把每一趟旅程整理成可展示、可延續、可後續再優化的頁面。首頁由資料自動整理，減少手工維護成本，也讓每個行程的實用資訊更容易一眼看懂。</p>
+      <div class="hero-meta">目前已整理 ${escapeHtml(tripCount)}，依日期排序顯示。</div>
     </section>
 
     <section>
-      <h2 class="section-title">目前行程</h2>
+      <div class="section-head">
+        <h2 class="section-title">目前行程</h2>
+        <div class="section-meta">由 trip draft 自動生成首頁列表</div>
+      </div>
       <div class="grid">${trips.map(buildCard).join('')}
       </div>
     </section>

@@ -10,17 +10,100 @@ function escapeHtml(str = '') {
     .replace(/'/g, '&#39;');
 }
 
-function mealTips(item) {
-  const tips = item.foodStrategy?.tips || [];
-  if (!tips.length) return '';
-  return `
-            <div class="tips">
-              ${tips.map(t => `<span>${escapeHtml(t)}</span>`).join('')}
-            </div>`;
+function renderPills(items = [], className = 'pill') {
+  if (!items.length) return '';
+  return `<div class="pill-row">${items.map(item => `<span class="${className}">${escapeHtml(item)}</span>`).join('')}</div>`;
 }
 
 function itemClass(type = '') {
   return String(type).includes('meal') ? 'item meal' : 'item';
+}
+
+function renderFoodStrategy(item) {
+  const strategy = item.foodStrategy;
+  if (!strategy) return '';
+
+  const preferred = strategy.preferredTypes || [];
+  const avoid = strategy.avoid || [];
+  const tips = strategy.tips || [];
+
+  return `
+            <div class="subcard food-block">
+              <div class="subcard-title">用餐策略</div>
+              ${preferred.length ? `<div class="subcard-label">優先</div>${renderPills(preferred, 'pill good')}` : ''}
+              ${avoid.length ? `<div class="subcard-label">避免</div>${renderPills(avoid, 'pill warn')}` : ''}
+              ${tips.length ? `<div class="subcard-label">提醒</div>${renderPills(tips, 'pill tip')}` : ''}
+            </div>`;
+}
+
+function renderItemNotes(item) {
+  const notes = item.notes || [];
+  if (!notes.length) return '';
+  return `
+            <div class="subcard notes-block">
+              <div class="subcard-title">注意事項</div>
+              <ul class="note-list">
+                ${notes.map(note => `<li>${escapeHtml(note)}</li>`).join('')}
+              </ul>
+            </div>`;
+}
+
+function renderItemMeta(item) {
+  const meta = [];
+  if (item.area) meta.push(`區域：${item.area}`);
+  if (item.transport) meta.push(`交通：${item.transport}`);
+  if (!meta.length) return '';
+  return `<div class="item-meta">${meta.map(line => `<span>${escapeHtml(line)}</span>`).join('')}</div>`;
+}
+
+function renderChecklistSection(data) {
+  const prep = data.prep || {};
+  const booking = prep.booking || [];
+  const tickets = prep.tickets || [];
+  const reminders = prep.reminders || [];
+
+  if (!booking.length && !tickets.length && !reminders.length) return '';
+
+  return `
+    <section class="summary prep-grid">
+      <div class="card">
+        <h2>票券 / 預約</h2>
+        ${booking.length ? `<div class="subcard-label">預約</div><ul class="note-list">${booking.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p class="empty">目前無特別預約需求。</p>'}
+        ${tickets.length ? `<div class="subcard-label">票券</div><ul class="note-list">${tickets.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+      </div>
+      <div class="card">
+        <h2>行前提醒</h2>
+        ${reminders.length ? `<ul class="note-list">${reminders.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p class="empty">目前無額外提醒。</p>'}
+      </div>
+    </section>`;
+}
+
+function renderDaySummary(day) {
+  const transports = [...new Set((day.items || []).map(item => item.transport).filter(Boolean))];
+  const areas = [...new Set((day.items || []).map(item => item.area).filter(Boolean))];
+  const notePool = [];
+
+  (day.items || []).forEach(item => {
+    (item.notes || []).forEach(note => notePool.push(note));
+  });
+
+  const notes = [...new Set(notePool)].slice(0, 4);
+
+  return `
+        <div class="day-panels">
+          <div class="subcard">
+            <div class="subcard-title">今日重點區域</div>
+            ${areas.length ? renderPills(areas, 'pill neutral') : '<p class="empty">依當日安排調整。</p>'}
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日交通</div>
+            ${transports.length ? renderPills(transports, 'pill neutral') : '<p class="empty">以步行為主。</p>'}
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">今日提醒</div>
+            ${notes.length ? `<ul class="note-list compact">${notes.map(note => `<li>${escapeHtml(note)}</li>`).join('')}</ul>` : '<p class="empty">行程保持彈性即可。</p>'}
+          </div>
+        </div>`;
 }
 
 function renderDay(day, index) {
@@ -34,11 +117,13 @@ function renderDay(day, index) {
           </div>
           <span class="badge">Day ${index + 1}</span>
         </div>
+        ${renderDaySummary(day)}
         <div class="timeline">
 ${(day.items || []).map(item => `          <div class="${itemClass(item.type)}">
             <div class="time">${escapeHtml(item.timeStart || '')}–${escapeHtml(item.timeEnd || '')}</div>
             <div class="item-title">${escapeHtml(item.title || '')}</div>
-            <p class="desc">${escapeHtml(item.description || '')}</p>${mealTips(item)}
+            ${renderItemMeta(item)}
+            <p class="desc">${escapeHtml(item.description || '')}</p>${renderFoodStrategy(item)}${renderItemNotes(item)}
           </div>`).join('\n')}
         </div>
       </article>`;
@@ -47,7 +132,7 @@ ${(day.items || []).map(item => `          <div class="${itemClass(item.type)}">
 function buildHtml(data) {
   const dateMeta = `${data.dateStart} ～ ${data.dateEnd}｜${data.travelers} 人｜${data.budget}預算`;
   const tags = [...(data.style || []), ...(data.notes || []).slice(0, 2)];
-  const summary = `${escapeHtml(data.title)}：以 ${escapeHtml(data.destination)} 為主的旅程安排，依照既有資料整理成可展示頁面。`;
+  const summary = escapeHtml(data.summary || `${data.title}：以 ${data.destination} 為主的旅程安排，依照既有資料整理成可展示頁面。`);
   const principles = [
     '以重點景點與整體節奏優先',
     '避免把每天塞成趕場清單',
@@ -60,7 +145,7 @@ function buildHtml(data) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(data.title)}</title>
-  <meta name="description" content="${escapeHtml(summary)}" />
+  <meta name="description" content="${summary}" />
   <style>
     :root {
       --bg: #f4f7fb;
@@ -72,7 +157,16 @@ function buildHtml(data) {
       --brand-soft: #eaf2ff;
       --meal: #fff4e8;
       --meal-line: #f59e0b;
-      --ok: #10b981;
+      --note: #fff8e7;
+      --note-line: #fbbf24;
+      --warn-bg: #fff1f2;
+      --warn-text: #be123c;
+      --good-bg: #ecfdf5;
+      --good-text: #047857;
+      --tip-bg: #eff6ff;
+      --tip-text: #1d4ed8;
+      --neutral-bg: #f3f4f6;
+      --neutral-text: #374151;
       --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
       --radius: 18px;
     }
@@ -95,8 +189,9 @@ function buildHtml(data) {
     .hero h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
     .hero .meta { font-size: 14px; opacity: .95; margin-bottom: 12px; }
     .hero p { margin: 0; font-size: 15px; opacity: .98; }
-    .tags, .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-    .tag, .chip { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+    .tags, .chips, .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tags, .chips { margin-top: 14px; }
+    .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
     .tag { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.2); }
     .summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
     .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
@@ -109,19 +204,34 @@ function buildHtml(data) {
     .day-title { margin: 0; font-size: 20px; }
     .day-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
     .badge { background: #eff6ff; color: var(--brand); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 6px 10px; white-space: nowrap; }
+    .day-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 16px; }
+    .subcard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; }
+    .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
+    .empty { margin: 0; color: var(--muted); font-size: 13px; }
     .timeline { display: grid; gap: 12px; margin-top: 12px; }
     .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; }
     .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
     .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
     .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+    .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+    .item-meta span { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-text); font-size: 12px; font-weight: 600; }
     .desc { color: var(--muted); font-size: 14px; margin: 0; }
-    .tips { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; }
-    .tips span { display: inline-block; font-size: 12px; color: #92400e; background: rgba(245, 158, 11, 0.12); padding: 5px 9px; border-radius: 999px; }
+    .food-block { margin-top: 10px; background: rgba(255,255,255,.55); }
+    .notes-block { margin-top: 10px; background: var(--note); border-color: #fde68a; }
+    .note-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .note-list.compact { font-size: 13px; }
+    .pill { font-size: 12px; }
+    .pill.neutral { background: var(--neutral-bg); color: var(--neutral-text); }
+    .pill.good { background: var(--good-bg); color: var(--good-text); }
+    .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
+    .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
     .footer-note { margin-top: 18px; background: #f8fafc; border: 1px dashed #cbd5e1; }
     .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
     @media (max-width: 720px) {
       .summary { grid-template-columns: 1fr; }
       .day-header { flex-direction: column; }
+      .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
   </style>
@@ -147,12 +257,14 @@ function buildHtml(data) {
       </div>
       <div class="card">
         <h2>安排原則</h2>
-        <p>這份頁面由結構化資料自動整理成草稿，重點是先把骨架做穩，再視需要補人工修飾。</p>
+        <p>這份頁面由結構化資料自動整理成草稿，重點是先把骨架做穩，再把交通、用餐與注意事項補到夠實用。</p>
         <div class="chips">
           ${principles.map(tag => `<span class="chip">${escapeHtml(tag)}</span>`).join('')}
         </div>
       </div>
     </section>
+
+    ${renderChecklistSection(data)}
 
     <section class="days">
       ${(data.days || []).map(renderDay).join('\n')}
@@ -162,8 +274,8 @@ function buildHtml(data) {
       <h3>提醒</h3>
       <ul>
         <li>這是一份由 JSON 資料產生的 HTML 草稿，可再人工微調。</li>
-        <li>若要做成正式頁，建議再補一句更像產品文案的 hero 摘要。</li>
-        <li>之後可再把首頁列表也做成半自動生成。</li>
+        <li>目前已把交通、區域、用餐策略、注意事項呈現出來，作為更實用的旅程頁基礎。</li>
+        <li>若 JSON 裡有 prep.booking、prep.tickets、prep.reminders，頁面會自動顯示票券 / 預約 / 行前提醒。</li>
       </ul>
     </section>
   </div>
