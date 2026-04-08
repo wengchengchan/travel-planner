@@ -109,8 +109,8 @@
     .leaflet-map {
       width: 100%; height: 360px;
     }
-    .day-leaflet-map {
-      width: 100%; height: 220px; margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid #cfe0ff;
+    .day-map-summary {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px;
     }
     .day-map-head {
       display: flex; justify-content: space-between; align-items: center; gap: 12px;
@@ -189,10 +189,9 @@
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
       .leaflet-map { height: 280px; }
-      .day-leaflet-map { height: 200px; }
       .day-header { flex-direction: column; }
       .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
-      .day-panels { grid-template-columns: 1fr; }
+      .day-map-summary, .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
   </style>
@@ -300,7 +299,16 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div class="leaflet-fallback-wrap"><iframe id="day-leaflet-map-1-fallback" class="trip-map-embed day-map-embed" src="https://www.google.com/maps?q=39.9087%2C116.3975&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="day-leaflet-map-1" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;key&quot;:&quot;1-09:30-從住宿區出發前往天安門周邊&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;1-10:00-天安門廣場＋紫禁城主線&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;key&quot;:&quot;1-14:30-景山公園或王府井周邊慢走&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396}]'></div></div>
+          <div class="day-map-summary">
+            <div class="subcard">
+              <div class="subcard-title">今日區域</div>
+              <div class="pill-row"><span class="pill neutral">北京市區</span><span class="pill neutral">東城區</span></div>
+            </div>
+            <div class="subcard">
+              <div class="subcard-title">主要地點</div>
+              <div class="pill-row"><span class="pill neutral">從住宿區出發前往天安門周邊</span><span class="pill neutral">天安門廣場＋紫禁城主線</span><span class="pill neutral">景山公園或王府井周邊慢走</span></div>
+            </div>
+          </div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -409,7 +417,16 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div class="leaflet-fallback-wrap"><iframe id="day-leaflet-map-2-fallback" class="trip-map-embed day-map-embed" src="https://www.google.com/maps?q=40.3564%2C116.0206&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="day-leaflet-map-2" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;key&quot;:&quot;2-09:00-從市區前往萬里長城&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;key&quot;:&quot;2-10:30-萬里長城主行程&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206}]'></div></div>
+          <div class="day-map-summary">
+            <div class="subcard">
+              <div class="subcard-title">今日區域</div>
+              <div class="pill-row"><span class="pill neutral">北京近郊</span><span class="pill neutral">萬里長城</span></div>
+            </div>
+            <div class="subcard">
+              <div class="subcard-title">主要地點</div>
+              <div class="pill-row"><span class="pill neutral">從市區前往萬里長城</span><span class="pill neutral">萬里長城主行程</span></div>
+            </div>
+          </div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -506,7 +523,16 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div class="leaflet-fallback-wrap"><iframe id="day-leaflet-map-3-fallback" class="trip-map-embed day-map-embed" src="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="day-leaflet-map-3" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;3-11:00-市區補逛一個順路歷史／老街區&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]'></div></div>
+          <div class="day-map-summary">
+            <div class="subcard">
+              <div class="subcard-title">今日區域</div>
+              <div class="pill-row"><span class="pill neutral">北京市區</span></div>
+            </div>
+            <div class="subcard">
+              <div class="subcard-title">主要地點</div>
+              <div class="pill-row"><span class="pill neutral">市區補逛一個順路歷史／老街區</span></div>
+            </div>
+          </div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -673,16 +699,7 @@
         }
       };
 
-      document.querySelectorAll('.day-leaflet-map').forEach(el => {
-        const raw = el.getAttribute('data-day-map');
-        if (!raw) return;
-        try {
-          const dayPoints = JSON.parse(raw);
-          renderPointsMap(el.id, dayPoints, 14);
-        } catch (error) {
-          showFallback(el.id);
-        }
-      });
+      // 每日地圖改為穩定版摘要卡，避免 mobile iframe / embed 不穩。
     })();
   </script>
 </body>

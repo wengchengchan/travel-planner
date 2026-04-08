@@ -208,7 +208,8 @@ function renderDayMapCard(day, dayIndex) {
   const mapUrl = buildMapUrl(firstMappable);
   const label = firstMappable.mapQuery || firstMappable.title || '今日地圖';
   const dayMapPoints = collectDayMapPoints(day, dayIndex);
-  const dayMapId = `day-leaflet-map-${dayIndex + 1}`;
+  const dayAreas = [...new Set(dayMapPoints.map(point => point.area).filter(Boolean))].slice(0, 4);
+  const dayTitles = [...new Set(dayMapPoints.map(point => point.title).filter(Boolean))].slice(0, 4);
 
   return `
         <div class="day-map-card">
@@ -219,7 +220,16 @@ function renderDayMapCard(day, dayIndex) {
             </div>
             <a class="map-card-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          ${dayMapPoints.length ? `<div class="leaflet-fallback-wrap"><iframe id="${dayMapId}-fallback" class="trip-map-embed day-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="${dayMapId}" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='${escapeHtml(JSON.stringify(dayMapPoints))}'></div></div>` : ''}
+          <div class="day-map-summary">
+            <div class="subcard">
+              <div class="subcard-title">今日區域</div>
+              ${dayAreas.length ? renderPills(dayAreas, 'pill neutral') : '<p class="empty">以今日動線為主。</p>'}
+            </div>
+            <div class="subcard">
+              <div class="subcard-title">主要地點</div>
+              ${dayTitles.length ? renderPills(dayTitles, 'pill neutral') : '<p class="empty">可由下方行程查看。</p>'}
+            </div>
+          </div>
         </div>`;
 }
 
@@ -399,8 +409,8 @@ function buildHtml(data) {
     .leaflet-map {
       width: 100%; height: 360px;
     }
-    .day-leaflet-map {
-      width: 100%; height: 220px; margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid #cfe0ff;
+    .day-map-summary {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px;
     }
     .day-map-head {
       display: flex; justify-content: space-between; align-items: center; gap: 12px;
@@ -479,10 +489,9 @@ function buildHtml(data) {
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
       .leaflet-map { height: 280px; }
-      .day-leaflet-map { height: 200px; }
       .day-header { flex-direction: column; }
       .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
-      .day-panels { grid-template-columns: 1fr; }
+      .day-map-summary, .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
   </style>
@@ -617,16 +626,7 @@ function buildHtml(data) {
         }
       };
 
-      document.querySelectorAll('.day-leaflet-map').forEach(el => {
-        const raw = el.getAttribute('data-day-map');
-        if (!raw) return;
-        try {
-          const dayPoints = JSON.parse(raw);
-          renderPointsMap(el.id, dayPoints, 14);
-        } catch (error) {
-          showFallback(el.id);
-        }
-      });
+      // 每日地圖改為穩定版摘要卡，避免 mobile iframe / embed 不穩。
     })();
   </script>
 </body>

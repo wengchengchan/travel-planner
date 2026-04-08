@@ -109,8 +109,8 @@
     .leaflet-map {
       width: 100%; height: 360px;
     }
-    .day-leaflet-map {
-      width: 100%; height: 220px; margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid #cfe0ff;
+    .day-map-summary {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px;
     }
     .day-map-head {
       display: flex; justify-content: space-between; align-items: center; gap: 12px;
@@ -189,10 +189,9 @@
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
       .leaflet-map { height: 280px; }
-      .day-leaflet-map { height: 200px; }
       .day-header { flex-direction: column; }
       .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
-      .day-panels { grid-template-columns: 1fr; }
+      .day-map-summary, .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
   </style>
@@ -300,7 +299,16 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div class="leaflet-fallback-wrap"><iframe id="day-leaflet-map-1-fallback" class="trip-map-embed day-map-embed" src="https://www.google.com/maps?q=35.6812%2C139.7671&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="day-leaflet-map-1" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;key&quot;:&quot;1-14:00-抵達東京、進市區、入住&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;key&quot;:&quot;1-16:30-淺草寺＋仲見世商店街散步&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;key&quot;:&quot;1-20:00-隅田川夜間散步（可選）&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986}]'></div></div>
+          <div class="day-map-summary">
+            <div class="subcard">
+              <div class="subcard-title">今日區域</div>
+              <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span></div>
+            </div>
+            <div class="subcard">
+              <div class="subcard-title">主要地點</div>
+              <div class="pill-row"><span class="pill neutral">抵達東京、進市區、入住</span><span class="pill neutral">淺草寺＋仲見世商店街散步</span><span class="pill neutral">隅田川夜間散步（可選）</span></div>
+            </div>
+          </div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -390,7 +398,16 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div class="leaflet-fallback-wrap"><iframe id="day-leaflet-map-2-fallback" class="trip-map-embed day-map-embed" src="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="day-leaflet-map-2" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;key&quot;:&quot;2-10:30-上野公園散步＋館舍擇一&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;key&quot;:&quot;2-14:00-阿美橫町自由逛街&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;key&quot;:&quot;2-17:30-晴空塔商場晚餐＋夜景&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107}]'></div></div>
+          <div class="day-map-summary">
+            <div class="subcard">
+              <div class="subcard-title">今日區域</div>
+              <div class="pill-row"><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span></div>
+            </div>
+            <div class="subcard">
+              <div class="subcard-title">主要地點</div>
+              <div class="pill-row"><span class="pill neutral">上野公園散步＋館舍擇一</span><span class="pill neutral">阿美橫町自由逛街</span><span class="pill neutral">晴空塔商場晚餐＋夜景</span></div>
+            </div>
+          </div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -500,7 +517,16 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div class="leaflet-fallback-wrap"><iframe id="day-leaflet-map-3-fallback" class="trip-map-embed day-map-embed" src="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="day-leaflet-map-3" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;3-11:00-補逛淺草／押上周邊&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]'></div></div>
+          <div class="day-map-summary">
+            <div class="subcard">
+              <div class="subcard-title">今日區域</div>
+              <div class="pill-row"><span class="pill neutral">淺草／押上</span></div>
+            </div>
+            <div class="subcard">
+              <div class="subcard-title">主要地點</div>
+              <div class="pill-row"><span class="pill neutral">補逛淺草／押上周邊</span></div>
+            </div>
+          </div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -667,16 +693,7 @@
         }
       };
 
-      document.querySelectorAll('.day-leaflet-map').forEach(el => {
-        const raw = el.getAttribute('data-day-map');
-        if (!raw) return;
-        try {
-          const dayPoints = JSON.parse(raw);
-          renderPointsMap(el.id, dayPoints, 14);
-        } catch (error) {
-          showFallback(el.id);
-        }
-      });
+      // 每日地圖改為穩定版摘要卡，避免 mobile iframe / embed 不穩。
     })();
   </script>
 </body>
