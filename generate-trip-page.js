@@ -115,7 +115,7 @@ function renderTripMapCard(data, mapPoints = []) {
 
   const dayCount = (data.days || []).length;
   const embedBlock = mapPoints.length
-    ? '<div id="trip-leaflet-map" class="leaflet-map"></div>'
+    ? `<div class="leaflet-fallback-wrap"><div id="trip-leaflet-map" class="leaflet-map"></div><iframe id="trip-map-fallback" class="trip-map-embed fallback-hidden" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>`
     : `<iframe class="trip-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
 
   return `
@@ -203,7 +203,7 @@ function renderDayMapCard(day, dayIndex) {
             </div>
             <a class="map-card-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          ${dayMapPoints.length ? `<div id="${dayMapId}" class="day-leaflet-map" data-day-map='${escapeHtml(JSON.stringify(dayMapPoints))}'></div>` : ''}
+          ${dayMapPoints.length ? `<div class="leaflet-fallback-wrap"><div id="${dayMapId}" class="day-leaflet-map" data-day-map='${escapeHtml(JSON.stringify(dayMapPoints))}'></div><iframe id="${dayMapId}-fallback" class="trip-map-embed day-map-embed fallback-hidden" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>` : ''}
         </div>`;
 }
 
@@ -362,8 +362,17 @@ function buildHtml(data) {
     .legend-dot {
       width: 12px; height: 12px; border-radius: 999px; display: inline-block;
     }
+    .leaflet-fallback-wrap {
+      position: relative;
+    }
     .trip-map-embed {
       width: 100%; height: 320px; border: 0; display: block;
+    }
+    .day-map-embed {
+      height: 220px;
+    }
+    .fallback-hidden {
+      display: none;
     }
     .leaflet-map {
       width: 100%; height: 360px;
@@ -504,11 +513,28 @@ function buildHtml(data) {
         popupAnchor: [0, -12]
       });
 
+      const showFallback = (elementId) => {
+        const mapEl = document.getElementById(elementId);
+        const fallbackEl = document.getElementById(elementId + '-fallback') || document.getElementById('trip-map-fallback');
+        if (mapEl) mapEl.style.display = 'none';
+        if (fallbackEl) fallbackEl.classList.remove('fallback-hidden');
+      };
+
       const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
         const el = document.getElementById(elementId);
         if (!el || !pointsData.length) return;
+        if (typeof L === 'undefined') {
+          showFallback(elementId);
+          return;
+        }
 
-        const map = L.map(elementId);
+        let map;
+        try {
+          map = L.map(elementId);
+        } catch (error) {
+          showFallback(elementId);
+          return;
+        }
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '&copy; OpenStreetMap contributors'
@@ -552,8 +578,12 @@ function buildHtml(data) {
       document.querySelectorAll('.day-leaflet-map').forEach(el => {
         const raw = el.getAttribute('data-day-map');
         if (!raw) return;
-        const dayPoints = JSON.parse(raw);
-        renderPointsMap(el.id, dayPoints, 14);
+        try {
+          const dayPoints = JSON.parse(raw);
+          renderPointsMap(el.id, dayPoints, 14);
+        } catch (error) {
+          showFallback(el.id);
+        }
       });
     })();
   </script>

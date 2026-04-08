@@ -88,8 +88,17 @@
     .legend-dot {
       width: 12px; height: 12px; border-radius: 999px; display: inline-block;
     }
+    .leaflet-fallback-wrap {
+      position: relative;
+    }
     .trip-map-embed {
       width: 100%; height: 320px; border: 0; display: block;
+    }
+    .day-map-embed {
+      height: 220px;
+    }
+    .fallback-hidden {
+      display: none;
     }
     .leaflet-map {
       width: 100%; height: 360px;
@@ -212,7 +221,7 @@
         <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E8%BB%8A%E7%AB%99%20%E6%B7%BA%E8%8D%89%E5%AF%BA%20%E6%9D%B1%E4%BA%AC%20%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90%20%E9%9A%85%E7%94%B0%E5%B7%9D%E6%AD%A5%E9%81%93%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E5%85%AC%E5%9C%92%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
       </div>
       <div class="trip-map-embed-wrap">
-        <div id="trip-leaflet-map" class="leaflet-map"></div>
+        <div class="leaflet-fallback-wrap"><div id="trip-leaflet-map" class="leaflet-map"></div><iframe id="trip-map-fallback" class="trip-map-embed fallback-hidden" src="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E8%BB%8A%E7%AB%99%20%E6%B7%BA%E8%8D%89%E5%AF%BA%20%E6%9D%B1%E4%BA%AC%20%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90%20%E9%9A%85%E7%94%B0%E5%B7%9D%E6%AD%A5%E9%81%93%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E5%85%AC%E5%9C%92%20%E6%9D%B1%E4%BA%AC&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
       </div>
       <div class="trip-map-legend">
         <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
@@ -256,7 +265,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;key&quot;:&quot;1-14:00-抵達東京、進市區、入住&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;key&quot;:&quot;1-16:30-淺草寺＋仲見世商店街散步&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;key&quot;:&quot;1-20:00-隅田川夜間散步（可選）&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986}]'></div>
+          <div class="leaflet-fallback-wrap"><div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;key&quot;:&quot;1-14:00-抵達東京、進市區、入住&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;key&quot;:&quot;1-16:30-淺草寺＋仲見世商店街散步&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;key&quot;:&quot;1-20:00-隅田川夜間散步（可選）&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986}]'></div><iframe id="day-leaflet-map-1-fallback" class="trip-map-embed day-map-embed fallback-hidden" src="https://www.google.com/maps?q=35.6812%2C139.7671&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -346,7 +355,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;key&quot;:&quot;2-10:30-上野公園散步＋館舍擇一&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;key&quot;:&quot;2-14:00-阿美橫町自由逛街&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;key&quot;:&quot;2-17:30-晴空塔商場晚餐＋夜景&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107}]'></div>
+          <div class="leaflet-fallback-wrap"><div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;key&quot;:&quot;2-10:30-上野公園散步＋館舍擇一&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;key&quot;:&quot;2-14:00-阿美橫町自由逛街&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;key&quot;:&quot;2-17:30-晴空塔商場晚餐＋夜景&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107}]'></div><iframe id="day-leaflet-map-2-fallback" class="trip-map-embed day-map-embed fallback-hidden" src="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -456,7 +465,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;3-11:00-補逛淺草／押上周邊&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]'></div>
+          <div class="leaflet-fallback-wrap"><div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;3-11:00-補逛淺草／押上周邊&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]'></div><iframe id="day-leaflet-map-3-fallback" class="trip-map-embed day-map-embed fallback-hidden" src="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -553,11 +562,28 @@
         popupAnchor: [0, -12]
       });
 
+      const showFallback = (elementId) => {
+        const mapEl = document.getElementById(elementId);
+        const fallbackEl = document.getElementById(elementId + '-fallback') || document.getElementById('trip-map-fallback');
+        if (mapEl) mapEl.style.display = 'none';
+        if (fallbackEl) fallbackEl.classList.remove('fallback-hidden');
+      };
+
       const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
         const el = document.getElementById(elementId);
         if (!el || !pointsData.length) return;
+        if (typeof L === 'undefined') {
+          showFallback(elementId);
+          return;
+        }
 
-        const map = L.map(elementId);
+        let map;
+        try {
+          map = L.map(elementId);
+        } catch (error) {
+          showFallback(elementId);
+          return;
+        }
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '&copy; OpenStreetMap contributors'
@@ -601,8 +627,12 @@
       document.querySelectorAll('.day-leaflet-map').forEach(el => {
         const raw = el.getAttribute('data-day-map');
         if (!raw) return;
-        const dayPoints = JSON.parse(raw);
-        renderPointsMap(el.id, dayPoints, 14);
+        try {
+          const dayPoints = JSON.parse(raw);
+          renderPointsMap(el.id, dayPoints, 14);
+        } catch (error) {
+          showFallback(el.id);
+        }
       });
     })();
   </script>
