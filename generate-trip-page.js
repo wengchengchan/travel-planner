@@ -115,7 +115,7 @@ function renderTripMapCard(data, mapPoints = []) {
 
   const dayCount = (data.days || []).length;
   const embedBlock = mapPoints.length
-    ? `<div class="leaflet-fallback-wrap"><div id="trip-leaflet-map" class="leaflet-map"></div><iframe id="trip-map-fallback" class="trip-map-embed fallback-hidden" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>`
+    ? `<div class="leaflet-fallback-wrap"><iframe id="trip-map-fallback" class="trip-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="trip-leaflet-map" class="leaflet-map leaflet-overlay-hidden"></div></div>`
     : `<iframe class="trip-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
 
   return `
@@ -203,7 +203,7 @@ function renderDayMapCard(day, dayIndex) {
             </div>
             <a class="map-card-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          ${dayMapPoints.length ? `<div class="leaflet-fallback-wrap"><div id="${dayMapId}" class="day-leaflet-map" data-day-map='${escapeHtml(JSON.stringify(dayMapPoints))}'></div><iframe id="${dayMapId}-fallback" class="trip-map-embed day-map-embed fallback-hidden" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>` : ''}
+          ${dayMapPoints.length ? `<div class="leaflet-fallback-wrap"><iframe id="${dayMapId}-fallback" class="trip-map-embed day-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="${dayMapId}" class="day-leaflet-map leaflet-overlay-hidden" data-day-map='${escapeHtml(JSON.stringify(dayMapPoints))}'></div></div>` : ''}
         </div>`;
 }
 
@@ -371,8 +371,14 @@ function buildHtml(data) {
     .day-map-embed {
       height: 220px;
     }
-    .fallback-hidden {
+    .leaflet-overlay-hidden {
       display: none;
+    }
+    .leaflet-overlay-active {
+      display: block;
+      position: absolute;
+      inset: 0;
+      z-index: 2;
     }
     .leaflet-map {
       width: 100%; height: 360px;
@@ -515,9 +521,18 @@ function buildHtml(data) {
 
       const showFallback = (elementId) => {
         const mapEl = document.getElementById(elementId);
-        const fallbackEl = document.getElementById(elementId + '-fallback') || document.getElementById('trip-map-fallback');
-        if (mapEl) mapEl.style.display = 'none';
-        if (fallbackEl) fallbackEl.classList.remove('fallback-hidden');
+        if (mapEl) {
+          mapEl.classList.remove('leaflet-overlay-active');
+          mapEl.classList.add('leaflet-overlay-hidden');
+        }
+      };
+
+      const showLeaflet = (elementId) => {
+        const mapEl = document.getElementById(elementId);
+        if (mapEl) {
+          mapEl.classList.remove('leaflet-overlay-hidden');
+          mapEl.classList.add('leaflet-overlay-active');
+        }
       };
 
       const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
@@ -531,6 +546,7 @@ function buildHtml(data) {
         let map;
         try {
           map = L.map(elementId);
+          showLeaflet(elementId);
         } catch (error) {
           showFallback(elementId);
           return;
