@@ -144,6 +144,31 @@ function buildHtml(trips) {
 </html>`;
 }
 
+function slugifyDestination(destination = '', fallback = 'trip') {
+  const map = {
+    '東京': 'tokyo',
+    '日本東京': 'tokyo',
+    '北京': 'beijing',
+    '台北': 'taipei',
+    '大阪': 'osaka',
+    '京都': 'kyoto',
+    '首爾': 'seoul',
+    '釜山': 'busan'
+  };
+
+  const raw = String(destination || '').trim();
+  if (map[raw]) return map[raw];
+
+  const ascii = raw
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return ascii || fallback;
+}
+
 function main() {
   const dir = process.cwd();
   const files = fs.readdirSync(dir);
@@ -152,7 +177,7 @@ function main() {
   const trips = jsonFiles.map(file => {
     const raw = fs.readFileSync(path.join(dir, file), 'utf8');
     const data = JSON.parse(raw);
-    const city = String(data.destination || '').toLowerCase().replace(/\s+/g, '-');
+    const city = slugifyDestination(data.destination, 'trip');
     const ym = String(data.dateStart || '').slice(0, 7);
     return {
       ...data,
