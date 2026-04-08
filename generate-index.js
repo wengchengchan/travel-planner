@@ -22,17 +22,18 @@ function buildCard(trip, index) {
   const prep = trip.prep || {};
   const hasBooking = (prep.booking || []).length > 0;
   const hasTickets = (prep.tickets || []).length > 0;
+  const hasReminders = (prep.reminders || []).length > 0;
   const noteBadges = [];
 
-  if (hasBooking) noteBadges.push('需留意預約');
-  if (hasTickets) noteBadges.push('有票券 / 入場提醒');
-  if ((trip.notes || []).length) noteBadges.push(trip.notes[0]);
+  if (hasBooking) noteBadges.push('需預約');
+  if (hasTickets) noteBadges.push('有票券');
+  if (hasReminders) noteBadges.push('有提醒');
 
   return `
         <a class="card" href="${escapeHtml(trip.page)}">
           <div class="card-top">
             <div class="eyebrow">Trip ${String(index + 1).padStart(2, '0')}</div>
-            <div class="status-row">${renderPills(noteBadges.slice(0, 2), 'status-pill')}</div>
+            <div class="status-row">${renderPills(noteBadges.slice(0, 3), 'status-pill')}</div>
           </div>
           <h2>${escapeHtml(trip.title)}</h2>
           <div class="meta">${escapeHtml(meta)}</div>
