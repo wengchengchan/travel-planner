@@ -24,6 +24,9 @@ function buildCard(trip, index) {
   const hasTickets = (prep.tickets || []).length > 0;
   const hasReminders = (prep.reminders || []).length > 0;
   const noteBadges = [];
+  const dayCount = (trip.days || []).length;
+  const mappedCount = (trip.days || []).reduce((sum, day) => sum + (day.items || []).filter(item => typeof item.lat === 'number' && typeof item.lng === 'number').length, 0);
+  const prepCount = (prep.booking || []).length + (prep.tickets || []).length + (prep.reminders || []).length;
 
   if (hasBooking) noteBadges.push('需預約');
   if (hasTickets) noteBadges.push('有票券');
@@ -40,6 +43,11 @@ function buildCard(trip, index) {
           <p class="desc">${escapeHtml(summary)}</p>
           <div class="tags">
             ${renderPills(tags, 'tag')}
+          </div>
+          <div class="summary-row">
+            <span class="mini-meta">${dayCount} 天</span>
+            <span class="mini-meta">${mappedCount} 個地圖點</span>
+            <span class="mini-meta">${prepCount} 項行前準備</span>
           </div>
           <div class="card-footer">
             <span class="footer-label">${escapeHtml(trip.destination)}</span>
@@ -113,6 +121,14 @@ function buildHtml(trips) {
     .desc { font-size: 14px; color: var(--muted); margin: 0 0 14px; }
     .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
     .tag { background: var(--brand-soft); color: var(--brand); }
+    .summary-row {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+    }
+    .mini-meta {
+      display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 999px;
+      background: #f8fafc; color: var(--muted); font-size: 12px; font-weight: 700;
+      border: 1px solid #e5e7eb;
+    }
     .card-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; }
     .footer-label { font-size: 13px; color: var(--muted); }
     .footer-link { font-size: 13px; font-weight: 700; color: var(--brand-deep); }

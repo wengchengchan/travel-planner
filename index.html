@@ -61,6 +61,14 @@
     .desc { font-size: 14px; color: var(--muted); margin: 0 0 14px; }
     .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
     .tag { background: var(--brand-soft); color: var(--brand); }
+    .summary-row {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+    }
+    .mini-meta {
+      display: inline-flex; align-items: center; padding: 5px 10px; border-radius: 999px;
+      background: #f8fafc; color: var(--muted); font-size: 12px; font-weight: 700;
+      border: 1px solid #e5e7eb;
+    }
     .card-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb; }
     .footer-label { font-size: 13px; color: var(--muted); }
     .footer-link { font-size: 13px; font-weight: 700; color: var(--brand-deep); }
@@ -97,6 +105,11 @@
           <div class="tags">
             <span class="tag">美食</span><span class="tag">散步</span><span class="tag">少趕路</span>
           </div>
+          <div class="summary-row">
+            <span class="mini-meta">3 天</span>
+            <span class="mini-meta">7 個地圖點</span>
+            <span class="mini-meta">4 項行前準備</span>
+          </div>
           <div class="card-footer">
             <span class="footer-label">Tokyo</span>
             <span class="footer-link">查看行程 →</span>
@@ -112,6 +125,11 @@
           <p class="desc">北京 行程，重點是 歷史景點、美食。</p>
           <div class="tags">
             <span class="tag">歷史景點</span><span class="tag">美食</span>
+          </div>
+          <div class="summary-row">
+            <span class="mini-meta">3 天</span>
+            <span class="mini-meta">6 個地圖點</span>
+            <span class="mini-meta">6 項行前準備</span>
           </div>
           <div class="card-footer">
             <span class="footer-label">北京</span>
