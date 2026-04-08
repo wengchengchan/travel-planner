@@ -132,8 +132,9 @@
     .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
     .empty { margin: 0; color: var(--muted); font-size: 13px; }
     .timeline { display: grid; gap: 12px; margin-top: 12px; }
-    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; }
+    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background-color .2s ease, box-shadow .2s ease; }
     .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
+    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.18); padding: 12px 14px; }
     .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
     .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
     .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
@@ -255,7 +256,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986}]'></div>
+          <div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;key&quot;:&quot;1-14:00-抵達東京、進市區、入住&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;key&quot;:&quot;1-16:30-淺草寺＋仲見世商店街散步&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;key&quot;:&quot;1-20:00-隅田川夜間散步（可選）&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -272,7 +273,7 @@
           </div>
         </div>
         <div class="timeline">
-          <div class="item">
+          <div class="item" data-map-key="1-14:00-抵達東京、進市區、入住">
             <div class="time">14:00–16:00</div>
             <div class="item-title">抵達東京、進市區、入住</div>
             <div class="item-meta"><span>區域：東京市區</span><span>交通：機場到市區交通</span></div>
@@ -285,7 +286,7 @@
               </ul>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="1-16:30-淺草寺＋仲見世商店街散步">
             <div class="time">16:30–18:30</div>
             <div class="item-title">淺草寺＋仲見世商店街散步</div>
             <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
@@ -298,7 +299,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="1-18:30-淺草晚餐">
             <div class="time">18:30–20:00</div>
             <div class="item-title">淺草晚餐</div>
             <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
@@ -311,7 +312,7 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">避開 18:00–19:30 最尖峰</span><span class="pill tip">主街太擠可轉旁邊巷弄</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="1-20:00-隅田川夜間散步（可選）">
             <div class="time">20:00–21:00</div>
             <div class="item-title">隅田川夜間散步（可選）</div>
             <div class="item-meta"><span>區域：淺草／隅田川</span><span>交通：步行</span></div>
@@ -345,7 +346,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107}]'></div>
+          <div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;key&quot;:&quot;2-10:30-上野公園散步＋館舍擇一&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;key&quot;:&quot;2-14:00-阿美橫町自由逛街&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;key&quot;:&quot;2-17:30-晴空塔商場晚餐＋夜景&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -362,14 +363,14 @@
           </div>
         </div>
         <div class="timeline">
-          <div class="item">
+          <div class="item" data-map-key="2-10:00-晚一點出門">
             <div class="time">10:00–10:30</div>
             <div class="item-title">晚一點出門</div>
             <div class="item-meta"><span>區域：住宿區</span><span>交通：步行／電車</span></div>
             <p class="desc">維持不早起節奏，保留旅行舒適感。</p>
             <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="2-10:30-上野公園散步＋館舍擇一">
             <div class="time">10:30–12:30</div>
             <div class="item-title">上野公園散步＋館舍擇一</div>
             <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
@@ -382,7 +383,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="2-12:30-上野午餐">
             <div class="time">12:30–14:00</div>
             <div class="item-title">上野午餐</div>
             <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
@@ -395,7 +396,7 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">先逛再選店</span><span class="pill tip">以座位流動快的店為優先</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="2-14:00-阿美橫町自由逛街">
             <div class="time">14:00–16:30</div>
             <div class="item-title">阿美橫町自由逛街</div>
             <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
@@ -408,7 +409,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="2-17:30-晴空塔商場晚餐＋夜景">
             <div class="time">17:30–20:30</div>
             <div class="item-title">晴空塔商場晚餐＋夜景</div>
             <div class="item-meta"><span>區域：押上／晴空塔</span><span>交通：電車＋步行</span></div>
@@ -427,7 +428,7 @@
               </ul>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="2-21:00-返回住宿">
             <div class="time">21:00–21:30</div>
             <div class="item-title">返回住宿</div>
             <div class="item-meta"><span>區域：東京市區</span><span>交通：電車</span></div>
@@ -455,7 +456,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]'></div>
+          <div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;3-11:00-補逛淺草／押上周邊&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -472,7 +473,7 @@
           </div>
         </div>
         <div class="timeline">
-          <div class="item meal">
+          <div class="item meal" data-map-key="3-09:30-早午餐">
             <div class="time">09:30–10:30</div>
             <div class="item-title">早午餐</div>
             <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
@@ -485,7 +486,7 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以順路、舒適、可久坐為主</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="3-11:00-補逛淺草／押上周邊">
             <div class="time">11:00–13:00</div>
             <div class="item-title">補逛淺草／押上周邊</div>
             <div class="item-meta"><span>區域：淺草／押上</span><span>交通：步行／短程電車</span></div>
@@ -498,7 +499,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="3-13:00-最後一餐＋伴手禮採買">
             <div class="time">13:00–14:30</div>
             <div class="item-title">最後一餐＋伴手禮採買</div>
             <div class="item-meta"><span>區域：淺草／上野／押上擇一</span><span>交通：步行</span></div>
@@ -511,7 +512,7 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以離回程動線近的區域優先</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="3-15:00-前往機場或下一站">
             <div class="time">15:00–18:00</div>
             <div class="item-title">前往機場或下一站</div>
             <div class="item-meta"><span>區域：東京市區</span><span>交通：市區到機場／車站交通</span></div>
@@ -540,7 +541,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (function () {
-      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;type&quot;:&quot;arrival&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;type&quot;:&quot;walk&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986},{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;shopping&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;type&quot;:&quot;sightseeing_meal&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107},{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]');
+      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;type&quot;:&quot;arrival&quot;,&quot;key&quot;:&quot;1-14:00-抵達東京、進市區、入住&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;1-16:30-淺草寺＋仲見世商店街散步&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;type&quot;:&quot;walk&quot;,&quot;key&quot;:&quot;1-20:00-隅田川夜間散步（可選）&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986},{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;2-10:30-上野公園散步＋館舍擇一&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;shopping&quot;,&quot;key&quot;:&quot;2-14:00-阿美橫町自由逛街&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;type&quot;:&quot;sightseeing_meal&quot;,&quot;key&quot;:&quot;2-17:30-晴空塔商場晚餐＋夜景&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107},{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;key&quot;:&quot;3-11:00-補逛淺草／押上周邊&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]');
       if (!points.length) return;
 
       const dayColors = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
@@ -576,6 +577,15 @@
             lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
           }
           marker.bindPopup(lines.join('<br>'));
+          marker.on('click', () => {
+            document.querySelectorAll('.active-map-target').forEach(node => node.classList.remove('active-map-target'));
+            if (!point.key) return;
+            const selector = '[data-map-key="' + CSS.escape(point.key) + '"]';
+            const target = document.querySelector(selector);
+            if (!target) return;
+            target.classList.add('active-map-target');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
           bounds.push([point.lat, point.lng]);
         });
 

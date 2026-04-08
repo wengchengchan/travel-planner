@@ -132,8 +132,9 @@
     .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
     .empty { margin: 0; color: var(--muted); font-size: 13px; }
     .timeline { display: grid; gap: 12px; margin-top: 12px; }
-    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; }
+    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background-color .2s ease, box-shadow .2s ease; }
     .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
+    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.18); padding: 12px 14px; }
     .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
     .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
     .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
@@ -255,7 +256,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396}]'></div>
+          <div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;key&quot;:&quot;1-09:30-從住宿區出發前往天安門周邊&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;1-10:00-天安門廣場＋紫禁城主線&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;key&quot;:&quot;1-14:30-景山公園或王府井周邊慢走&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -272,7 +273,7 @@
           </div>
         </div>
         <div class="timeline">
-          <div class="item">
+          <div class="item" data-map-key="1-09:30-從住宿區出發前往天安門周邊">
             <div class="time">09:30–10:00</div>
             <div class="item-title">從住宿區出發前往天安門周邊</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
@@ -285,7 +286,7 @@
               </ul>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="1-10:00-天安門廣場＋紫禁城主線">
             <div class="time">10:00–13:00</div>
             <div class="item-title">天安門廣場＋紫禁城主線</div>
             <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
@@ -298,7 +299,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="1-13:00-景點周邊午餐">
             <div class="time">13:00–14:00</div>
             <div class="item-title">景點周邊午餐</div>
             <div class="item-meta"><span>區域：紫禁城周邊</span><span>交通：步行</span></div>
@@ -311,7 +312,7 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以景點周邊順路店為主</span><span class="pill tip">優先有座位、可休息的店</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="1-14:30-景山公園或王府井周邊慢走">
             <div class="time">14:30–16:30</div>
             <div class="item-title">景山公園或王府井周邊慢走</div>
             <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
@@ -324,7 +325,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="1-18:00-北京烤鴨晚餐">
             <div class="time">18:00–20:00</div>
             <div class="item-title">北京烤鴨晚餐</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
@@ -364,7 +365,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206}]'></div>
+          <div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;key&quot;:&quot;2-09:00-從市區前往萬里長城&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;key&quot;:&quot;2-10:30-萬里長城主行程&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -381,7 +382,7 @@
           </div>
         </div>
         <div class="timeline">
-          <div class="item">
+          <div class="item" data-map-key="2-09:00-從市區前往萬里長城">
             <div class="time">09:00–10:30</div>
             <div class="item-title">從市區前往萬里長城</div>
             <div class="item-meta"><span>區域：北京近郊</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
@@ -394,7 +395,7 @@
               </ul>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="2-10:30-萬里長城主行程">
             <div class="time">10:30–15:30</div>
             <div class="item-title">萬里長城主行程</div>
             <div class="item-meta"><span>區域：萬里長城</span><span>交通：步行</span></div>
@@ -407,7 +408,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="2-12:30-長城周邊簡單午餐">
             <div class="time">12:30–13:30</div>
             <div class="item-title">長城周邊簡單午餐</div>
             <div class="item-meta"><span>區域：長城周邊</span><span>交通：步行</span></div>
@@ -420,14 +421,14 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以順路補充體力為優先</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="2-16:00-返回北京市區">
             <div class="time">16:00–17:30</div>
             <div class="item-title">返回北京市區</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
             <p class="desc">結束長城主力行程後回市區，避免晚上再安排高強度活動。</p>
             
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="2-18:30-市區輕鬆晚餐">
             <div class="time">18:30–20:00</div>
             <div class="item-title">市區輕鬆晚餐</div>
             <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行／短程車程</span></div>
@@ -461,7 +462,7 @@
             </div>
             <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]'></div>
+          <div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;key&quot;:&quot;3-11:00-市區補逛一個順路歷史／老街區&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -478,7 +479,7 @@
           </div>
         </div>
         <div class="timeline">
-          <div class="item meal">
+          <div class="item meal" data-map-key="3-09:30-早午餐或晚一點出門">
             <div class="time">09:30–10:30</div>
             <div class="item-title">早午餐或晚一點出門</div>
             <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
@@ -491,7 +492,7 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以舒適、順路為主</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="3-11:00-市區補逛一個順路歷史／老街區">
             <div class="time">11:00–13:00</div>
             <div class="item-title">市區補逛一個順路歷史／老街區</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／步行</span></div>
@@ -504,7 +505,7 @@
               </ul>
             </div>
           </div>
-          <div class="item meal">
+          <div class="item meal" data-map-key="3-13:00-蘭州拉麵午餐">
             <div class="time">13:00–14:00</div>
             <div class="item-title">蘭州拉麵午餐</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：步行／短程車程</span></div>
@@ -517,7 +518,7 @@
               <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以回程方便、順路為主</span></div>
             </div>
           </div>
-          <div class="item">
+          <div class="item" data-map-key="3-15:00-返回機場或車站">
             <div class="time">15:00–18:00</div>
             <div class="item-title">返回機場或車站</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：市區到機場／車站交通</span></div>
@@ -546,7 +547,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (function () {
-      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396},{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]');
+      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;key&quot;:&quot;1-09:30-從住宿區出發前往天安門周邊&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;1-10:00-天安門廣場＋紫禁城主線&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;1-14:30-景山公園或王府井周邊慢走&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396},{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;key&quot;:&quot;2-09:00-從市區前往萬里長城&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;2-10:30-萬里長城主行程&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;key&quot;:&quot;3-11:00-市區補逛一個順路歷史／老街區&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]');
       if (!points.length) return;
 
       const dayColors = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
@@ -582,6 +583,15 @@
             lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
           }
           marker.bindPopup(lines.join('<br>'));
+          marker.on('click', () => {
+            document.querySelectorAll('.active-map-target').forEach(node => node.classList.remove('active-map-target'));
+            if (!point.key) return;
+            const selector = '[data-map-key="' + CSS.escape(point.key) + '"]';
+            const target = document.querySelector(selector);
+            if (!target) return;
+            target.classList.add('active-map-target');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
           bounds.push([point.lat, point.lng]);
         });
 

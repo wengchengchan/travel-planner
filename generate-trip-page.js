@@ -87,6 +87,7 @@ function collectMapPoints(data) {
         timeStart: item.timeStart || '',
         timeEnd: item.timeEnd || '',
         type: item.type || '',
+        key: `${dayIndex + 1}-${item.timeStart || ''}-${item.title || ''}`,
         lat: item.lat,
         lng: item.lng
       });
@@ -176,6 +177,7 @@ function collectDayMapPoints(day, dayIndex) {
       mapQuery: item.mapQuery || '',
       timeStart: item.timeStart || '',
       timeEnd: item.timeEnd || '',
+      key: `${dayIndex + 1}-${item.timeStart || ''}-${item.title || ''}`,
       lat: item.lat,
       lng: item.lng
     });
@@ -247,7 +249,7 @@ function renderDay(day, index) {
         </div>
         ${renderDaySummary(day, index)}
         <div class="timeline">
-${(day.items || []).map(item => `          <div class="${itemClass(item.type)}">
+${(day.items || []).map(item => `          <div class="${itemClass(item.type)}" data-map-key="${escapeHtml(`${index + 1}-${item.timeStart || ''}-${item.title || ''}`)}">
             <div class="time">${escapeHtml(item.timeStart || '')}–${escapeHtml(item.timeEnd || '')}</div>
             <div class="item-title">${escapeHtml(item.title || '')}</div>
             ${renderItemMeta(item)}
@@ -404,8 +406,9 @@ function buildHtml(data) {
     .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
     .empty { margin: 0; color: var(--muted); font-size: 13px; }
     .timeline { display: grid; gap: 12px; margin-top: 12px; }
-    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; }
+    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background-color .2s ease, box-shadow .2s ease; }
     .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
+    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.18); padding: 12px 14px; }
     .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
     .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
     .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
@@ -525,6 +528,15 @@ function buildHtml(data) {
             lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
           }
           marker.bindPopup(lines.join('<br>'));
+          marker.on('click', () => {
+            document.querySelectorAll('.active-map-target').forEach(node => node.classList.remove('active-map-target'));
+            if (!point.key) return;
+            const selector = '[data-map-key="' + CSS.escape(point.key) + '"]';
+            const target = document.querySelector(selector);
+            if (!target) return;
+            target.classList.add('active-map-target');
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
           bounds.push([point.lat, point.lng]);
         });
 
