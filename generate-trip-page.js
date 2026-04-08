@@ -168,14 +168,16 @@ function renderChecklistSection(data) {
 
   return `
     <section class="summary prep-grid">
-      <div class="card">
-        <h2>票券 / 預約</h2>
-        ${booking.length ? `<div class="subcard-label">預約</div><ul class="note-list">${booking.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p class="empty">目前無特別預約需求。</p>'}
-        ${tickets.length ? `<div class="subcard-label">票券</div><ul class="note-list">${tickets.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
+      <div class="card prep-card">
+        <h2>出發前要先做</h2>
+        <p class="prep-intro">先把需要提早處理的事情收斂成一區，避免出發前才臨時補救。</p>
+        ${booking.length ? `<div class="subcard-label">已預約 / 要確認</div><ul class="note-list prep-list">${booking.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p class="empty">目前無特別預約需求。</p>'}
+        ${tickets.length ? `<div class="subcard-label">票券 / 入場</div><ul class="note-list prep-list">${tickets.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : ''}
       </div>
-      <div class="card">
-        <h2>行前提醒</h2>
-        ${reminders.length ? `<ul class="note-list">${reminders.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p class="empty">目前無額外提醒。</p>'}
+      <div class="card prep-card">
+        <h2>當天注意事項</h2>
+        <p class="prep-intro">把真正會影響行程順暢度的提醒留下來，現場照這區看就夠。</p>
+        ${reminders.length ? `<ul class="note-list prep-list">${reminders.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '<p class="empty">目前無額外提醒。</p>'}
       </div>
     </section>`;
 }
@@ -458,6 +460,18 @@ function buildHtml(data) {
     .pill.good { background: var(--good-bg); color: var(--good-text); }
     .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
     .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
+    .prep-card {
+      background: linear-gradient(135deg, #f8fbff, #ffffff);
+      border: 1px solid #dbeafe;
+    }
+    .prep-intro {
+      margin-bottom: 10px !important;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .prep-list li {
+      margin-bottom: 6px;
+    }
     .footer-note { margin-top: 18px; background: #f8fafc; border: 1px dashed #cbd5e1; }
     .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
     @media (max-width: 720px) {
