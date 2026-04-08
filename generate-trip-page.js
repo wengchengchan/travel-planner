@@ -114,16 +114,15 @@ function renderTripMapCard(data, mapPoints = []) {
   if (!mapUrl) return '';
 
   const dayCount = (data.days || []).length;
-  const embedBlock = mapPoints.length
-    ? `<div class="leaflet-fallback-wrap"><iframe id="trip-map-fallback" class="trip-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="trip-leaflet-map" class="leaflet-map leaflet-overlay-hidden"></div></div>`
-    : `<iframe class="trip-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
+  const allAreas = [...new Set(mapPoints.map(point => point.area).filter(Boolean))].slice(0, 8);
+  const allTitles = [...new Set(mapPoints.map(point => point.title).filter(Boolean))].slice(0, 8);
 
   return `
     <section class="card trip-map-card">
       <div class="trip-map-head">
         <div>
-          <h2>旅程總地圖</h2>
-          <p>把這趟旅程的主要地點收成一個總覽入口，方便先看整體區域分布，再決定每天怎麼走。</p>
+          <h2>旅程總覽</h2>
+          <p>先看這趟旅程的主要區域與重點景點，再決定每天怎麼走；跨天移動改用外部總地圖，避免站內白框。</p>
           <div class="chips">
             <span class="chip">${escapeHtml(data.destination)}</span>
             <span class="chip">${dayCount} 天行程</span>
@@ -131,8 +130,23 @@ function renderTripMapCard(data, mapPoints = []) {
         </div>
         <a class="trip-map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
       </div>
-      <div class="trip-map-embed-wrap">
-        ${embedBlock}
+      <div class="day-panels" style="margin-top:14px;">
+        <div class="subcard">
+          <div class="subcard-title">主要區域</div>
+          ${allAreas.length ? renderPills(allAreas, 'pill neutral') : '<p class="empty">依每日安排為主。</p>'}
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">重點景點</div>
+          ${allTitles.length ? renderPills(allTitles, 'pill neutral') : '<p class="empty">目前以每日內容為主。</p>'}
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">使用方式</div>
+          <ul class="note-list compact">
+            <li>頁內先看每日小地圖</li>
+            <li>跨天移動用外部整趟地圖</li>
+            <li>點各景點可直接開地圖</li>
+          </ul>
+        </div>
       </div>
       <div class="trip-map-legend">
         <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
@@ -588,8 +602,6 @@ function buildHtml(data) {
           map.fitBounds(bounds, { padding: [24, 24] });
         }
       };
-
-      renderPointsMap('trip-leaflet-map', points, 12);
 
       document.querySelectorAll('.day-leaflet-map').forEach(el => {
         const raw = el.getAttribute('data-day-map');

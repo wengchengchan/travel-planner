@@ -217,8 +217,8 @@
     <section class="card trip-map-card">
       <div class="trip-map-head">
         <div>
-          <h2>旅程總地圖</h2>
-          <p>把這趟旅程的主要地點收成一個總覽入口，方便先看整體區域分布，再決定每天怎麼走。</p>
+          <h2>旅程總覽</h2>
+          <p>先看這趟旅程的主要區域與重點景點，再決定每天怎麼走；跨天移動改用外部總地圖，避免站內白框。</p>
           <div class="chips">
             <span class="chip">Tokyo</span>
             <span class="chip">3 天行程</span>
@@ -226,8 +226,23 @@
         </div>
         <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E8%BB%8A%E7%AB%99%20%E6%B7%BA%E8%8D%89%E5%AF%BA%20%E6%9D%B1%E4%BA%AC%20%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90%20%E9%9A%85%E7%94%B0%E5%B7%9D%E6%AD%A5%E9%81%93%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E5%85%AC%E5%9C%92%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
       </div>
-      <div class="trip-map-embed-wrap">
-        <div class="leaflet-fallback-wrap"><iframe id="trip-map-fallback" class="trip-map-embed" src="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E8%BB%8A%E7%AB%99%20%E6%B7%BA%E8%8D%89%E5%AF%BA%20%E6%9D%B1%E4%BA%AC%20%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90%20%E9%9A%85%E7%94%B0%E5%B7%9D%E6%AD%A5%E9%81%93%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E5%85%AC%E5%9C%92%20%E6%9D%B1%E4%BA%AC&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe><div id="trip-leaflet-map" class="leaflet-map leaflet-overlay-hidden"></div></div>
+      <div class="day-panels" style="margin-top:14px;">
+        <div class="subcard">
+          <div class="subcard-title">主要區域</div>
+          <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span><span class="pill neutral">淺草／押上</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">重點景點</div>
+          <div class="pill-row"><span class="pill neutral">抵達東京、進市區、入住</span><span class="pill neutral">淺草寺＋仲見世商店街散步</span><span class="pill neutral">隅田川夜間散步（可選）</span><span class="pill neutral">上野公園散步＋館舍擇一</span><span class="pill neutral">阿美橫町自由逛街</span><span class="pill neutral">晴空塔商場晚餐＋夜景</span><span class="pill neutral">補逛淺草／押上周邊</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">使用方式</div>
+          <ul class="note-list compact">
+            <li>頁內先看每日小地圖</li>
+            <li>跨天移動用外部整趟地圖</li>
+            <li>點各景點可直接開地圖</li>
+          </ul>
+        </div>
       </div>
       <div class="trip-map-legend">
         <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
@@ -637,8 +652,6 @@
           map.fitBounds(bounds, { padding: [24, 24] });
         }
       };
-
-      renderPointsMap('trip-leaflet-map', points, 12);
 
       document.querySelectorAll('.day-leaflet-map').forEach(el => {
         const raw = el.getAttribute('data-day-map');
