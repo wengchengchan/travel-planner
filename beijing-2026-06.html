@@ -53,6 +53,20 @@
     .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
     .tag { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.2); }
     .summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+     .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+     .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
+     .card p { margin: 0; color: var(--muted); font-size: 14px; }
+     .chip { background: var(--brand-soft); color: var(--brand); }
++    .trip-map-card {
++      display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px;
++      background: linear-gradient(135deg, #eef4ff, #f8fbff);
++      border: 1px solid #dbeafe;
++    }
++    .trip-map-link {
++      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
++      padding: 10px 14px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
++    }
+     .days { display: grid; gap: 18px; }
     .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
     .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
     .card p { margin: 0; color: var(--muted); font-size: 14px; }
@@ -63,6 +77,16 @@
     .day-title { margin: 0; font-size: 20px; }
     .day-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
     .badge { background: #eff6ff; color: var(--brand); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 6px 10px; white-space: nowrap; }
+    .day-map-card {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      background: linear-gradient(135deg, #eff6ff, #f8fbff); border: 1px solid #dbeafe;
+      border-radius: 16px; padding: 14px 16px; margin: 12px 0;
+    }
+    .map-card-text { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .map-card-link {
+      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
+      padding: 8px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
+    }
     .day-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 16px; }
     .subcard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; }
     .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
@@ -76,6 +100,12 @@
     .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
     .item-meta span { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-text); font-size: 12px; font-weight: 600; }
     .desc { color: var(--muted); font-size: 14px; margin: 0; }
+    .map-link-row { margin-top: 8px; }
+    .map-link {
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+      color: var(--brand); font-size: 13px; font-weight: 700;
+    }
+    .map-link:hover { text-decoration: underline; }
     .food-block { margin-top: 10px; background: rgba(255,255,255,.55); }
     .notes-block { margin-top: 10px; background: var(--note); border-color: #fde68a; }
     .note-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
@@ -89,7 +119,9 @@
     .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
     @media (max-width: 720px) {
       .summary { grid-template-columns: 1fr; }
+      .trip-map-card { flex-direction: column; align-items: flex-start; }
       .day-header { flex-direction: column; }
+      .day-map-card { flex-direction: column; align-items: flex-start; }
       .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
@@ -124,6 +156,19 @@
     </section>
 
     
+    <section class="card trip-map-card">
+      <div>
+        <h2>旅程總地圖</h2>
+        <p>把這趟旅程的主要地點收成一個總覽入口，方便先看整體區域分布，再決定每天怎麼走。</p>
+        <div class="chips">
+          <span class="chip">北京</span>
+          <span class="chip">3 天行程</span>
+        </div>
+      </div>
+      <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9C%92%20%E5%8C%97%E4%BA%AC%20%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
+    </section>
+
+    
     <section class="summary prep-grid">
       <div class="card">
         <h2>票券 / 預約</h2>
@@ -147,6 +192,14 @@
           <span class="badge">Day 1</span>
         </div>
         
+        
+        <div class="day-map-card">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 天安門 北京 為起點查看今天的主要區域與動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
         <div class="day-panels">
           <div class="subcard">
             <div class="subcard-title">今日重點區域</div>
@@ -167,6 +220,7 @@
             <div class="item-title">從住宿區出發前往天安門周邊</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
             <p class="desc">以 9 點多出門為節奏，避免太早起，先進入市區主景點區域。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -179,6 +233,7 @@
             <div class="item-title">天安門廣場＋紫禁城主線</div>
             <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
             <p class="desc">第一天先處理北京最核心的歷史景點，作為整趟旅程的主軸開場。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -191,6 +246,7 @@
             <div class="item-title">景點周邊午餐</div>
             <div class="item-meta"><span>區域：紫禁城周邊</span><span>交通：步行</span></div>
             <p class="desc">以順路、穩定、休息方便的店家為主，不追熱門排隊名店。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard food-block">
               <div class="subcard-title">用餐策略</div>
               <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">北方家常菜</span><span class="pill good">簡單中式套餐</span><span class="pill good">麵食</span></div>
@@ -203,6 +259,7 @@
             <div class="item-title">景山公園或王府井周邊慢走</div>
             <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
             <p class="desc">下午保留彈性，可選景山公園收視野，或改走王府井一帶做城市感補充。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9C%92%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -215,6 +272,7 @@
             <div class="item-title">北京烤鴨晚餐</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
             <p class="desc">安排代表性正餐，作為第一天收尾。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard food-block">
               <div class="subcard-title">用餐策略</div>
               <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">北京烤鴨</span><span class="pill good">經典京菜</span></div>
@@ -240,6 +298,14 @@
           <span class="badge">Day 2</span>
         </div>
         
+        
+        <div class="day-map-card">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 八達嶺長城 北京 為起點查看今天的主要區域與動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
         <div class="day-panels">
           <div class="subcard">
             <div class="subcard-title">今日重點區域</div>
@@ -260,6 +326,7 @@
             <div class="item-title">從市區前往萬里長城</div>
             <div class="item-meta"><span>區域：北京近郊</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
             <p class="desc">第二天獨立做長城主力日，避免與市區重景點硬排在同一天。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -272,6 +339,7 @@
             <div class="item-title">萬里長城主行程</div>
             <div class="item-meta"><span>區域：萬里長城</span><span>交通：步行</span></div>
             <p class="desc">把整天主力放在長城，不再額外塞其他高體力景點。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -284,6 +352,7 @@
             <div class="item-title">長城周邊簡單午餐</div>
             <div class="item-meta"><span>區域：長城周邊</span><span>交通：步行</span></div>
             <p class="desc">以方便、快速、補充體力為主，不把重點放在這餐。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard food-block">
               <div class="subcard-title">用餐策略</div>
               <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">簡餐</span><span class="pill good">麵食</span><span class="pill good">熱食套餐</span></div>
@@ -296,12 +365,14 @@
             <div class="item-title">返回北京市區</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
             <p class="desc">結束長城主力行程後回市區，避免晚上再安排高強度活動。</p>
+            
           </div>
           <div class="item meal">
             <div class="time">18:30–20:00</div>
             <div class="item-title">市區輕鬆晚餐</div>
             <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行／短程車程</span></div>
             <p class="desc">以回住宿方便、輕鬆收尾為主，不再安排高壓排隊餐廳。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E5%B8%82%E5%8D%80%20%E9%A4%90%E5%BB%B3" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard food-block">
               <div class="subcard-title">用餐策略</div>
               <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">家常菜</span><span class="pill good">麵食</span><span class="pill good">地方小吃</span></div>
@@ -321,6 +392,14 @@
           <span class="badge">Day 3</span>
         </div>
         
+        
+        <div class="day-map-card">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 北京 早餐 咖啡店 為起點查看今天的主要區域與動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
         <div class="day-panels">
           <div class="subcard">
             <div class="subcard-title">今日重點區域</div>
@@ -341,6 +420,7 @@
             <div class="item-title">早午餐或晚一點出門</div>
             <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
             <p class="desc">最後一天維持不太早起節奏，不把回程日做成趕場日。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard food-block">
               <div class="subcard-title">用餐策略</div>
               <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">咖啡店</span><span class="pill good">簡單早餐</span><span class="pill good">麵食</span></div>
@@ -353,6 +433,7 @@
             <div class="item-title">市區補逛一個順路歷史／老街區</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／步行</span></div>
             <p class="desc">最後一天補一個不太重的市區點，保留散步與收尾感。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%BB%80%E5%89%8E%E6%B5%B7%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -365,6 +446,7 @@
             <div class="item-title">蘭州拉麵午餐</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：步行／短程車程</span></div>
             <p class="desc">安排一餐明確想吃的麵食，作為回程日前的輕鬆收尾。</p>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E8%98%AD%E5%B7%9E%E6%8B%89%E9%BA%B5%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard food-block">
               <div class="subcard-title">用餐策略</div>
               <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">蘭州拉麵</span><span class="pill good">牛肉麵</span><span class="pill good">麵食館</span></div>
@@ -377,6 +459,7 @@
             <div class="item-title">返回機場或車站</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：市區到機場／車站交通</span></div>
             <p class="desc">預留足夠時間處理交通與整理，避免最後一天過度壓縮。</p>
+            
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">

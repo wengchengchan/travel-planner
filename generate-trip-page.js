@@ -48,12 +48,60 @@ function renderItemNotes(item) {
             </div>`;
 }
 
+function buildMapUrl(item) {
+  if (item.mapUrl) return item.mapUrl;
+  if (item.lat && item.lng) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(`${item.lat},${item.lng}`)}`;
+  }
+  if (item.mapQuery) {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapQuery)}`;
+  }
+  return '';
+}
+
 function renderItemMeta(item) {
   const meta = [];
   if (item.area) meta.push(`區域：${item.area}`);
   if (item.transport) meta.push(`交通：${item.transport}`);
   if (!meta.length) return '';
   return `<div class="item-meta">${meta.map(line => `<span>${escapeHtml(line)}</span>`).join('')}</div>`;
+}
+
+function renderMapLink(item) {
+  const mapUrl = buildMapUrl(item);
+  if (!mapUrl) return '';
+  return `<div class="map-link-row"><a class="map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>`;
+}
+
+function buildTripMapUrl(data) {
+  const queries = [];
+  (data.days || []).forEach(day => {
+    (day.items || []).forEach(item => {
+      if (item.mapQuery) queries.push(item.mapQuery);
+    });
+  });
+  const unique = [...new Set(queries)].slice(0, 6);
+  if (!unique.length) return '';
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(unique.join(' '))}`;
+}
+
+function renderTripMapCard(data) {
+  const mapUrl = buildTripMapUrl(data);
+  if (!mapUrl) return '';
+
+  const dayCount = (data.days || []).length;
+  return `
+    <section class="card trip-map-card">
+      <div>
+        <h2>旅程總地圖</h2>
+        <p>把這趟旅程的主要地點收成一個總覽入口，方便先看整體區域分布，再決定每天怎麼走。</p>
+        <div class="chips">
+          <span class="chip">${escapeHtml(data.destination)}</span>
+          <span class="chip">${dayCount} 天行程</span>
+        </div>
+      </div>
+      <a class="trip-map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
+    </section>`;
 }
 
 function renderChecklistSection(data) {
@@ -78,6 +126,23 @@ function renderChecklistSection(data) {
     </section>`;
 }
 
+function renderDayMapCard(day) {
+  const firstMappable = (day.items || []).find(item => buildMapUrl(item));
+  if (!firstMappable) return '';
+
+  const mapUrl = buildMapUrl(firstMappable);
+  const label = firstMappable.mapQuery || firstMappable.title || '今日地圖';
+
+  return `
+        <div class="day-map-card">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 ${escapeHtml(label)} 為起點查看今天的主要區域與動線。</p>
+          </div>
+          <a class="map-card-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>`;
+}
+
 function renderDaySummary(day) {
   const transports = [...new Set((day.items || []).map(item => item.transport).filter(Boolean))];
   const areas = [...new Set((day.items || []).map(item => item.area).filter(Boolean))];
@@ -90,6 +155,7 @@ function renderDaySummary(day) {
   const notes = [...new Set(notePool)].slice(0, 4);
 
   return `
+        ${renderDayMapCard(day)}
         <div class="day-panels">
           <div class="subcard">
             <div class="subcard-title">今日重點區域</div>
@@ -123,7 +189,8 @@ ${(day.items || []).map(item => `          <div class="${itemClass(item.type)}">
             <div class="time">${escapeHtml(item.timeStart || '')}–${escapeHtml(item.timeEnd || '')}</div>
             <div class="item-title">${escapeHtml(item.title || '')}</div>
             ${renderItemMeta(item)}
-            <p class="desc">${escapeHtml(item.description || '')}</p>${renderFoodStrategy(item)}${renderItemNotes(item)}
+            <p class="desc">${escapeHtml(item.description || '')}</p>
+            ${renderMapLink(item)}${renderFoodStrategy(item)}${renderItemNotes(item)}
           </div>`).join('\n')}
         </div>
       </article>`;
@@ -194,6 +261,20 @@ function buildHtml(data) {
     .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
     .tag { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.2); }
     .summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+     .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+     .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
+     .card p { margin: 0; color: var(--muted); font-size: 14px; }
+     .chip { background: var(--brand-soft); color: var(--brand); }
++    .trip-map-card {
++      display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px;
++      background: linear-gradient(135deg, #eef4ff, #f8fbff);
++      border: 1px solid #dbeafe;
++    }
++    .trip-map-link {
++      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
++      padding: 10px 14px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
++    }
+     .days { display: grid; gap: 18px; }
     .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
     .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
     .card p { margin: 0; color: var(--muted); font-size: 14px; }
@@ -204,6 +285,16 @@ function buildHtml(data) {
     .day-title { margin: 0; font-size: 20px; }
     .day-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
     .badge { background: #eff6ff; color: var(--brand); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 6px 10px; white-space: nowrap; }
+    .day-map-card {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      background: linear-gradient(135deg, #eff6ff, #f8fbff); border: 1px solid #dbeafe;
+      border-radius: 16px; padding: 14px 16px; margin: 12px 0;
+    }
+    .map-card-text { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .map-card-link {
+      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
+      padding: 8px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
+    }
     .day-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 16px; }
     .subcard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; }
     .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
@@ -217,6 +308,12 @@ function buildHtml(data) {
     .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
     .item-meta span { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-text); font-size: 12px; font-weight: 600; }
     .desc { color: var(--muted); font-size: 14px; margin: 0; }
+    .map-link-row { margin-top: 8px; }
+    .map-link {
+      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
+      color: var(--brand); font-size: 13px; font-weight: 700;
+    }
+    .map-link:hover { text-decoration: underline; }
     .food-block { margin-top: 10px; background: rgba(255,255,255,.55); }
     .notes-block { margin-top: 10px; background: var(--note); border-color: #fde68a; }
     .note-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
@@ -230,7 +327,9 @@ function buildHtml(data) {
     .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
     @media (max-width: 720px) {
       .summary { grid-template-columns: 1fr; }
+      .trip-map-card { flex-direction: column; align-items: flex-start; }
       .day-header { flex-direction: column; }
+      .day-map-card { flex-direction: column; align-items: flex-start; }
       .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
@@ -263,6 +362,8 @@ function buildHtml(data) {
         </div>
       </div>
     </section>
+
+    ${renderTripMapCard(data)}
 
     ${renderChecklistSection(data)}
 

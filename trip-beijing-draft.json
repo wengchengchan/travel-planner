@@ -33,6 +33,7 @@
           "title": "從住宿區出發前往天安門周邊",
           "area": "北京市區",
           "description": "以 9 點多出門為節奏，避免太早起，先進入市區主景點區域。",
+          "mapQuery": "天安門 北京",
           "foodStrategy": null,
           "transport": "地鐵／計程車",
           "notes": ["住宿建議以交通方便的市區區域為主"]
@@ -44,6 +45,7 @@
           "title": "天安門廣場＋紫禁城主線",
           "area": "東城區",
           "description": "第一天先處理北京最核心的歷史景點，作為整趟旅程的主軸開場。",
+          "mapQuery": "故宮博物院 北京",
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["核心歷史景點優先", "避免同天再塞太多重景點"]
@@ -55,6 +57,7 @@
           "title": "景點周邊午餐",
           "area": "紫禁城周邊",
           "description": "以順路、穩定、休息方便的店家為主，不追熱門排隊名店。",
+          "mapQuery": "故宮博物院附近餐廳 北京",
           "foodStrategy": {
             "preferredTypes": ["北方家常菜", "簡單中式套餐", "麵食"],
             "avoid": ["超長排隊名店", "需特地繞路的餐廳"],
@@ -70,6 +73,7 @@
           "title": "景山公園或王府井周邊慢走",
           "area": "東城區",
           "description": "下午保留彈性，可選景山公園收視野，或改走王府井一帶做城市感補充。",
+          "mapQuery": "景山公園 北京",
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["依體力與天氣彈性調整"]
@@ -81,6 +85,7 @@
           "title": "北京烤鴨晚餐",
           "area": "北京市區",
           "description": "安排代表性正餐，作為第一天收尾。",
+          "mapQuery": "北京烤鴨 餐廳 北京",
           "foodStrategy": {
             "preferredTypes": ["北京烤鴨", "經典京菜"],
             "avoid": ["太遠的餐廳", "高峰時段超長排隊店"],
@@ -102,6 +107,7 @@
           "title": "從市區前往萬里長城",
           "area": "北京近郊",
           "description": "第二天獨立做長城主力日，避免與市區重景點硬排在同一天。",
+          "mapQuery": "八達嶺長城 北京",
           "foodStrategy": null,
           "transport": "包車／旅遊巴士／高鐵轉接駁",
           "notes": ["建議前一天先確認交通方案"]
@@ -113,6 +119,7 @@
           "title": "萬里長城主行程",
           "area": "萬里長城",
           "description": "把整天主力放在長城，不再額外塞其他高體力景點。",
+          "mapQuery": "八達嶺長城 北京",
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["全日主力景點", "依體力決定停留長度"]
@@ -124,6 +131,7 @@
           "title": "長城周邊簡單午餐",
           "area": "長城周邊",
           "description": "以方便、快速、補充體力為主，不把重點放在這餐。",
+          "mapQuery": "八達嶺長城附近餐廳",
           "foodStrategy": {
             "preferredTypes": ["簡餐", "麵食", "熱食套餐"],
             "avoid": ["繞遠路找名店"],
@@ -150,6 +158,7 @@
           "title": "市區輕鬆晚餐",
           "area": "住宿區附近",
           "description": "以回住宿方便、輕鬆收尾為主，不再安排高壓排隊餐廳。",
+          "mapQuery": "北京 市區 餐廳",
           "foodStrategy": {
             "preferredTypes": ["家常菜", "麵食", "地方小吃"],
             "avoid": ["跨區找餐廳", "高強度熱門店"],
@@ -171,6 +180,7 @@
           "title": "早午餐或晚一點出門",
           "area": "住宿區附近",
           "description": "最後一天維持不太早起節奏，不把回程日做成趕場日。",
+          "mapQuery": "北京 早餐 咖啡店",
           "foodStrategy": {
             "preferredTypes": ["咖啡店", "簡單早餐", "麵食"],
             "avoid": ["需要特地排隊的早餐名店"],
@@ -186,6 +196,7 @@
           "title": "市區補逛一個順路歷史／老街區",
           "area": "北京市區",
           "description": "最後一天補一個不太重的市區點，保留散步與收尾感。",
+          "mapQuery": "什剎海 北京",
           "foodStrategy": null,
           "transport": "地鐵／步行",
           "notes": ["可依住宿與回程動線決定地點"]
@@ -197,6 +208,7 @@
           "title": "蘭州拉麵午餐",
           "area": "北京市區",
           "description": "安排一餐明確想吃的麵食，作為回程日前的輕鬆收尾。",
+          "mapQuery": "蘭州拉麵 北京",
           "foodStrategy": {
             "preferredTypes": ["蘭州拉麵", "牛肉麵", "麵食館"],
             "avoid": ["太遠的名店"],
