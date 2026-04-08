@@ -32,10 +32,15 @@ function buildCard(trip, index) {
   if (hasTickets) noteBadges.push('有票券');
   if (hasReminders) noteBadges.push('有提醒');
 
+  const updateLabel = trip.dateEnd ? `最後整理：${trip.dateEnd}` : '最後整理：待補';
+
   return `
         <a class="card" href="${escapeHtml(trip.page)}">
           <div class="card-top">
-            <div class="eyebrow">Trip ${String(index + 1).padStart(2, '0')}</div>
+            <div>
+              <div class="eyebrow">Trip ${String(index + 1).padStart(2, '0')}</div>
+              <div class="update-label">${escapeHtml(updateLabel)}</div>
+            </div>
             <div class="status-row">${renderPills(noteBadges.slice(0, 3), 'status-pill')}</div>
           </div>
           <h2>${escapeHtml(trip.title)}</h2>
@@ -110,6 +115,7 @@ function buildHtml(trips) {
     .card:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12); }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
     .eyebrow { font-size: 12px; font-weight: 700; color: var(--brand); }
+    .update-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
     .status-row { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
     .status-pill, .tag {
       display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px;
