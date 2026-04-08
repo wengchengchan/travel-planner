@@ -78,11 +78,27 @@
     .trip-map-embed-wrap {
       margin-top: 14px; border-radius: 16px; overflow: hidden; border: 1px solid #cfe0ff; background: #fff;
     }
+    .trip-map-legend {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+    }
+    .legend-item {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.75); color: var(--text); font-size: 12px; font-weight: 700;
+    }
+    .legend-dot {
+      width: 12px; height: 12px; border-radius: 999px; display: inline-block;
+    }
     .trip-map-embed {
       width: 100%; height: 320px; border: 0; display: block;
     }
     .leaflet-map {
       width: 100%; height: 360px;
+    }
+    .day-leaflet-map {
+      width: 100%; height: 220px; margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid #cfe0ff;
+    }
+    .day-map-head {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
     }
     .day-marker-icon-wrap {
       background: transparent;
@@ -145,8 +161,9 @@
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
       .leaflet-map { height: 280px; }
+      .day-leaflet-map { height: 200px; }
       .day-header { flex-direction: column; }
-      .day-map-card { flex-direction: column; align-items: flex-start; }
+      .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
       .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
@@ -196,6 +213,13 @@
       <div class="trip-map-embed-wrap">
         <div id="trip-leaflet-map" class="leaflet-map"></div>
       </div>
+      <div class="trip-map-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5</span>
+      </div>
     </section>
 
     
@@ -224,11 +248,14 @@
         
         
         <div class="day-map-card">
-          <div>
-            <div class="subcard-title">今日地圖</div>
-            <p class="map-card-text">以 東京車站 為起點查看今天的主要區域與動線。</p>
+          <div class="day-map-head">
+            <div>
+              <div class="subcard-title">今日地圖</div>
+              <p class="map-card-text">以 東京車站 為起點查看今天的主要區域與動線。</p>
+            </div>
+            <a class="map-card-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -311,11 +338,14 @@
         
         
         <div class="day-map-card">
-          <div>
-            <div class="subcard-title">今日地圖</div>
-            <p class="map-card-text">以 上野站 東京 為起點查看今天的主要區域與動線。</p>
+          <div class="day-map-head">
+            <div>
+              <div class="subcard-title">今日地圖</div>
+              <p class="map-card-text">以 上野站 東京 為起點查看今天的主要區域與動線。</p>
+            </div>
+            <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -418,11 +448,14 @@
         
         
         <div class="day-map-card">
-          <div>
-            <div class="subcard-title">今日地圖</div>
-            <p class="map-card-text">以 東京 早午餐 為起點查看今天的主要區域與動線。</p>
+          <div class="day-map-head">
+            <div>
+              <div class="subcard-title">今日地圖</div>
+              <p class="map-card-text">以 東京 早午餐 為起點查看今天的主要區域與動線。</p>
+            </div>
+            <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -510,12 +543,6 @@
       const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;type&quot;:&quot;arrival&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;type&quot;:&quot;walk&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986},{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;shopping&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;type&quot;:&quot;sightseeing_meal&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107},{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]');
       if (!points.length) return;
 
-      const map = L.map('trip-leaflet-map');
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-
       const dayColors = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
       const createDayIcon = (day) => L.divIcon({
         className: 'day-marker-icon-wrap',
@@ -525,28 +552,48 @@
         popupAnchor: [0, -12]
       });
 
-      const bounds = [];
-      points.forEach(point => {
-        const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
-        const lines = ['<strong>' + point.title + '</strong>'];
-        if (point.timeStart || point.timeEnd) {
-          lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
-        }
-        if (point.area) lines.push('區域：' + point.area);
-        lines.push('Day ' + point.day);
-        if (point.mapQuery) {
-          const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
-          lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
-        }
-        marker.bindPopup(lines.join('<br>'));
-        bounds.push([point.lat, point.lng]);
-      });
+      const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
+        const el = document.getElementById(elementId);
+        if (!el || !pointsData.length) return;
 
-      if (bounds.length === 1) {
-        map.setView(bounds[0], 13);
-      } else {
-        map.fitBounds(bounds, { padding: [24, 24] });
-      }
+        const map = L.map(elementId);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const bounds = [];
+        pointsData.forEach(point => {
+          const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
+          const lines = ['<strong>' + point.title + '</strong>'];
+          if (point.timeStart || point.timeEnd) {
+            lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
+          }
+          if (point.area) lines.push('區域：' + point.area);
+          lines.push('Day ' + point.day);
+          if (point.mapQuery) {
+            const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
+            lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
+          }
+          marker.bindPopup(lines.join('<br>'));
+          bounds.push([point.lat, point.lng]);
+        });
+
+        if (bounds.length === 1) {
+          map.setView(bounds[0], zoomIfSingle || 13);
+        } else {
+          map.fitBounds(bounds, { padding: [24, 24] });
+        }
+      };
+
+      renderPointsMap('trip-leaflet-map', points, 12);
+
+      document.querySelectorAll('.day-leaflet-map').forEach(el => {
+        const raw = el.getAttribute('data-day-map');
+        if (!raw) return;
+        const dayPoints = JSON.parse(raw);
+        renderPointsMap(el.id, dayPoints, 14);
+      });
     })();
   </script>
 </body>

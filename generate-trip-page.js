@@ -133,6 +133,13 @@ function renderTripMapCard(data, mapPoints = []) {
       <div class="trip-map-embed-wrap">
         ${embedBlock}
       </div>
+      <div class="trip-map-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5</span>
+      </div>
     </section>`;
 }
 
@@ -158,24 +165,47 @@ function renderChecklistSection(data) {
     </section>`;
 }
 
-function renderDayMapCard(day) {
+function collectDayMapPoints(day, dayIndex) {
+  const points = [];
+  (day.items || []).forEach(item => {
+    if (typeof item.lat !== 'number' || typeof item.lng !== 'number') return;
+    points.push({
+      day: dayIndex + 1,
+      title: item.title || '景點',
+      area: item.area || '',
+      mapQuery: item.mapQuery || '',
+      timeStart: item.timeStart || '',
+      timeEnd: item.timeEnd || '',
+      lat: item.lat,
+      lng: item.lng
+    });
+  });
+  return points;
+}
+
+function renderDayMapCard(day, dayIndex) {
   const firstMappable = (day.items || []).find(item => buildMapUrl(item));
   if (!firstMappable) return '';
 
   const mapUrl = buildMapUrl(firstMappable);
   const label = firstMappable.mapQuery || firstMappable.title || '今日地圖';
+  const dayMapPoints = collectDayMapPoints(day, dayIndex);
+  const dayMapId = `day-leaflet-map-${dayIndex + 1}`;
 
   return `
         <div class="day-map-card">
-          <div>
-            <div class="subcard-title">今日地圖</div>
-            <p class="map-card-text">以 ${escapeHtml(label)} 為起點查看今天的主要區域與動線。</p>
+          <div class="day-map-head">
+            <div>
+              <div class="subcard-title">今日地圖</div>
+              <p class="map-card-text">以 ${escapeHtml(label)} 為起點查看今天的主要區域與動線。</p>
+            </div>
+            <a class="map-card-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <a class="map-card-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          ${dayMapPoints.length ? `<div id="${dayMapId}" class="day-leaflet-map" data-day-map='${escapeHtml(JSON.stringify(dayMapPoints))}'></div>` : ''}
         </div>`;
 }
 
-function renderDaySummary(day) {
+function renderDaySummary(day, dayIndex) {
   const transports = [...new Set((day.items || []).map(item => item.transport).filter(Boolean))];
   const areas = [...new Set((day.items || []).map(item => item.area).filter(Boolean))];
   const notePool = [];
@@ -187,7 +217,7 @@ function renderDaySummary(day) {
   const notes = [...new Set(notePool)].slice(0, 4);
 
   return `
-        ${renderDayMapCard(day)}
+        ${renderDayMapCard(day, dayIndex)}
         <div class="day-panels">
           <div class="subcard">
             <div class="subcard-title">今日重點區域</div>
@@ -215,7 +245,7 @@ function renderDay(day, index) {
           </div>
           <span class="badge">Day ${index + 1}</span>
         </div>
-        ${renderDaySummary(day)}
+        ${renderDaySummary(day, index)}
         <div class="timeline">
 ${(day.items || []).map(item => `          <div class="${itemClass(item.type)}">
             <div class="time">${escapeHtml(item.timeStart || '')}–${escapeHtml(item.timeEnd || '')}</div>
@@ -320,11 +350,27 @@ function buildHtml(data) {
     .trip-map-embed-wrap {
       margin-top: 14px; border-radius: 16px; overflow: hidden; border: 1px solid #cfe0ff; background: #fff;
     }
+    .trip-map-legend {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+    }
+    .legend-item {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.75); color: var(--text); font-size: 12px; font-weight: 700;
+    }
+    .legend-dot {
+      width: 12px; height: 12px; border-radius: 999px; display: inline-block;
+    }
     .trip-map-embed {
       width: 100%; height: 320px; border: 0; display: block;
     }
     .leaflet-map {
       width: 100%; height: 360px;
+    }
+    .day-leaflet-map {
+      width: 100%; height: 220px; margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid #cfe0ff;
+    }
+    .day-map-head {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
     }
     .day-marker-icon-wrap {
       background: transparent;
@@ -387,8 +433,9 @@ function buildHtml(data) {
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
       .leaflet-map { height: 280px; }
+      .day-leaflet-map { height: 200px; }
       .day-header { flex-direction: column; }
-      .day-map-card { flex-direction: column; align-items: flex-start; }
+      .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
       .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
@@ -445,12 +492,6 @@ function buildHtml(data) {
       const points = JSON.parse('${mapPointsJson}');
       if (!points.length) return;
 
-      const map = L.map('trip-leaflet-map');
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-
       const dayColors = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
       const createDayIcon = (day) => L.divIcon({
         className: 'day-marker-icon-wrap',
@@ -460,28 +501,48 @@ function buildHtml(data) {
         popupAnchor: [0, -12]
       });
 
-      const bounds = [];
-      points.forEach(point => {
-        const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
-        const lines = ['<strong>' + point.title + '</strong>'];
-        if (point.timeStart || point.timeEnd) {
-          lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
-        }
-        if (point.area) lines.push('區域：' + point.area);
-        lines.push('Day ' + point.day);
-        if (point.mapQuery) {
-          const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
-          lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
-        }
-        marker.bindPopup(lines.join('<br>'));
-        bounds.push([point.lat, point.lng]);
-      });
+      const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
+        const el = document.getElementById(elementId);
+        if (!el || !pointsData.length) return;
 
-      if (bounds.length === 1) {
-        map.setView(bounds[0], 13);
-      } else {
-        map.fitBounds(bounds, { padding: [24, 24] });
-      }
+        const map = L.map(elementId);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const bounds = [];
+        pointsData.forEach(point => {
+          const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
+          const lines = ['<strong>' + point.title + '</strong>'];
+          if (point.timeStart || point.timeEnd) {
+            lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
+          }
+          if (point.area) lines.push('區域：' + point.area);
+          lines.push('Day ' + point.day);
+          if (point.mapQuery) {
+            const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
+            lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
+          }
+          marker.bindPopup(lines.join('<br>'));
+          bounds.push([point.lat, point.lng]);
+        });
+
+        if (bounds.length === 1) {
+          map.setView(bounds[0], zoomIfSingle || 13);
+        } else {
+          map.fitBounds(bounds, { padding: [24, 24] });
+        }
+      };
+
+      renderPointsMap('trip-leaflet-map', points, 12);
+
+      document.querySelectorAll('.day-leaflet-map').forEach(el => {
+        const raw = el.getAttribute('data-day-map');
+        if (!raw) return;
+        const dayPoints = JSON.parse(raw);
+        renderPointsMap(el.id, dayPoints, 14);
+      });
     })();
   </script>
 </body>

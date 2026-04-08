@@ -78,11 +78,27 @@
     .trip-map-embed-wrap {
       margin-top: 14px; border-radius: 16px; overflow: hidden; border: 1px solid #cfe0ff; background: #fff;
     }
+    .trip-map-legend {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
+    }
+    .legend-item {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.75); color: var(--text); font-size: 12px; font-weight: 700;
+    }
+    .legend-dot {
+      width: 12px; height: 12px; border-radius: 999px; display: inline-block;
+    }
     .trip-map-embed {
       width: 100%; height: 320px; border: 0; display: block;
     }
     .leaflet-map {
       width: 100%; height: 360px;
+    }
+    .day-leaflet-map {
+      width: 100%; height: 220px; margin-top: 12px; border-radius: 14px; overflow: hidden; border: 1px solid #cfe0ff;
+    }
+    .day-map-head {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
     }
     .day-marker-icon-wrap {
       background: transparent;
@@ -145,8 +161,9 @@
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
       .leaflet-map { height: 280px; }
+      .day-leaflet-map { height: 200px; }
       .day-header { flex-direction: column; }
-      .day-map-card { flex-direction: column; align-items: flex-start; }
+      .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
       .day-panels { grid-template-columns: 1fr; }
       .hero h1 { font-size: 24px; }
     }
@@ -196,6 +213,13 @@
       <div class="trip-map-embed-wrap">
         <div id="trip-leaflet-map" class="leaflet-map"></div>
       </div>
+      <div class="trip-map-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5</span>
+      </div>
     </section>
 
     
@@ -224,11 +248,14 @@
         
         
         <div class="day-map-card">
-          <div>
-            <div class="subcard-title">今日地圖</div>
-            <p class="map-card-text">以 天安門 北京 為起點查看今天的主要區域與動線。</p>
+          <div class="day-map-head">
+            <div>
+              <div class="subcard-title">今日地圖</div>
+              <p class="map-card-text">以 天安門 北京 為起點查看今天的主要區域與動線。</p>
+            </div>
+            <a class="map-card-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <div id="day-leaflet-map-1" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -330,11 +357,14 @@
         
         
         <div class="day-map-card">
-          <div>
-            <div class="subcard-title">今日地圖</div>
-            <p class="map-card-text">以 八達嶺長城 北京 為起點查看今天的主要區域與動線。</p>
+          <div class="day-map-head">
+            <div>
+              <div class="subcard-title">今日地圖</div>
+              <p class="map-card-text">以 八達嶺長城 北京 為起點查看今天的主要區域與動線。</p>
+            </div>
+            <a class="map-card-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <div id="day-leaflet-map-2" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -424,11 +454,14 @@
         
         
         <div class="day-map-card">
-          <div>
-            <div class="subcard-title">今日地圖</div>
-            <p class="map-card-text">以 北京 早餐 咖啡店 為起點查看今天的主要區域與動線。</p>
+          <div class="day-map-head">
+            <div>
+              <div class="subcard-title">今日地圖</div>
+              <p class="map-card-text">以 北京 早餐 咖啡店 為起點查看今天的主要區域與動線。</p>
+            </div>
+            <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <div id="day-leaflet-map-3" class="day-leaflet-map" data-day-map='[{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]'></div>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -516,12 +549,6 @@
       const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396},{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]');
       if (!points.length) return;
 
-      const map = L.map('trip-leaflet-map');
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-
       const dayColors = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
       const createDayIcon = (day) => L.divIcon({
         className: 'day-marker-icon-wrap',
@@ -531,28 +558,48 @@
         popupAnchor: [0, -12]
       });
 
-      const bounds = [];
-      points.forEach(point => {
-        const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
-        const lines = ['<strong>' + point.title + '</strong>'];
-        if (point.timeStart || point.timeEnd) {
-          lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
-        }
-        if (point.area) lines.push('區域：' + point.area);
-        lines.push('Day ' + point.day);
-        if (point.mapQuery) {
-          const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
-          lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
-        }
-        marker.bindPopup(lines.join('<br>'));
-        bounds.push([point.lat, point.lng]);
-      });
+      const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
+        const el = document.getElementById(elementId);
+        if (!el || !pointsData.length) return;
 
-      if (bounds.length === 1) {
-        map.setView(bounds[0], 13);
-      } else {
-        map.fitBounds(bounds, { padding: [24, 24] });
-      }
+        const map = L.map(elementId);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const bounds = [];
+        pointsData.forEach(point => {
+          const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
+          const lines = ['<strong>' + point.title + '</strong>'];
+          if (point.timeStart || point.timeEnd) {
+            lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
+          }
+          if (point.area) lines.push('區域：' + point.area);
+          lines.push('Day ' + point.day);
+          if (point.mapQuery) {
+            const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
+            lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
+          }
+          marker.bindPopup(lines.join('<br>'));
+          bounds.push([point.lat, point.lng]);
+        });
+
+        if (bounds.length === 1) {
+          map.setView(bounds[0], zoomIfSingle || 13);
+        } else {
+          map.fitBounds(bounds, { padding: [24, 24] });
+        }
+      };
+
+      renderPointsMap('trip-leaflet-map', points, 12);
+
+      document.querySelectorAll('.day-leaflet-map').forEach(el => {
+        const raw = el.getAttribute('data-day-map');
+        if (!raw) return;
+        const dayPoints = JSON.parse(raw);
+        renderPointsMap(el.id, dayPoints, 14);
+      });
     })();
   </script>
 </body>
