@@ -1,4 +1,34 @@
-<!doctype html>
+const fs = require('fs');
+const path = require('path');
+
+function escapeHtml(str = '') {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function buildCard(trip, index) {
+  const tags = (trip.style || []).slice(0, 3);
+  const meta = `${trip.dateStart} ～ ${trip.dateEnd}｜${trip.travelers} 人｜${trip.budget}預算`;
+  const summary = trip.summary || `${trip.destination} 行程，重點是 ${tags.join('、') || '旅程安排'}。`;
+
+  return `
+        <a class="card" href="${escapeHtml(trip.page)}">
+          <div class="eyebrow">Trip ${String(index + 1).padStart(2, '0')}</div>
+          <h2>${escapeHtml(trip.title)}</h2>
+          <div class="meta">${escapeHtml(meta)}</div>
+          <p class="desc">${escapeHtml(summary)}</p>
+          <div class="tags">
+            ${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+          </div>
+        </a>`;
+}
+
+function buildHtml(trips) {
+  return `<!doctype html>
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
@@ -62,27 +92,32 @@
 
     <section>
       <h2 class="section-title">目前行程</h2>
-      <div class="grid">
-        <a class="card" href="tokyo-2026-05.html">
-          <div class="eyebrow">Trip 01</div>
-          <h2>東京 3 天 2 夜慢走美食行</h2>
-          <div class="meta">2026-05-10 ～ 2026-05-12｜2 人｜中等預算</div>
-          <p class="desc">核心路線：淺草 → 上野 → 晴空塔。以慢走、美食、少趕路為主，重點是把旅行節奏做舒服。</p>
-          <div class="tags">
-            <span class="tag">美食</span><span class="tag">散步</span><span class="tag">少趕路</span>
-          </div>
-        </a>
-        <a class="card" href="北京-2026-06.html">
-          <div class="eyebrow">Trip 02</div>
-          <h2>北京 3 天 2 夜歷史景點美食行</h2>
-          <div class="meta">2026-06-01 ～ 2026-06-03｜3 人｜中等預算</div>
-          <p class="desc">北京 行程，重點是 歷史景點、美食。</p>
-          <div class="tags">
-            <span class="tag">歷史景點</span><span class="tag">美食</span>
-          </div>
-        </a>
+      <div class="grid">${trips.map(buildCard).join('')}
       </div>
     </section>
   </div>
 </body>
-</html>
+</html>`;
+}
+
+function main() {
+  const dir = process.cwd();
+  const files = fs.readdirSync(dir);
+  const jsonFiles = files.filter(name => /^trip-.*-draft\.json$/.test(name)).sort();
+
+  const trips = jsonFiles.map(file => {
+    const raw = fs.readFileSync(path.join(dir, file), 'utf8');
+    const data = JSON.parse(raw);
+    const city = String(data.destination || '').toLowerCase().replace(/\s+/g, '-');
+    const ym = String(data.dateStart || '').slice(0, 7);
+    return {
+      ...data,
+      page: `${city}-${ym}.html`
+    };
+  }).sort((a, b) => String(a.dateStart).localeCompare(String(b.dateStart)));
+
+  fs.writeFileSync(path.join(dir, 'index.html'), buildHtml(trips), 'utf8');
+  console.log(`Generated index.html from ${trips.length} trip draft(s).`);
+}
+
+main();
