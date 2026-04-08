@@ -73,6 +73,29 @@ function renderMapLink(item) {
   return `<div class="map-link-row"><a class="map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>`;
 }
 
+function collectMapPoints(data) {
+  const points = [];
+
+  (data.days || []).forEach((day, dayIndex) => {
+    (day.items || []).forEach(item => {
+      if (typeof item.lat !== 'number' || typeof item.lng !== 'number') return;
+      points.push({
+        day: dayIndex + 1,
+        title: item.title || '景點',
+        area: item.area || '',
+        mapQuery: item.mapQuery || '',
+        timeStart: item.timeStart || '',
+        timeEnd: item.timeEnd || '',
+        type: item.type || '',
+        lat: item.lat,
+        lng: item.lng
+      });
+    });
+  });
+
+  return points;
+}
+
 function buildTripMapUrl(data) {
   const queries = [];
   (data.days || []).forEach(day => {
@@ -85,11 +108,15 @@ function buildTripMapUrl(data) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(unique.join(' '))}`;
 }
 
-function renderTripMapCard(data) {
+function renderTripMapCard(data, mapPoints = []) {
   const mapUrl = buildTripMapUrl(data);
   if (!mapUrl) return '';
 
   const dayCount = (data.days || []).length;
+  const embedBlock = mapPoints.length
+    ? '<div id="trip-leaflet-map" class="leaflet-map"></div>'
+    : `<iframe class="trip-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
+
   return `
     <section class="card trip-map-card">
       <div class="trip-map-head">
@@ -104,7 +131,7 @@ function renderTripMapCard(data) {
         <a class="trip-map-link" href="${escapeHtml(mapUrl)}" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
       </div>
       <div class="trip-map-embed-wrap">
-        <iframe class="trip-map-embed" src="${escapeHtml(mapUrl)}&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        ${embedBlock}
       </div>
     </section>`;
 }
@@ -210,6 +237,8 @@ function buildHtml(data) {
     '避免把每天塞成趕場清單',
     '餐飲安排以順路、穩定、可執行為主'
   ];
+  const mapPoints = collectMapPoints(data);
+  const mapPointsJson = escapeHtml(JSON.stringify(mapPoints));
 
   return `<!doctype html>
 <html lang="zh-Hant">
@@ -218,6 +247,12 @@ function buildHtml(data) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(data.title)}</title>
   <meta name="description" content="${summary}" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
   <style>
     :root {
       --bg: #f4f7fb;
@@ -288,6 +323,9 @@ function buildHtml(data) {
     .trip-map-embed {
       width: 100%; height: 320px; border: 0; display: block;
     }
+    .leaflet-map {
+      width: 100%; height: 360px;
+    }
     .days { display: grid; gap: 18px; }
     .day { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); }
     .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
@@ -338,6 +376,7 @@ function buildHtml(data) {
       .summary { grid-template-columns: 1fr; }
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
+      .leaflet-map { height: 280px; }
       .day-header { flex-direction: column; }
       .day-map-card { flex-direction: column; align-items: flex-start; }
       .day-panels { grid-template-columns: 1fr; }
@@ -373,7 +412,7 @@ function buildHtml(data) {
       </div>
     </section>
 
-    ${renderTripMapCard(data)}
+    ${renderTripMapCard(data, mapPoints)}
 
     ${renderChecklistSection(data)}
 
@@ -390,6 +429,42 @@ function buildHtml(data) {
       </ul>
     </section>
   </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function () {
+      const points = JSON.parse('${mapPointsJson}');
+      if (!points.length) return;
+
+      const map = L.map('trip-leaflet-map');
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const bounds = [];
+      points.forEach(point => {
+        const marker = L.marker([point.lat, point.lng]).addTo(map);
+        const lines = ['<strong>' + point.title + '</strong>'];
+        if (point.timeStart || point.timeEnd) {
+          lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
+        }
+        if (point.area) lines.push('區域：' + point.area);
+        lines.push('Day ' + point.day);
+        if (point.mapQuery) {
+          const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
+          lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
+        }
+        marker.bindPopup(lines.join('<br>'));
+        bounds.push([point.lat, point.lng]);
+      });
+
+      if (bounds.length === 1) {
+        map.setView(bounds[0], 13);
+      } else {
+        map.fitBounds(bounds, { padding: [24, 24] });
+      }
+    })();
+  </script>
 </body>
 </html>`;
 }

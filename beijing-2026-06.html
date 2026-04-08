@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>北京 3 天 2 夜歷史景點美食行</title>
   <meta name="description" content="北京 3 天 2 夜歷史景點美食行：以 北京 為主的旅程安排，依照既有資料整理成可展示頁面。" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
   <style>
     :root {
       --bg: #f4f7fb;
@@ -75,6 +81,9 @@
     .trip-map-embed {
       width: 100%; height: 320px; border: 0; display: block;
     }
+    .leaflet-map {
+      width: 100%; height: 360px;
+    }
     .days { display: grid; gap: 18px; }
     .day { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); }
     .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
@@ -125,6 +134,7 @@
       .summary { grid-template-columns: 1fr; }
       .trip-map-head { flex-direction: column; align-items: flex-start; }
       .trip-map-embed { height: 260px; }
+      .leaflet-map { height: 280px; }
       .day-header { flex-direction: column; }
       .day-map-card { flex-direction: column; align-items: flex-start; }
       .day-panels { grid-template-columns: 1fr; }
@@ -174,7 +184,7 @@
         <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9C%92%20%E5%8C%97%E4%BA%AC%20%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
       </div>
       <div class="trip-map-embed-wrap">
-        <iframe class="trip-map-embed" src="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9C%92%20%E5%8C%97%E4%BA%AC%20%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        <div id="trip-leaflet-map" class="leaflet-map"></div>
       </div>
     </section>
 
@@ -208,7 +218,7 @@
             <div class="subcard-title">今日地圖</div>
             <p class="map-card-text">以 天安門 北京 為起點查看今天的主要區域與動線。</p>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <a class="map-card-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -230,7 +240,7 @@
             <div class="item-title">從住宿區出發前往天安門周邊</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
             <p class="desc">以 9 點多出門為節奏，避免太早起，先進入市區主景點區域。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -243,7 +253,7 @@
             <div class="item-title">天安門廣場＋紫禁城主線</div>
             <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
             <p class="desc">第一天先處理北京最核心的歷史景點，作為整趟旅程的主軸開場。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9163%2C116.3972" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -269,7 +279,7 @@
             <div class="item-title">景山公園或王府井周邊慢走</div>
             <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
             <p class="desc">下午保留彈性，可選景山公園收視野，或改走王府井一帶做城市感補充。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9C%92%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9289%2C116.396" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -314,7 +324,7 @@
             <div class="subcard-title">今日地圖</div>
             <p class="map-card-text">以 八達嶺長城 北京 為起點查看今天的主要區域與動線。</p>
           </div>
-          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+          <a class="map-card-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
         <div class="day-panels">
           <div class="subcard">
@@ -336,7 +346,7 @@
             <div class="item-title">從市區前往萬里長城</div>
             <div class="item-meta"><span>區域：北京近郊</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
             <p class="desc">第二天獨立做長城主力日，避免與市區重景點硬排在同一天。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -349,7 +359,7 @@
             <div class="item-title">萬里長城主行程</div>
             <div class="item-meta"><span>區域：萬里長城</span><span>交通：步行</span></div>
             <p class="desc">把整天主力放在長城，不再額外塞其他高體力景點。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -443,7 +453,7 @@
             <div class="item-title">市區補逛一個順路歷史／老街區</div>
             <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／步行</span></div>
             <p class="desc">最後一天補一個不太重的市區點，保留散步與收尾感。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%BB%80%E5%89%8E%E6%B5%B7%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9393%2C116.3872" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
             <div class="subcard notes-block">
               <div class="subcard-title">注意事項</div>
               <ul class="note-list">
@@ -490,5 +500,34 @@
       </ul>
     </section>
   </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function () {
+      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396},{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]');
+      if (!points.length) return;
+
+      const map = L.map('trip-leaflet-map');
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const bounds = [];
+      points.forEach(point => {
+        const marker = L.marker([point.lat, point.lng]).addTo(map);
+        const lines = ['<strong>' + point.title + '</strong>'];
+        if (point.area) lines.push(point.area);
+        lines.push('Day ' + point.day);
+        marker.bindPopup(lines.join('<br>'));
+        bounds.push([point.lat, point.lng]);
+      });
+
+      if (bounds.length === 1) {
+        map.setView(bounds[0], 13);
+      } else {
+        map.fitBounds(bounds, { padding: [24, 24] });
+      }
+    })();
+  </script>
 </body>
 </html>

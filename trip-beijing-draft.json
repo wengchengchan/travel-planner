@@ -34,6 +34,8 @@
           "area": "北京市區",
           "description": "以 9 點多出門為節奏，避免太早起，先進入市區主景點區域。",
           "mapQuery": "天安門 北京",
+          "lat": 39.9087,
+          "lng": 116.3975,
           "foodStrategy": null,
           "transport": "地鐵／計程車",
           "notes": ["住宿建議以交通方便的市區區域為主"]
@@ -46,6 +48,8 @@
           "area": "東城區",
           "description": "第一天先處理北京最核心的歷史景點，作為整趟旅程的主軸開場。",
           "mapQuery": "故宮博物院 北京",
+          "lat": 39.9163,
+          "lng": 116.3972,
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["核心歷史景點優先", "避免同天再塞太多重景點"]
@@ -74,6 +78,8 @@
           "area": "東城區",
           "description": "下午保留彈性，可選景山公園收視野，或改走王府井一帶做城市感補充。",
           "mapQuery": "景山公園 北京",
+          "lat": 39.9289,
+          "lng": 116.3960,
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["依體力與天氣彈性調整"]
@@ -108,6 +114,8 @@
           "area": "北京近郊",
           "description": "第二天獨立做長城主力日，避免與市區重景點硬排在同一天。",
           "mapQuery": "八達嶺長城 北京",
+          "lat": 40.3564,
+          "lng": 116.0206,
           "foodStrategy": null,
           "transport": "包車／旅遊巴士／高鐵轉接駁",
           "notes": ["建議前一天先確認交通方案"]
@@ -120,6 +128,8 @@
           "area": "萬里長城",
           "description": "把整天主力放在長城，不再額外塞其他高體力景點。",
           "mapQuery": "八達嶺長城 北京",
+          "lat": 40.3564,
+          "lng": 116.0206,
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["全日主力景點", "依體力決定停留長度"]
@@ -197,6 +207,8 @@
           "area": "北京市區",
           "description": "最後一天補一個不太重的市區點，保留散步與收尾感。",
           "mapQuery": "什剎海 北京",
+          "lat": 39.9393,
+          "lng": 116.3872,
           "foodStrategy": null,
           "transport": "地鐵／步行",
           "notes": ["可依住宿與回程動線決定地點"]

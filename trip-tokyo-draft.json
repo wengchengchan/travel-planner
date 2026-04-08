@@ -33,6 +33,8 @@
           "area": "東京市區",
           "description": "抵達後先進市區、放行李、休息，不安排高強度行程。",
           "mapQuery": "東京車站",
+          "lat": 35.6812,
+          "lng": 139.7671,
           "foodStrategy": null,
           "transport": "機場到市區交通",
           "notes": ["保留彈性，避免第一天太趕"]
@@ -45,6 +47,8 @@
           "area": "淺草",
           "description": "輕鬆散步，先進入旅行節奏，不排硬景點。",
           "mapQuery": "淺草寺 東京",
+          "lat": 35.7148,
+          "lng": 139.7967,
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["若太累可直接縮短停留"]
@@ -73,6 +77,8 @@
           "area": "淺草／隅田川",
           "description": "飯後輕鬆散步看夜景，若累可直接回飯店。",
           "mapQuery": "隅田川步道 東京",
+          "lat": 35.7101,
+          "lng": 139.7986,
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["可選行程，不強制"]
@@ -103,6 +109,8 @@
           "area": "上野",
           "description": "在上野公園散步，再視興趣選一個館進去參觀。",
           "mapQuery": "上野公園 東京",
+          "lat": 35.7141,
+          "lng": 139.7736,
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["館舍可依當天體力與興趣決定"]
@@ -131,6 +139,8 @@
           "area": "上野",
           "description": "逛街、買零食、看伴手禮，保持機動彈性。",
           "mapQuery": "阿美橫町 東京",
+          "lat": 35.7090,
+          "lng": 139.7745,
           "foodStrategy": null,
           "transport": "步行",
           "notes": ["可穿插小吃與咖啡休息"]
@@ -143,6 +153,8 @@
           "area": "押上／晴空塔",
           "description": "傍晚移動到晴空塔，先逛商場、吃晚餐，再視情況看夜景。",
           "mapQuery": "東京晴空塔",
+          "lat": 35.7101,
+          "lng": 139.8107,
           "foodStrategy": {
             "preferredTypes": ["商場餐廳", "景觀餐廳", "咖啡館", "家庭式日料"],
             "avoid": ["高峰時硬排熱門名店"],
@@ -193,6 +205,8 @@
           "area": "淺草／押上",
           "description": "補逛前兩天沒走完的地方，保留最後的散步與拍照時間。",
           "mapQuery": "押上 東京",
+          "lat": 35.7107,
+          "lng": 139.8129,
           "foodStrategy": null,
           "transport": "步行／短程電車",
           "notes": ["依住宿地點彈性選區域"]
