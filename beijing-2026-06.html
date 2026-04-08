@@ -503,7 +503,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (function () {
-      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396},{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]');
+      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396},{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]');
       if (!points.length) return;
 
       const map = L.map('trip-leaflet-map');
@@ -516,8 +516,15 @@
       points.forEach(point => {
         const marker = L.marker([point.lat, point.lng]).addTo(map);
         const lines = ['<strong>' + point.title + '</strong>'];
-        if (point.area) lines.push(point.area);
+        if (point.timeStart || point.timeEnd) {
+          lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
+        }
+        if (point.area) lines.push('區域：' + point.area);
         lines.push('Day ' + point.day);
+        if (point.mapQuery) {
+          const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
+          lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
+        }
         marker.bindPopup(lines.join('<br>'));
         bounds.push([point.lat, point.lng]);
       });

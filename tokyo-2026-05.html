@@ -497,7 +497,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (function () {
-      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986},{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107},{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]');
+      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;type&quot;:&quot;arrival&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;type&quot;:&quot;walk&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986},{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;shopping&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;type&quot;:&quot;sightseeing_meal&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107},{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]');
       if (!points.length) return;
 
       const map = L.map('trip-leaflet-map');
@@ -510,8 +510,15 @@
       points.forEach(point => {
         const marker = L.marker([point.lat, point.lng]).addTo(map);
         const lines = ['<strong>' + point.title + '</strong>'];
-        if (point.area) lines.push(point.area);
+        if (point.timeStart || point.timeEnd) {
+          lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
+        }
+        if (point.area) lines.push('區域：' + point.area);
         lines.push('Day ' + point.day);
+        if (point.mapQuery) {
+          const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
+          lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
+        }
         marker.bindPopup(lines.join('<br>'));
         bounds.push([point.lat, point.lng]);
       });
