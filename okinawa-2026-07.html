@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>沖繩親子浮潛悠閒之旅</title>
+  <meta name="description" content="以親子浮潛為主軸，從北谷到山原北部，挑選適合小朋友的淺灘浮潛點，讓孩子不用下深水就能看到五彩繽紛的魚群。" />
+  <meta name="generator" content="travel-planner v2" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <style>
+    /* ── Design Tokens ── */
+    :root {
+      --bg: #f4f7fb;
+      --card: #fff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --brand: #2563eb;
+      --brand-soft: #eaf2ff;
+      --brand-deep: #1d4ed8;
+      --meal: #fff4e8;
+      --meal-line: #f59e0b;
+      --note-bg: #fff8e7;
+      --note-line: #fbbf24;
+      --warn-bg: #fff1f2;
+      --warn-text: #be123c;
+      --good-bg: #ecfdf5;
+      --good-text: #047857;
+      --tip-bg: #eff6ff;
+      --tip-text: #1d4ed8;
+      --neutral-bg: #f3f4f6;
+      --neutral-text: #374151;
+      --shadow: 0 10px 30px rgba(15,23,42,.08);
+      --radius: 18px;
+      --nav-h: 52px;
+    }
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, #dbeafe 0, transparent 22%),
+        radial-gradient(circle at top left, #fde68a 0, transparent 18%),
+        var(--bg);
+      line-height: 1.6;
+    }
+    /* ── Layout ── */
+    .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1d4ed8, #3b82f6 60%, #60a5fa);
+      color: #fff; border-radius: 24px; padding: 28px 22px;
+      box-shadow: var(--shadow); margin-bottom: 18px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
+    .hero .meta { font-size: 14px; opacity: .95; margin-bottom: 12px; }
+    .hero p { margin: 0; font-size: 15px; opacity: .98; }
+    .hero .gen-date { font-size: 12px; opacity: .7; margin-top: 10px; }
+    /* ── Day Nav ── */
+    .daynav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding: 8px 0; margin-bottom: 16px;
+      background: linear-gradient(to bottom, rgba(244,247,251,.97) 90%, transparent);
+      scrollbar-width: none;
+    }
+    .daynav::-webkit-scrollbar { display: none; }
+    .daynav-link {
+      display: inline-flex; flex-direction: column; align-items: center;
+      text-decoration: none; padding: 6px 12px; border-radius: 12px;
+      background: var(--card); box-shadow: var(--shadow);
+      border: 1px solid var(--line); white-space: nowrap; flex-shrink: 0;
+      transition: background .15s, transform .15s;
+    }
+    .daynav-link:hover { background: var(--brand-soft); transform: translateY(-1px); }
+    .daynav-num { font-size: 12px; font-weight: 800; color: var(--brand); }
+    .daynav-date { font-size: 11px; color: var(--muted); }
+    /* ── Cards ── */
+    .tags, .chips, .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tags, .chips { margin-top: 14px; }
+    .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 5px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+    .tag { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.2); }
+    .chip { background: var(--brand-soft); color: var(--brand); }
+    .pill.neutral { background: var(--neutral-bg); color: var(--neutral-text); }
+    .pill.good { background: var(--good-bg); color: var(--good-text); }
+    .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
+    .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
+    .summary { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-bottom: 16px; }
+    .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+    .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    /* ── Trip Map Card ── */
+    .trip-map-card { margin-bottom: 16px; background: linear-gradient(135deg,#eef4ff,#f8fbff); border: 1px solid #dbeafe; }
+    .trip-map-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .trip-map-link { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; padding: 10px 14px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700; }
+    .trip-map-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.75); font-size: 12px; font-weight: 700; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 999px; display: inline-block; }
+    /* ── Prep ── */
+    .prep-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-bottom: 16px; }
+    .prep-card { background: linear-gradient(135deg,#f8fbff,#fff); border: 1px solid #dbeafe; }
+    .prep-intro { margin-bottom: 10px !important; font-size: 13px; }
+    .prep-list li { margin-bottom: 5px; }
+    /* ── Day ── */
+    .days { display: grid; gap: 18px; }
+    .day { background: var(--card); border-radius: 22px; padding: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); scroll-margin-top: calc(var(--nav-h) + 8px); }
+    .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .day-title { margin: 0; font-size: 20px; }
+    .day-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .badge { background: #eff6ff; color: var(--brand); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 6px 10px; white-space: nowrap; }
+    /* ── Day Map Card ── */
+    .day-map-card { background: linear-gradient(135deg,#eff6ff,#f8fbff); border: 1px solid #dbeafe; border-radius: 16px; padding: 14px 16px; margin: 12px 0; }
+    .day-map-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .map-card-text { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .map-card-link { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; padding: 8px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700; }
+    .day-map-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-top: 12px; }
+    /* ── Day Panels ── */
+    .day-panels { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 12px 0 16px; }
+    .subcard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; }
+    .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
+    .empty { margin: 0; color: var(--muted); font-size: 13px; }
+    /* ── Timeline ── */
+    .timeline { display: grid; gap: 12px; margin-top: 12px; }
+    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background .2s, box-shadow .2s; }
+    .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
+    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.2); padding: 12px 14px; }
+    .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
+    .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+    .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+    .item-meta span { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-text); font-size: 12px; font-weight: 600; }
+    .desc { color: var(--muted); font-size: 14px; margin: 0; }
+    .map-link-row { margin-top: 8px; }
+    .map-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--brand); font-size: 13px; font-weight: 700; }
+    .map-link:hover { text-decoration: underline; }
+    .food-block { margin-top: 10px; background: rgba(255,255,255,.55); }
+    .notes-block { margin-top: 10px; background: var(--note-bg); border-color: #fde68a; }
+    .note-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .note-list.compact { font-size: 13px; }
+    /* ── Footer ── */
+    .footer-note { margin-top: 18px; background: #f8fafc; border: 1px dashed #cbd5e1; }
+    .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    /* ── Back to Top ── */
+    .back-top {
+      position: fixed; bottom: 24px; right: 20px; z-index: 200;
+      width: 44px; height: 44px; border-radius: 999px;
+      background: var(--brand); color: #fff; border: 0; cursor: pointer;
+      font-size: 20px; display: none; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(37,99,235,.4); transition: transform .15s;
+    }
+    .back-top:hover { transform: translateY(-2px); }
+    .back-top.visible { display: flex; }
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .summary, .prep-grid { grid-template-columns: 1fr; }
+      .day-panels { grid-template-columns: 1fr; }
+      .day-map-summary { grid-template-columns: 1fr; }
+      .trip-map-head { flex-direction: column; align-items: flex-start; }
+      .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
+      .day-header { flex-direction: column; }
+      .hero h1 { font-size: 24px; }
+    }
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; font-size: 12pt; }
+      .daynav, .back-top, .map-card-link, .trip-map-link { display: none !important; }
+      .wrap { padding: 0; max-width: 100%; }
+      .hero { border-radius: 0; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .card, .day { box-shadow: none; border: 1px solid #ddd; }
+      .day { break-inside: avoid; }
+      .item { break-inside: avoid; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: 10pt; color: #999; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>沖繩親子浮潛悠閒之旅</h1>
+      <div class="meta">2026-07-05 ～ 2026-07-11｜2 人｜中等預算</div>
+      <p>重點是讓小朋友在淺灘就能看到魚、7/5-7/9 住北谷柔婕閣酒店、7/9-7/10 住 TWIN LINE HOTEL YANBARU、7/10-7/11 住 Daiwa Roynet</p>
+      <div class="tags"><span class="tag">浮潛</span><span class="tag">親子</span><span class="tag">放鬆</span><span class="tag">海灘</span><span class="tag">重點是讓小朋友在淺灘就能看到魚</span><span class="tag">7/5-7/9 住北谷柔婕閣酒店</span></div>
+      <div class="gen-date">由 travel-planner v2 生成・2026-04-13</div>
+    </section>
+
+    <nav class="daynav" aria-label="日程導覽"><a class="daynav-link" href="#day-1" aria-label="跳到 Day 1"><span class="daynav-num">D1</span><span class="daynav-date">07/05</span></a><a class="daynav-link" href="#day-2" aria-label="跳到 Day 2"><span class="daynav-num">D2</span><span class="daynav-date">07/06</span></a><a class="daynav-link" href="#day-3" aria-label="跳到 Day 3"><span class="daynav-num">D3</span><span class="daynav-date">07/07</span></a><a class="daynav-link" href="#day-4" aria-label="跳到 Day 4"><span class="daynav-num">D4</span><span class="daynav-date">07/08</span></a><a class="daynav-link" href="#day-5" aria-label="跳到 Day 5"><span class="daynav-num">D5</span><span class="daynav-date">07/09</span></a><a class="daynav-link" href="#day-6" aria-label="跳到 Day 6"><span class="daynav-num">D6</span><span class="daynav-date">07/10</span></a><a class="daynav-link" href="#day-7" aria-label="跳到 Day 7"><span class="daynav-num">D7</span><span class="daynav-date">07/11</span></a></nav>
+
+    <section class="summary">
+      <div class="card">
+        <h2>旅程摘要</h2>
+        <p>以親子浮潛為主軸，從北谷到山原北部，挑選適合小朋友的淺灘浮潛點，讓孩子不用下深水就能看到五彩繽紛的魚群。</p>
+        <div class="chips"><span class="chip">浮潛</span><span class="chip">親子</span><span class="chip">放鬆</span><span class="chip">海灘</span></div>
+      </div>
+      <div class="card">
+        <h2>安排原則</h2>
+        <p>以重點景點與整體節奏優先，避免趕場清單，餐飲以順路穩定為主。</p>
+        <div class="chips">
+          <span class="chip">重點優先</span>
+          <span class="chip">節奏舒適</span>
+          <span class="chip">彈性保留</span>
+        </div>
+      </div>
+    </section>
+
+    
+  <section class="card trip-map-card">
+    <div class="trip-map-head">
+      <div>
+        <h2>旅程總覽</h2>
+        <p>先掌握整趟主要區域與景點，再決定每天怎麼走。</p>
+        <div class="chips">
+          <span class="chip">沖繩</span>
+          <span class="chip">7 天行程</span>
+        </div>
+      </div>
+      <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E8%B0%B7%20%E6%9F%94%E5%A9%95%E9%96%A3%E9%85%92%E5%BA%97%20%E5%8C%97%E8%B0%B7%20%E6%B5%B7%E7%81%98%20%E6%B5%AE%E6%BD%9B%20Chatan%20beach%20Chatan%20American%20Village%20restaurants%20%E9%9D%92%E4%B9%8B%E6%B4%9E%E7%AA%9F%20%E6%B5%AE%E6%BD%9B%20%E7%9C%9F%E6%A6%AE%E7%94%B0%E5%B2%AC%20%E8%90%AC%E5%BA%A7%E6%AF%9B%20%E6%81%A9%E7%B4%8D%20%E5%AE%9C%E7%81%A3%20%E6%B5%AE%E6%BD%9B%20%E7%8F%8A%E7%91%9A%E7%A4%81" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
+    </div>
+    <div class="day-panels" style="margin-top:14px">
+      <div class="subcard">
+        <div class="subcard-title">主要區域</div>
+        <div class="pill-row"><span class="pill neutral">恩納 真榮田岬</span><span class="pill neutral">恩納 萬座毛</span><span class="pill neutral">與勝半島 海中道路</span><span class="pill neutral">本部 海洋博公園</span><span class="pill neutral">那霸 國際通</span></div>
+      </div>
+      <div class="subcard">
+        <div class="subcard-title">重點景點</div>
+        <div class="pill-row"><span class="pill neutral">恩納青之洞窟浮潛體驗</span><span class="pill neutral">萬座毛散步</span><span class="pill neutral">海中道路・海の駅あやはし館</span><span class="pill neutral">沖繩美麗海水族館</span><span class="pill neutral">國際通採買・伴手禮掃貨</span></div>
+      </div>
+      <div class="subcard">
+        <div class="subcard-title">使用方式</div>
+        <ul class="note-list compact">
+          <li>先看每日小地圖掌握動線</li>
+          <li>跨天移動用整趟地圖</li>
+          <li>點景點連結直接導航</li>
+        </ul>
+      </div>
+    </div>
+    <div class="trip-map-legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5+</span>
+    </div>
+  </section>
+
+    
+  <section class="summary prep-grid">
+    <div class="card prep-card">
+      <h2>出發前要先做</h2>
+      <p class="prep-intro">提前處理，避免出發前臨時補救。</p>
+      <div class="subcard-label">已預約 / 要確認</div><ul class="note-list prep-list"><li>浮潛體驗建議提前預約（若選付費體驗）</li><li>租車建議提前預訂（7/9 北上時需要）</li></ul>
+      <div class="subcard-label">票券 / 入場</div><ul class="note-list prep-list"><li>美麗海水族館建議網路預購門票</li><li>青之洞窟浮潛體驗需事先預約</li></ul>
+    </div>
+    <div class="card prep-card">
+      <h2>當天注意事項</h2>
+      <p class="prep-intro">影響行程順暢度的提醒，現場對照用。</p>
+      <ul class="note-list prep-list"><li>帶防曬乳、泳裝、兒童救生衣</li><li>浮潛面鏡建議自備（兒童尺寸較難借到）</li><li>7/11 出發前確認行李重量，免稅品請留意限制</li></ul>
+    </div>
+  </section>
+
+    <section class="days">
+      
+    <article class="day" id="day-1">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 1｜抵達北谷・放鬆開場</h2>
+          <div class="day-sub">07/05・行程安排</div>
+        </div>
+        <span class="badge">Day 1</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 北谷 柔婕閣酒店 為起點查看今日動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E8%B0%B7%20%E6%9F%94%E5%A9%95%E9%96%A3%E9%85%92%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
+        <div class="day-map-summary">
+          <div class="subcard">
+            <div class="subcard-title">今日區域</div>
+            <p class="empty">以今日動線為主。</p>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">主要地點</div>
+            <p class="empty">見下方行程。</p>
+          </div>
+        </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">那霸機場</span><span class="pill neutral">那霸 → 北谷</span><span class="pill neutral">北谷</span><span class="pill neutral">北谷美國村</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <p class="empty">以步行為主。</p>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>入境隊伍可能較長，預留 1 小時通關時間</li><li>若有租車，機場取車後直接出發</li><li>水深約 0.5m，小朋友站著就可以玩</li><li>現場可租借浮板</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="1-08:00-桃園 → 那霸（華航 CI）">
+          <div class="time">08:00–10:45</div>
+          <div class="item-title">桃園 → 那霸（華航 CI）</div>
+          <div class="item-meta"><span>區域：那霸機場</span></div>
+          <p class="desc">搭乘 8:00 華航班機，10:45 抵達那霸機場。辦理入境手續、提領行李。</p>
+          
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>入境隊伍可能較長，預留 1 小時通關時間</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="1-12:00-前往北谷（租車 or 巴士）">
+          <div class="time">12:00–13:30</div>
+          <div class="item-title">前往北谷（租車 or 巴士）</div>
+          <div class="item-meta"><span>區域：那霸 → 北谷</span></div>
+          <p class="desc">機場出發前往北谷，車程約 40 分鐘。沿途可於中途便利商店補給飲水零食。</p>
+          
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>若有租車，機場取車後直接出發</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="1-13:30-北谷柔婕閣酒店 Check-in">
+          <div class="time">13:30–14:30</div>
+          <div class="item-title">北谷柔婕閣酒店 Check-in</div>
+          <div class="item-meta"><span>區域：北谷</span></div>
+          <p class="desc">入住北谷柔婕閣酒店（7/5–7/9）。寄放行李後稍作休息。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E8%B0%B7%20%E6%9F%94%E5%A9%95%E9%96%A3%E9%85%92%E5%BA%97" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item" data-map-key="1-15:00-北谷公園水上樂園淺灘初體驗">
+          <div class="time">15:00–17:30</div>
+          <div class="item-title">北谷公園水上樂園淺灘初體驗</div>
+          <div class="item-meta"><span>區域：北谷</span></div>
+          <p class="desc">北谷公園旁的人工海灘水淺且安全，是第一天讓孩子熟悉海水的好地點，不需要裝備就能在淺灘玩水。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E8%B0%B7%20%E6%B5%B7%E7%81%98%20%E6%B5%AE%E6%BD%9B%20Chatan%20beach" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>水深約 0.5m，小朋友站著就可以玩</li><li>現場可租借浮板</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="1-18:30-美國村晚餐">
+          <div class="time">18:30–20:00</div>
+          <div class="item-title">美國村晚餐</div>
+          <div class="item-meta"><span>區域：北谷美國村</span></div>
+          <p class="desc">在美國村挑選餐廳，氛圍輕鬆多元，漢堡、牛排、墨西哥料理都有，適合親子。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Chatan%20American%20Village%20restaurants" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="day" id="day-2">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 2｜青之洞窟浮潛・第一次看到魚</h2>
+          <div class="day-sub">07/06・行程安排</div>
+        </div>
+        <span class="badge">Day 2</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 青之洞窟 浮潛 真榮田岬 為起點查看今日動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps?q=26.4275%2C127.7871" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
+        <div class="day-map-summary">
+          <div class="subcard">
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">恩納 真榮田岬</span><span class="pill neutral">恩納 萬座毛</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">恩納青之洞窟浮潛體驗</span><span class="pill neutral">萬座毛散步</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">恩納 真榮田岬</span><span class="pill neutral">恩納</span><span class="pill neutral">恩納 萬座毛</span><span class="pill neutral">北谷</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <p class="empty">以步行為主。</p>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>水深 1–2m 的淺灘就有大量熱帶魚</li><li>挑選有兒童體驗方案的業者</li><li>建議時段：上午（人少、能見度好）</li><li>步道已整修，嬰兒車可進入</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="2-09:00-恩納青之洞窟浮潛體驗">
+          <div class="time">09:00–12:00</div>
+          <div class="item-title">恩納青之洞窟浮潛體驗</div>
+          <div class="item-meta"><span>區域：恩納 真榮田岬</span></div>
+          <p class="desc">青之洞窟附近的淺水區域（水深 1–3m）是沖繩最適合親子浮潛的地點之一，熱帶魚超多，小朋友站在岸邊就能看到。建議找入門等級體驗方案，教練全程陪同。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=26.4275%2C127.7871" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>水深 1–2m 的淺灘就有大量熱帶魚</li><li>挑選有兒童體驗方案的業者</li><li>建議時段：上午（人少、能見度好）</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="2-12:30-午餐：真榮田岬周邊">
+          <div class="time">12:30–13:30</div>
+          <div class="item-title">午餐：真榮田岬周邊</div>
+          <div class="item-meta"><span>區域：恩納</span></div>
+          <p class="desc">浮潛後在附近小店享用沖繩麵或海鮮定食補充體力。</p>
+          
+        </div>
+        <div class="item" data-map-key="2-14:30-萬座毛散步">
+          <div class="time">14:30–17:00</div>
+          <div class="item-title">萬座毛散步</div>
+          <div class="item-meta"><span>區域：恩納 萬座毛</span></div>
+          <p class="desc">著名的象鼻岩岬角，步道輕鬆適合親子，俯瞰珊瑚礁海灣，景色壯觀。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=26.5019%2C127.8619" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>步道已整修，嬰兒車可進入</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="2-18:00-北谷晚餐">
+          <div class="time">18:00–19:30</div>
+          <div class="item-title">北谷晚餐</div>
+          <div class="item-meta"><span>區域：北谷</span></div>
+          <p class="desc">返回北谷用餐，輕鬆結束浮潛日。</p>
+          
+        </div>
+      </div>
+    </article>
+
+    <article class="day" id="day-3">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 3｜宜灣・海中道路・自由浮潛</h2>
+          <div class="day-sub">07/07・行程安排</div>
+        </div>
+        <span class="badge">Day 3</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 宜灣 浮潛 珊瑚礁 為起點查看今日動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%9C%E7%81%A3%20%E6%B5%AE%E6%BD%9B%20%E7%8F%8A%E7%91%9A%E7%A4%81" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
+        <div class="day-map-summary">
+          <div class="subcard">
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">與勝半島 海中道路</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">海中道路・海の駅あやはし館</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">宜灣 Ginowan</span><span class="pill neutral">宜灣 or 北中城</span><span class="pill neutral">與勝半島 海中道路</span><span class="pill neutral">北谷 or 海中道路周邊</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <p class="empty">以步行為主。</p>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>部分路段有珊瑚礁尖角，穿拖鞋下水較安全</li><li>可在海の駅購買新鮮海產或當地零食</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="3-09:30-宜灣海岸自由浮潛">
+          <div class="time">09:30–11:30</div>
+          <div class="item-title">宜灣海岸自由浮潛</div>
+          <div class="item-meta"><span>區域：宜灣 Ginowan</span></div>
+          <p class="desc">宜灣海岸入門浮潛區，不需報名體驗班，自備浮潛面鏡即可，珊瑚礁淺水區有大量熱帶魚，非常適合兒童。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%AE%9C%E7%81%A3%20%E6%B5%AE%E6%BD%9B%20%E7%8F%8A%E7%91%9A%E7%A4%81" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>部分路段有珊瑚礁尖角，穿拖鞋下水較安全</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="3-12:30-午餐">
+          <div class="time">12:30–13:30</div>
+          <div class="item-title">午餐</div>
+          <div class="item-meta"><span>區域：宜灣 or 北中城</span></div>
+          <p class="desc">沖繩在地料理，豬肉料理或海鮮蓋飯。</p>
+          
+        </div>
+        <div class="item" data-map-key="3-14:30-海中道路・海の駅あやはし館">
+          <div class="time">14:30–17:00</div>
+          <div class="item-title">海中道路・海の駅あやはし館</div>
+          <div class="item-meta"><span>區域：與勝半島 海中道路</span></div>
+          <p class="desc">全長 4.7km 的海上公路，兩側是碧藍海水，道路盡頭的海の駅有海產市場，孩子可以看到各種海洋生物。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=26.3655%2C127.9823" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>可在海の駅購買新鮮海產或當地零食</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="3-17:30-夕陽 + 晚餐">
+          <div class="time">17:30–19:00</div>
+          <div class="item-title">夕陽 + 晚餐</div>
+          <div class="item-meta"><span>區域：北谷 or 海中道路周邊</span></div>
+          <p class="desc">北谷夕陽方向的餐廳，邊看夕陽邊吃晚餐。</p>
+          
+        </div>
+      </div>
+    </article>
+
+    <article class="day" id="day-4">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 4｜北谷自由日・美國村購物</h2>
+          <div class="day-sub">07/08・行程安排</div>
+        </div>
+        <span class="badge">Day 4</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 砂邊海水浴場 北谷 為起點查看今日動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E7%A0%82%E9%82%8A%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4%20%E5%8C%97%E8%B0%B7" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
+        <div class="day-map-summary">
+          <div class="subcard">
+            <div class="subcard-title">今日區域</div>
+            <p class="empty">以今日動線為主。</p>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">主要地點</div>
+            <p class="empty">見下方行程。</p>
+          </div>
+        </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">北谷 砂邊</span><span class="pill neutral">北谷美國村</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <p class="empty">以步行為主。</p>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>從飯店步行可達</li><li>清晨人少，海水能見度最好</li><li>夕陽約 19:30 前後，建議早一點佔位</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="4-09:00-砂邊海水浴場・晨泳浮潛">
+          <div class="time">09:00–11:30</div>
+          <div class="item-title">砂邊海水浴場・晨泳浮潛</div>
+          <div class="item-meta"><span>區域：北谷 砂邊</span></div>
+          <p class="desc">北谷柔婕閣附近的砂邊海水浴場，水淺平靜，是這幾天行程裡最輕鬆的浮潛點，小朋友可自由玩耍。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E7%A0%82%E9%82%8A%E6%B5%B7%E6%B0%B4%E6%B5%B4%E5%A0%B4%20%E5%8C%97%E8%B0%B7" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>從飯店步行可達</li><li>清晨人少，海水能見度最好</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="4-12:00-午餐：美國村">
+          <div class="time">12:00–13:30</div>
+          <div class="item-title">午餐：美國村</div>
+          <div class="item-meta"><span>區域：北谷美國村</span></div>
+          <p class="desc">在美國村挑選喜歡的午餐，吃完後可逛街購物。</p>
+          
+        </div>
+        <div class="item" data-map-key="4-14:00-美國村購物・伴手禮">
+          <div class="time">14:00–17:00</div>
+          <div class="item-title">美國村購物・伴手禮</div>
+          <div class="item-meta"><span>區域：北谷美國村</span></div>
+          <p class="desc">逛 Depot Island 區域的特色小店，選購沖繩伴手禮、童裝、海洋相關商品。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Chatan%20American%20Village%20Depot%20Island" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item meal" data-map-key="4-18:00-美國村夕陽晚餐">
+          <div class="time">18:00–20:00</div>
+          <div class="item-title">美國村夕陽晚餐</div>
+          <div class="item-meta"><span>區域：北谷美國村</span></div>
+          <p class="desc">美國村夕陽景觀有名，找一間面海的餐廳，欣賞日落後享用晚餐，為北谷最後一晚留下美好記憶。</p>
+          
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>夕陽約 19:30 前後，建議早一點佔位</li></ul>
+      </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="day" id="day-5">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 5｜北上山原・美麗海水族館</h2>
+          <div class="day-sub">07/09・行程安排</div>
+        </div>
+        <span class="badge">Day 5</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 沖繩美麗海水族館 為起點查看今日動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps?q=26.6938%2C127.8784" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
+        <div class="day-map-summary">
+          <div class="subcard">
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">本部 海洋博公園</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">沖繩美麗海水族館</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">北谷 → 本部</span><span class="pill neutral">本部 海洋博公園</span><span class="pill neutral">本部</span><span class="pill neutral">備瀨</span><span class="pill neutral">山原</span><span class="pill neutral">山原 or 名護</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <p class="empty">以步行為主。</p>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>行程彈性，可中途停海邊拍照</li><li>建議停留 2–2.5 小時</li><li>水族館外的「海豚劇場」免費觀看，建議排進去看</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="5-09:00-退房・前往本部">
+          <div class="time">09:00–10:00</div>
+          <div class="item-title">退房・前往本部</div>
+          <div class="item-meta"><span>區域：北谷 → 本部</span></div>
+          <p class="desc">北谷柔婕閣酒店退房，驅車北上前往本部地區，車程約 1 小時 20 分。</p>
+          
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>行程彈性，可中途停海邊拍照</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="5-10:30-沖繩美麗海水族館">
+          <div class="time">10:30–13:00</div>
+          <div class="item-title">沖繩美麗海水族館</div>
+          <div class="item-meta"><span>區域：本部 海洋博公園</span></div>
+          <p class="desc">日本最大水族館之一，「黑潮之海」巨型水槽有鯨鯊、魔鬼魚，孩子必看。建議網路預購門票節省時間。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=26.6938%2C127.8784" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>建議停留 2–2.5 小時</li><li>水族館外的「海豚劇場」免費觀看，建議排進去看</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="5-13:00-午餐：海洋博公園周邊">
+          <div class="time">13:00–14:00</div>
+          <div class="item-title">午餐：海洋博公園周邊</div>
+          <div class="item-meta"><span>區域：本部</span></div>
+          <p class="desc">水族館附近的餐廳，或至備瀨周邊的在地小餐廳，享用沖繩麵或海鮮。</p>
+          
+        </div>
+        <div class="item" data-map-key="5-14:30-備瀨福木林道・悠閒漫步">
+          <div class="time">14:30–16:30</div>
+          <div class="item-title">備瀨福木林道・悠閒漫步</div>
+          <div class="item-meta"><span>區域：備瀨</span></div>
+          <p class="desc">水牛車或步行穿過古老福木林道，安靜美麗，適合放鬆，是沖繩少見的秘境感步道。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%82%99%E7%80%A8%E7%A6%8F%E6%9C%A8%E6%9E%97%E9%81%93" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item" data-map-key="5-17:00-TWIN LINE HOTEL YANBARU Check-in">
+          <div class="time">17:00–18:00</div>
+          <div class="item-title">TWIN LINE HOTEL YANBARU Check-in</div>
+          <div class="item-meta"><span>區域：山原</span></div>
+          <p class="desc">入住 TWIN LINE HOTEL YANBARU（原 Okinawa Suncoast Hotel），欣賞北部原生態環境。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=TWIN%20LINE%20HOTEL%20YANBARU%20OKINAWA" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item meal" data-map-key="5-18:30-晚餐：飯店或名護市區">
+          <div class="time">18:30–20:00</div>
+          <div class="item-title">晚餐：飯店或名護市區</div>
+          <div class="item-meta"><span>區域：山原 or 名護</span></div>
+          <p class="desc">可選擇飯店內餐廳或驅車至名護市區覓食，嘗試山原豬（山原黑豬）料理。</p>
+          
+        </div>
+      </div>
+    </article>
+
+    <article class="day" id="day-6">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 6｜山原森林・南下那霸</h2>
+          <div class="day-sub">07/10・行程安排</div>
+        </div>
+        <span class="badge">Day 6</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 やんばる国立公園 自然步道 為起點查看今日動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E3%82%84%E3%82%93%E3%81%B0%E3%82%8B%E5%9B%BD%E7%AB%8B%E5%85%AC%E5%9C%92%20%E8%87%AA%E7%84%B6%E6%AD%A5%E9%81%93" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
+        <div class="day-map-summary">
+          <div class="subcard">
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">那霸 國際通</span></div>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">國際通採買・伴手禮掃貨</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">山原 やんばる国立公園</span><span class="pill neutral">山原 → 那霸</span><span class="pill neutral">名護</span><span class="pill neutral">那霸</span><span class="pill neutral">那霸 國際通</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <p class="empty">以步行為主。</p>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>御菓子御殿的紫薯塔是必買伴手禮</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="6-08:30-やんばる国立公園・晨間自然步道">
+          <div class="time">08:30–10:30</div>
+          <div class="item-title">やんばる国立公園・晨間自然步道</div>
+          <div class="item-meta"><span>區域：山原 やんばる国立公園</span></div>
+          <p class="desc">世界自然遺產山原國立公園，可步行短途步道感受亞熱帶森林，運氣好可見到沖繩秧雞。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E3%82%84%E3%82%93%E3%81%B0%E3%82%8B%E5%9B%BD%E7%AB%8B%E5%85%AC%E5%9C%92%20%E8%87%AA%E7%84%B6%E6%AD%A5%E9%81%93" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item" data-map-key="6-10:30-退房・啟程南下">
+          <div class="time">10:30–11:30</div>
+          <div class="item-title">退房・啟程南下</div>
+          <div class="item-meta"><span>區域：山原 → 那霸</span></div>
+          <p class="desc">退房後驅車南下，全程約 1.5 小時，沿途可停留名護市內採購特產。</p>
+          
+        </div>
+        <div class="item meal" data-map-key="6-12:00-午餐：名護或途中">
+          <div class="time">12:00–13:30</div>
+          <div class="item-title">午餐：名護或途中</div>
+          <div class="item-meta"><span>區域：名護</span></div>
+          <p class="desc">名護市區的麵食店或便利商店，輕鬆用餐後繼續南下。</p>
+          
+        </div>
+        <div class="item" data-map-key="6-14:30-那霸 Daiwa Roynet Check-in・整理行李">
+          <div class="time">14:30–17:00</div>
+          <div class="item-title">那霸 Daiwa Roynet Check-in・整理行李</div>
+          <div class="item-meta"><span>區域：那霸</span></div>
+          <p class="desc">入住 Daiwa Roynet（那霸），卸下行李、整理隔天要帶走的東西，留出空間給明天採購。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Daiwa%20Roynet%20Hotel%20Naha" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item" data-map-key="6-17:30-國際通採買・伴手禮掃貨">
+          <div class="time">17:30–20:00</div>
+          <div class="item-title">國際通採買・伴手禮掃貨</div>
+          <div class="item-meta"><span>區域：那霸 國際通</span></div>
+          <p class="desc">沖繩最後採買機會！御菓子御殿、まちぐわー市場、藥妝店一次搞定。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=26.2126%2C127.6876" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>御菓子御殿的紫薯塔是必買伴手禮</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="6-20:00-最後晚餐：沖繩料理">
+          <div class="time">20:00–21:30</div>
+          <div class="item-title">最後晚餐：沖繩料理</div>
+          <div class="item-meta"><span>區域：那霸</span></div>
+          <p class="desc">在國際通附近選一間沖繩傳統料理店，點苦瓜炒蛋、泡盛、海葡萄，為這趟旅程畫下美食句點。</p>
+          
+        </div>
+      </div>
+    </article>
+
+    <article class="day" id="day-7">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 7｜最後採買・返台</h2>
+          <div class="day-sub">07/11・行程安排</div>
+        </div>
+        <span class="badge">Day 7</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
+          <div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 牧志公設市場 那霸 為起點查看今日動線。</p>
+          </div>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E7%89%A7%E5%BF%97%E5%85%AC%E8%A8%AD%E5%B8%82%E5%A0%B4%20%E9%82%A3%E9%9C%B8" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
+        </div>
+        <div class="day-map-summary">
+          <div class="subcard">
+            <div class="subcard-title">今日區域</div>
+            <p class="empty">以今日動線為主。</p>
+          </div>
+          <div class="subcard">
+            <div class="subcard-title">主要地點</div>
+            <p class="empty">見下方行程。</p>
+          </div>
+        </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">那霸</span><span class="pill neutral">豐見城 Ashibinaa</span><span class="pill neutral">那霸機場</span><span class="pill neutral">那霸機場 → 台灣桃園</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <p class="empty">以步行為主。</p>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>免稅店在通關後，建議預留 30 分鐘逛免稅</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="7-09:00-早晨自由時間・周邊散步">
+          <div class="time">09:00–11:00</div>
+          <div class="item-title">早晨自由時間・周邊散步</div>
+          <div class="item-meta"><span>區域：那霸</span></div>
+          <p class="desc">最後一個早晨，可輕鬆在飯店附近的牧志公設市場逛逛，或在咖啡廳吃個悠閒早餐。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E7%89%A7%E5%BF%97%E5%85%AC%E8%A8%AD%E5%B8%82%E5%A0%B4%20%E9%82%A3%E9%9C%B8" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item" data-map-key="7-11:30-Ashibinaa Outlet・最後採購">
+          <div class="time">11:30–13:00</div>
+          <div class="item-title">Ashibinaa Outlet・最後採購</div>
+          <div class="item-meta"><span>區域：豐見城 Ashibinaa</span></div>
+          <p class="desc">機場附近的 Outlet，距那霸機場約 10 分鐘，可快速掃最後一波購物。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Ashibinaa%20Outlet%20%E8%B1%90%E8%A6%8B%E5%9F%8E" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item" data-map-key="7-16:00-那霸機場 Check-in">
+          <div class="time">16:00–17:30</div>
+          <div class="item-title">那霸機場 Check-in</div>
+          <div class="item-meta"><span>區域：那霸機場</span></div>
+          <p class="desc">提前抵達機場完成報到手續、託運行李。建議至少 3 小時前到達以防排隊。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E9%82%A3%E9%9C%B8%E6%A9%9F%E5%A0%B4%20%E5%9B%BD%E9%9A%9B%E7%B7%9A" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>免稅店在通關後，建議預留 30 分鐘逛免稅</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="7-20:55-那霸 → 桃園（華航 CI）">
+          <div class="time">20:55–22:40</div>
+          <div class="item-title">那霸 → 桃園（華航 CI）</div>
+          <div class="item-meta"><span>區域：那霸機場 → 台灣桃園</span></div>
+          <p class="desc">搭乘 20:55 華航班機返台，結束愉快的沖繩親子之旅！</p>
+          
+        </div>
+      </div>
+    </article>
+    </section>
+
+    <section class="card footer-note">
+      <h3>提醒</h3>
+      <ul>
+        <li>由 JSON 資料自動生成，可人工微調。</li>
+        <li>JSON 是原始資料，HTML 是衍生物——修改請從 JSON 開始再重新生成。</li>
+        <li>有 prep.booking / tickets / reminders 欄位時，頁面自動顯示行前清單。</li>
+        <li>回到首頁：<a href="index.html">Travel Planner 首頁</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <button class="back-top" id="backTop" aria-label="回到頂部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+  (function () {
+    // Back to top
+    const btn = document.getElementById('backTop');
+    window.addEventListener('scroll', function () {
+      btn.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+
+    // Leaflet map
+    const points = [{"day":2,"title":"恩納青之洞窟浮潛體驗","area":"恩納 真榮田岬","mapQuery":"青之洞窟 浮潛 真榮田岬","timeStart":"09:00","timeEnd":"12:00","type":"activity","key":"2-09:00-恩納青之洞窟浮潛體驗","lat":26.4275,"lng":127.7871},{"day":2,"title":"萬座毛散步","area":"恩納 萬座毛","mapQuery":"萬座毛 恩納","timeStart":"14:30","timeEnd":"17:00","type":"sightseeing","key":"2-14:30-萬座毛散步","lat":26.5019,"lng":127.8619},{"day":3,"title":"海中道路・海の駅あやはし館","area":"與勝半島 海中道路","mapQuery":"海中道路 沖繩","timeStart":"14:30","timeEnd":"17:00","type":"sightseeing","key":"3-14:30-海中道路・海の駅あやはし館","lat":26.3655,"lng":127.9823},{"day":5,"title":"沖繩美麗海水族館","area":"本部 海洋博公園","mapQuery":"沖繩美麗海水族館","timeStart":"10:30","timeEnd":"13:00","type":"sightseeing","key":"5-10:30-沖繩美麗海水族館","lat":26.6938,"lng":127.8784},{"day":6,"title":"國際通採買・伴手禮掃貨","area":"那霸 國際通","mapQuery":"國際通 那霸 Kokusai-dori","timeStart":"17:30","timeEnd":"20:00","type":"shopping","key":"6-17:30-國際通採買・伴手禮掃貨","lat":26.2126,"lng":127.6876}];
+    if (!points.length) return;
+    const dayColors = ['#2563eb','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
+
+    function createIcon(day) {
+      return L.divIcon({
+        className: '',
+        html: '<div style="width:28px;height:28px;border-radius:50%;background:' + dayColors[(day-1)%dayColors.length] + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 8px rgba(0,0,0,.25)">D' + day + '</div>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+        popupAnchor: [0, -14]
+      });
+    }
+
+    // Active highlight
+    function highlightItem(key) {
+      document.querySelectorAll('.active-map-target').forEach(el => el.classList.remove('active-map-target'));
+      if (!key) return;
+      const el = document.querySelector('[data-map-key="' + CSS.escape(key) + '"]');
+      if (!el) return;
+      el.classList.add('active-map-target');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Try to render a Leaflet map if there's a container
+    try {
+      const mapEl = document.getElementById('leaflet-map');
+      if (mapEl && typeof L !== 'undefined') {
+        const map = L.map(mapEl);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        const bounds = [];
+        points.forEach(function (p) {
+          const m = L.marker([p.lat, p.lng], { icon: createIcon(p.day) }).addTo(map);
+          const popup = ['<strong>' + p.title + '</strong>'];
+          if (p.timeStart) popup.push(p.timeStart + (p.timeEnd ? '–' + p.timeEnd : ''));
+          if (p.area) popup.push('區域：' + p.area);
+          popup.push('Day ' + p.day);
+          if (p.mapQuery) popup.push('<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.mapQuery) + '" target="_blank">Google Maps ↗</a>');
+          m.bindPopup(popup.join('<br>'));
+          m.on('click', function () { highlightItem(p.key); });
+          bounds.push([p.lat, p.lng]);
+        });
+        if (bounds.length === 1) map.setView(bounds[0], 14);
+        else map.fitBounds(bounds, { padding: [24, 24] });
+      }
+    } catch (e) {}
+  })();
+  </script>
+</body>
+</html>

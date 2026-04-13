@@ -596,6 +596,7 @@ const CITY_SLUG_MAP = {
   '倫敦': 'london', '巴黎': 'paris',
   '紐約': 'new-york', '洛杉磯': 'los-angeles',
   '雪梨': 'sydney', '峇里島': 'bali',
+  '沖繩': 'okinawa', '沖縄': 'okinawa',
 };
 
 function slugifyCity(dest = '') {

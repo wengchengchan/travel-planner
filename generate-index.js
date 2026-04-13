@@ -35,6 +35,7 @@ const CITY_SLUG_MAP = {
   '紐約': 'new-york', '洛杉磯': 'los-angeles',
   '雪梨': 'sydney', '墨爾本': 'melbourne',
   '峇里島': 'bali', '河內': 'hanoi', '胡志明': 'ho-chi-minh',
+  '沖繩': 'okinawa', '沖縄': 'okinawa',
 };
 
 function slugifyDestination(dest = '') {
