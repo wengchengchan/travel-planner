@@ -5,382 +5,402 @@
   "dateEnd": "2026-07-11",
   "travelers": 2,
   "budget": "中等",
-  "style": ["浮潛", "親子", "放鬆", "海灘"],
+  "style": ["浮潛", "親子", "放鬆", "海灘", "自駕"],
   "notes": [
     "重點是讓小朋友在淺灘就能看到魚",
     "7/5-7/9 住北谷柔婕閣酒店",
     "7/9-7/10 住 TWIN LINE HOTEL YANBARU",
-    "7/10-7/11 住 Daiwa Roynet"
+    "7/10-7/11 住 Daiwa Roynet Hotel NAHA-OMOROMACHI PREMIER"
   ],
-  "summary": "以親子浮潛為主軸，從北谷到山原北部，挑選適合小朋友的淺灘浮潛點，讓孩子不用下深水就能看到五彩繽紛的魚群。",
+  "summary": "以親子浮潛為主軸，自駕走遍北中南沖繩。從北谷美國村出發，沿途真榮田岬、海中道路、水納島、備瀨崎到古宇利島，挑選適合小朋友的淺灘浮潛點，最後從那霸搭晚班機返台。",
   "prep": {
     "booking": [
-      "浮潛體驗建議提前預約（若選付費體驗）",
-      "租車建議提前預訂（7/9 北上時需要）"
+      "青之洞窟親子浮潛團需提前預約（Day 2）",
+      "水納島渡輪建議提前確認班次（Day 4）",
+      "租車需提前預訂（機場取車）",
+      "大猩猩劈掌岩浮潛體驗建議預約（Day 6）"
     ],
     "tickets": [
-      "美麗海水族館建議網路預購門票",
-      "青之洞窟浮潛體驗需事先預約"
+      "美麗海水族館建議網路預購門票（Day 5）"
     ],
     "reminders": [
-      "帶防曬乳、泳裝、兒童救生衣",
-      "浮潛面鏡建議自備（兒童尺寸較難借到）",
-      "7/11 出發前確認行李重量，免稅品請留意限制"
+      "帶防曬乳、泳裝、兒童救生衣、浮潛面鏡",
+      "浮潛面鏡建議自備兒童尺寸",
+      "18:00 前務必到 OTS 臨空豐崎營業所還車（Day 7）",
+      "20:55 班機，建議 17:30 前抵達機場"
     ]
   },
   "days": [
     {
       "date": "2026-07-05",
-      "theme": "抵達北谷・放鬆開場",
+      "theme": "抵達沖繩 & 美國村散策",
       "items": [
         {
-          "timeStart": "08:00",
-          "timeEnd": "10:45",
-          "title": "桃園 → 那霸（華航 CI）",
+          "timeStart": "10:45",
+          "timeEnd": "12:00",
+          "title": "抵達那霸機場・辦理租車",
           "type": "arrival",
           "area": "那霸機場",
-          "description": "搭乘 8:00 華航班機，10:45 抵達那霸機場。辦理入境手續、提領行李。",
-          "notes": ["入境隊伍可能較長，預留 1 小時通關時間"]
+          "description": "10:45 降落那霸機場，辦理入境手續後前往租車服務處取車。",
+          "mapQuery": "那霸機場 国際線",
+          "notes": ["入境排隊可能較長，預留 1 小時通關"]
         },
         {
-          "timeStart": "12:00",
-          "timeEnd": "13:30",
-          "title": "前往北谷（租車 or 巴士）",
+          "timeStart": "12:30",
+          "timeEnd": "14:00",
+          "title": "開車前往北谷・飯店 Check-in",
           "type": "transport",
           "area": "那霸 → 北谷",
-          "description": "機場出發前往北谷，車程約 40 分鐘。沿途可於中途便利商店補給飲水零食。",
-          "notes": ["若有租車，機場取車後直接出發"]
-        },
-        {
-          "timeStart": "13:30",
-          "timeEnd": "14:30",
-          "title": "柔婕閣酒店 Check-in",
-          "type": "accommodation",
-          "area": "北谷",
-          "title": "北谷柔婕閣酒店 Check-in",
-          "description": "入住北谷柔婕閣酒店（7/5–7/9）。寄放行李後稍作休息。",
-          "mapQuery": "北谷 柔婕閣酒店"
+          "description": "驅車前往北谷（約 40–50 分鐘），辦理柔婕閣酒店入住手續。",
+          "mapQuery": "北谷柔婕閣酒店"
         },
         {
           "timeStart": "15:00",
-          "timeEnd": "17:30",
-          "title": "北谷公園水上樂園淺灘初體驗",
-          "type": "activity",
-          "area": "北谷",
-          "description": "北谷公園旁的人工海灘水淺且安全，是第一天讓孩子熟悉海水的好地點，不需要裝備就能在淺灘玩水。",
-          "mapQuery": "北谷 海灘 浮潛 Chatan beach",
-          "notes": ["水深約 0.5m，小朋友站著就可以玩", "現場可租借浮板"]
+          "timeEnd": "18:00",
+          "title": "美國村傍晚散策",
+          "type": "walk",
+          "area": "北谷美國村",
+          "description": "在飯店附近的美國村輕鬆逛逛，有許多特色小店和海景餐廳，是放鬆的第一個傍晚。",
+          "mapQuery": "Chatan American Village",
+          "lat": 26.3107,
+          "lng": 127.7548
         },
         {
           "timeStart": "18:30",
           "timeEnd": "20:00",
-          "title": "美國村晚餐",
+          "title": "晚餐：美國村美食",
           "type": "meal",
           "area": "北谷美國村",
-          "description": "在美國村挑選餐廳，氛圍輕鬆多元，漢堡、牛排、墨西哥料理都有，適合親子。",
-          "mapQuery": "Chatan American Village restaurants"
+          "description": "美國村內各式美食選擇，推薦迴轉壽司或著名的 A&W 漢堡，輕鬆又好吃。",
+          "mapQuery": "American Village Chatan restaurant"
         }
       ]
     },
     {
       "date": "2026-07-06",
-      "theme": "青之洞窟浮潛・第一次看到魚",
+      "theme": "初試浮潛・恩納村秘境",
       "items": [
         {
           "timeStart": "09:00",
-          "timeEnd": "12:00",
-          "title": "恩納青之洞窟浮潛體驗",
+          "timeEnd": "12:30",
+          "title": "真榮田岬浮潛・青之洞窟",
           "type": "activity",
           "area": "恩納 真榮田岬",
-          "description": "青之洞窟附近的淺水區域（水深 1–3m）是沖繩最適合親子浮潛的地點之一，熱帶魚超多，小朋友站在岸邊就能看到。建議找入門等級體驗方案，教練全程陪同。",
-          "mapQuery": "青之洞窟 浮潛 真榮田岬",
+          "description": "從北谷開車約 30 分鐘抵達真榮田岬。即便在很淺的地方也能看到大量熱帶魚。若想進青之洞窟，建議預約親子浮潛團，專業教練提供救生衣和浮圈，讓孩子輕鬆看魚。",
+          "mapQuery": "真榮田岬 青之洞窟 浮潛",
           "lat": 26.4275,
           "lng": 127.7871,
           "notes": [
-            "水深 1–2m 的淺灘就有大量熱帶魚",
-            "挑選有兒童體驗方案的業者",
-            "建議時段：上午（人少、能見度好）"
-          ]
-        },
-        {
-          "timeStart": "12:30",
-          "timeEnd": "13:30",
-          "title": "午餐：真榮田岬周邊",
-          "type": "meal",
-          "area": "恩納",
-          "description": "浮潛後在附近小店享用沖繩麵或海鮮定食補充體力。"
-        },
-        {
-          "timeStart": "14:30",
-          "timeEnd": "17:00",
-          "title": "萬座毛散步",
-          "type": "sightseeing",
-          "area": "恩納 萬座毛",
-          "description": "著名的象鼻岩岬角，步道輕鬆適合親子，俯瞰珊瑚礁海灣，景色壯觀。",
-          "mapQuery": "萬座毛 恩納",
-          "lat": 26.5019,
-          "lng": 127.8619,
-          "notes": ["步道已整修，嬰兒車可進入"]
-        },
-        {
-          "timeStart": "18:00",
-          "timeEnd": "19:30",
-          "title": "北谷晚餐",
-          "type": "meal",
-          "area": "北谷",
-          "description": "返回北谷用餐，輕鬆結束浮潛日。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-07",
-      "theme": "宜灣・海中道路・自由浮潛",
-      "items": [
-        {
-          "timeStart": "09:30",
-          "timeEnd": "11:30",
-          "title": "宜灣海岸自由浮潛",
-          "type": "activity",
-          "area": "宜灣 Ginowan",
-          "description": "宜灣海岸入門浮潛區，不需報名體驗班，自備浮潛面鏡即可，珊瑚礁淺水區有大量熱帶魚，非常適合兒童。",
-          "mapQuery": "宜灣 浮潛 珊瑚礁",
-          "notes": ["部分路段有珊瑚礁尖角，穿拖鞋下水較安全"]
-        },
-        {
-          "timeStart": "12:30",
-          "timeEnd": "13:30",
-          "title": "午餐",
-          "type": "meal",
-          "area": "宜灣 or 北中城",
-          "description": "沖繩在地料理，豬肉料理或海鮮蓋飯。"
-        },
-        {
-          "timeStart": "14:30",
-          "timeEnd": "17:00",
-          "title": "海中道路・海の駅あやはし館",
-          "type": "sightseeing",
-          "area": "與勝半島 海中道路",
-          "description": "全長 4.7km 的海上公路，兩側是碧藍海水，道路盡頭的海の駅有海產市場，孩子可以看到各種海洋生物。",
-          "mapQuery": "海中道路 沖繩",
-          "lat": 26.3655,
-          "lng": 127.9823,
-          "notes": ["可在海の駅購買新鮮海產或當地零食"]
-        },
-        {
-          "timeStart": "17:30",
-          "timeEnd": "19:00",
-          "title": "夕陽 + 晚餐",
-          "type": "meal",
-          "area": "北谷 or 海中道路周邊",
-          "description": "北谷夕陽方向的餐廳，邊看夕陽邊吃晚餐。"
-        }
-      ]
-    },
-    {
-      "date": "2026-07-08",
-      "theme": "北谷自由日・美國村購物",
-      "items": [
-        {
-          "timeStart": "09:00",
-          "timeEnd": "11:30",
-          "title": "砂邊海水浴場・晨泳浮潛",
-          "type": "activity",
-          "area": "北谷 砂邊",
-          "description": "北谷柔婕閣附近的砂邊海水浴場，水淺平靜，是這幾天行程裡最輕鬆的浮潛點，小朋友可自由玩耍。",
-          "mapQuery": "砂邊海水浴場 北谷",
-          "notes": ["從飯店步行可達", "清晨人少，海水能見度最好"]
-        },
-        {
-          "timeStart": "12:00",
-          "timeEnd": "13:30",
-          "title": "午餐：美國村",
-          "type": "meal",
-          "area": "北谷美國村",
-          "description": "在美國村挑選喜歡的午餐，吃完後可逛街購物。"
-        },
-        {
-          "timeStart": "14:00",
-          "timeEnd": "17:00",
-          "title": "美國村購物・伴手禮",
-          "type": "shopping",
-          "area": "北谷美國村",
-          "description": "逛 Depot Island 區域的特色小店，選購沖繩伴手禮、童裝、海洋相關商品。",
-          "mapQuery": "Chatan American Village Depot Island"
-        },
-        {
-          "timeStart": "18:00",
-          "timeEnd": "20:00",
-          "title": "美國村夕陽晚餐",
-          "type": "meal",
-          "area": "北谷美國村",
-          "description": "美國村夕陽景觀有名，找一間面海的餐廳，欣賞日落後享用晚餐，為北谷最後一晚留下美好記憶。",
-          "notes": ["夕陽約 19:30 前後，建議早一點佔位"]
-        }
-      ]
-    },
-    {
-      "date": "2026-07-09",
-      "theme": "北上山原・美麗海水族館",
-      "items": [
-        {
-          "timeStart": "09:00",
-          "timeEnd": "10:00",
-          "title": "退房・前往本部",
-          "type": "transport",
-          "area": "北谷 → 本部",
-          "description": "北谷柔婕閣酒店退房，驅車北上前往本部地區，車程約 1 小時 20 分。",
-          "notes": ["行程彈性，可中途停海邊拍照"]
-        },
-        {
-          "timeStart": "10:30",
-          "timeEnd": "13:00",
-          "title": "沖繩美麗海水族館",
-          "type": "sightseeing",
-          "area": "本部 海洋博公園",
-          "description": "日本最大水族館之一，「黑潮之海」巨型水槽有鯨鯊、魔鬼魚，孩子必看。建議網路預購門票節省時間。",
-          "mapQuery": "沖繩美麗海水族館",
-          "lat": 26.6938,
-          "lng": 127.8784,
-          "notes": [
-            "建議停留 2–2.5 小時",
-            "水族館外的「海豚劇場」免費觀看，建議排進去看"
+            "淺水區就有大量熱帶魚，非常適合兒童",
+            "青之洞窟體驗建議提前預約親子方案",
+            "上午能見度最好，人也較少"
           ]
         },
         {
           "timeStart": "13:00",
           "timeEnd": "14:00",
-          "title": "午餐：海洋博公園周邊",
+          "title": "午餐：真榮田岬周邊",
           "type": "meal",
-          "area": "本部",
-          "description": "水族館附近的餐廳，或至備瀨周邊的在地小餐廳，享用沖繩麵或海鮮。"
+          "area": "恩納",
+          "description": "浮潛後在附近小店補充體力，可選沖繩麵或海鮮定食。"
         },
         {
           "timeStart": "14:30",
-          "timeEnd": "16:30",
-          "title": "備瀨福木林道・悠閒漫步",
+          "timeEnd": "17:00",
+          "title": "殘波岬公園",
+          "type": "sightseeing",
+          "area": "讀谷村 殘波岬",
+          "description": "公園內有巨大的紅瓦獅子和寬闊草地，非常適合小孩跑跳玩耍，也可眺望崎嶇的岬角海景。",
+          "mapQuery": "殘波岬公園 讀谷",
+          "lat": 26.4404,
+          "lng": 127.7125,
+          "notes": ["草地寬闊，小朋友可以自由奔跑"]
+        },
+        {
+          "timeStart": "18:00",
+          "title": "返回北谷柔婕閣酒店",
+          "type": "accommodation",
+          "area": "北谷",
+          "description": "住宿：北谷柔婕閣酒店。"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-07",
+      "theme": "海中道路・濱比嘉島・永旺夢樂城",
+      "items": [
+        {
+          "timeStart": "09:00",
+          "timeEnd": "11:30",
+          "title": "海中道路自駕",
+          "type": "sightseeing",
+          "area": "與勝半島 海中道路",
+          "description": "從北谷開車約 40 分鐘。長達 4.7 公里的跨海公路，兩側盡是淺藍色海水，是沖繩必打卡的絕景道路。",
+          "mapQuery": "海中道路 沖繩",
+          "lat": 26.3655,
+          "lng": 127.9823
+        },
+        {
+          "timeStart": "10:00",
+          "timeEnd": "12:00",
+          "title": "濱比嘉島散策",
           "type": "walk",
-          "area": "備瀨",
-          "description": "水牛車或步行穿過古老福木林道，安靜美麗，適合放鬆，是沖繩少見的秘境感步道。",
-          "mapQuery": "備瀨福木林道"
+          "area": "濱比嘉島",
+          "description": "充滿琉球神話色彩的安靜小島。可帶小朋友去島上的天然海灘走走，或參觀著名的「阿摩美久之墓」感受古老石頭信仰。",
+          "mapQuery": "濱比嘉島 Hamahigashima",
+          "lat": 26.3524,
+          "lng": 128.0154
+        },
+        {
+          "timeStart": "13:00",
+          "timeEnd": "17:30",
+          "title": "永旺夢樂城來客夢",
+          "type": "shopping",
+          "area": "北中城 AEON Mall Rycom",
+          "description": "沖繩最大百貨，離北谷僅 15 分鐘車程。亮點：館內有巨大室內水族箱可帶孩子看魚暖身；冷氣強、美食街豐富，也是補足防曬油、泳裝、浮潛裝備的最佳地點。",
+          "mapQuery": "AEON Mall Rycom 北中城",
+          "lat": 26.2967,
+          "lng": 127.7931,
+          "notes": [
+            "室內水族箱免費參觀，孩子必看",
+            "補齊浮潛裝備的最後機會"
+          ]
+        },
+        {
+          "timeStart": "18:00",
+          "title": "返回北谷柔婕閣酒店",
+          "type": "accommodation",
+          "area": "北谷",
+          "description": "住宿：北谷柔婕閣酒店。"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-08",
+      "theme": "透明度之冠・水納島浮潛",
+      "items": [
+        {
+          "timeStart": "08:30",
+          "timeEnd": "09:00",
+          "title": "前往本部町渡久地港",
+          "type": "transport",
+          "area": "北谷 → 渡久地港",
+          "description": "從北谷開車約 1 小時前往本部町渡久地港，準備搭船前往水納島。"
+        },
+        {
+          "timeStart": "09:00",
+          "timeEnd": "16:30",
+          "title": "水納島・全天浮潛玩水",
+          "type": "activity",
+          "area": "水納島 Minna Island",
+          "description": "從渡久地港搭船僅 15 分鐘抵達水納島。海水透明度極高，在沙灘邊踢水就能看到小魚游過，是最適合親子的一天。\n\n備案：若不想搭船，可開車前往瀨底海灘（Sesoko Beach），同樣以清澈和魚多聞名。",
+          "mapQuery": "水納島 Minna Island 本部",
+          "lat": 26.6642,
+          "lng": 127.8275,
+          "notes": [
+            "渡輪班次有限，建議提前確認時刻表",
+            "備案：瀨底海灘（Sesoko Beach）同樣推薦",
+            "帶足飲水食物，島上設施有限"
+          ]
         },
         {
           "timeStart": "17:00",
-          "timeEnd": "18:00",
-          "title": "TWIN LINE HOTEL YANBARU Check-in",
+          "timeEnd": "18:30",
+          "title": "返回北谷",
+          "type": "transport",
+          "area": "渡久地港 → 北谷",
+          "description": "搭船返回渡久地港後開車南下回北谷，車程約 1 小時。"
+        },
+        {
+          "timeStart": "18:30",
+          "title": "北谷柔婕閣酒店",
           "type": "accommodation",
-          "area": "山原",
-          "description": "入住 TWIN LINE HOTEL YANBARU（原 Okinawa Suncoast Hotel），欣賞北部原生態環境。",
-          "mapQuery": "TWIN LINE HOTEL YANBARU OKINAWA"
+          "area": "北谷",
+          "description": "住宿：北谷柔婕閣酒店。"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-09",
+      "theme": "潮間帶探索・備瀨崎・美麗海水族館",
+      "items": [
+        {
+          "timeStart": "08:30",
+          "timeEnd": "10:30",
+          "title": "備瀨崎海灘・潮池探索",
+          "type": "activity",
+          "area": "本部 備瀨崎",
+          "description": "備瀨崎海灘有許多岩石潮池，退潮時就像天然的小魚缸。小朋友不用游泳，蹲在水邊就能觀察到藍色小魚和螃蟹，體驗感十足。",
+          "mapQuery": "備瀨崎 海灘 潮池",
+          "lat": 26.7025,
+          "lng": 127.8811,
+          "notes": [
+            "建議退潮時段前往，觀察效果最好",
+            "穿舊鞋或水鞋比較安全"
+          ]
+        },
+        {
+          "timeStart": "11:00",
+          "timeEnd": "13:30",
+          "title": "沖繩美麗海水族館",
+          "type": "sightseeing",
+          "area": "本部 海洋博公園",
+          "description": "日本最大水族館之一，「黑潮之海」巨型水槽有鯨鯊和魔鬼魚，孩子必看。建議網路預購門票節省排隊時間。海豚劇場免費觀看，別錯過。",
+          "mapQuery": "沖繩美麗海水族館",
+          "lat": 26.6938,
+          "lng": 127.8784,
+          "notes": [
+            "建議停留 2–2.5 小時",
+            "海豚劇場每日定時演出，免費"
+          ]
+        },
+        {
+          "timeStart": "14:00",
+          "timeEnd": "15:00",
+          "title": "午餐・前往山原",
+          "type": "meal",
+          "area": "本部",
+          "description": "水族館周邊午餐後驅車前往 TWIN LINE HOTEL YANBARU 辦理入住。"
         },
         {
           "timeStart": "18:30",
           "timeEnd": "20:00",
-          "title": "晚餐：飯店或名護市區",
+          "title": "晚餐：名護市區",
           "type": "meal",
-          "area": "山原 or 名護",
-          "description": "可選擇飯店內餐廳或驅車至名護市區覓食，嘗試山原豬（山原黑豬）料理。"
+          "area": "名護",
+          "description": "推薦「百年古家 大家」享用沖繩傳統燒肉，使用山原黑豬，是名護知名老店。",
+          "mapQuery": "百年古家 大家 名護 燒肉",
+          "notes": ["人氣店建議事先訂位"]
+        },
+        {
+          "timeStart": "17:00",
+          "title": "TWIN LINE HOTEL YANBARU Check-in",
+          "type": "accommodation",
+          "area": "山原",
+          "description": "住宿：TWIN LINE HOTEL YANBARU OKINAWA JAPAN（原 Okinawa Suncoast Hotel）。",
+          "mapQuery": "TWIN LINE HOTEL YANBARU OKINAWA"
         }
       ]
     },
     {
       "date": "2026-07-10",
-      "theme": "山原森林・南下那霸",
+      "theme": "古宇利島跨海大橋・大猩猩劈掌岩浮潛",
       "items": [
         {
           "timeStart": "08:30",
-          "timeEnd": "10:30",
-          "title": "やんばる国立公園・晨間自然步道",
-          "type": "walk",
-          "area": "山原 やんばる国立公園",
-          "description": "世界自然遺產山原國立公園，可步行短途步道感受亞熱帶森林，運氣好可見到沖繩秧雞。",
-          "mapQuery": "やんばる国立公園 自然步道"
+          "timeEnd": "12:00",
+          "title": "大猩猩劈掌岩浮潛（Gorilla Chop）",
+          "type": "activity",
+          "area": "名護 大猩猩劈掌岩",
+          "description": "離名護飯店很近的半天浮潛點。「Gorilla Chop」是沖繩著名的自由浮潛聖地，礁石旁魚群密集，水色清澈，非常適合帶孩子體驗。",
+          "mapQuery": "Gorilla Chop snorkeling Nago Okinawa",
+          "notes": [
+            "建議找有兒童方案的浮潛體驗業者",
+            "水深較淺，適合初學者"
+          ]
         },
         {
-          "timeStart": "10:30",
-          "timeEnd": "11:30",
-          "title": "退房・啟程南下",
-          "type": "transport",
-          "area": "山原 → 那霸",
-          "description": "退房後驅車南下，全程約 1.5 小時，沿途可停留名護市內採購特產。"
-        },
-        {
-          "timeStart": "12:00",
-          "timeEnd": "13:30",
-          "title": "午餐：名護或途中",
+          "timeStart": "13:00",
+          "timeEnd": "14:00",
+          "title": "午餐",
           "type": "meal",
-          "area": "名護",
-          "description": "名護市區的麵食店或便利商店，輕鬆用餐後繼續南下。"
+          "area": "名護 or 古宇利島",
+          "description": "前往古宇利島途中用餐。"
         },
         {
-          "timeStart": "14:30",
+          "timeStart": "14:00",
           "timeEnd": "17:00",
-          "title": "那霸 Daiwa Roynet Check-in・整理行李",
-          "type": "accommodation",
-          "area": "那霸",
-          "description": "入住 Daiwa Roynet（那霸），卸下行李、整理隔天要帶走的東西，留出空間給明天採購。",
-          "mapQuery": "Daiwa Roynet Hotel Naha"
+          "title": "古宇利島・心形岩・跨海大橋",
+          "type": "sightseeing",
+          "area": "今歸仁 古宇利島",
+          "description": "驅車前往古宇利島，跨越全長 1.9km 的古宇利大橋，兩側是沖繩最美的海景之一。島上的心形岩（ハートロック）是著名打卡點，海灘也很適合親子玩水。",
+          "mapQuery": "古宇利島 心形岩 古宇利大橋",
+          "lat": 26.7043,
+          "lng": 128.0375,
+          "notes": ["心形岩需走一小段沙灘路才能抵達"]
         },
         {
           "timeStart": "17:30",
-          "timeEnd": "20:00",
-          "title": "國際通採買・伴手禮掃貨",
-          "type": "shopping",
-          "area": "那霸 國際通",
-          "description": "沖繩最後採買機會！御菓子御殿、まちぐわー市場、藥妝店一次搞定。",
-          "mapQuery": "國際通 那霸 Kokusai-dori",
-          "lat": 26.2126,
-          "lng": 127.6876,
-          "notes": ["御菓子御殿的紫薯塔是必買伴手禮"]
+          "timeEnd": "19:30",
+          "title": "南下那霸・Check-in",
+          "type": "transport",
+          "area": "古宇利島 → 那霸",
+          "description": "傍晚開車從古宇利島南下那霸，約 1.5 小時。抵達後入住 Daiwa Roynet Hotel NAHA-OMOROMACHI PREMIER。",
+          "mapQuery": "Daiwa Roynet Hotel Naha Omoromachi"
         },
         {
           "timeStart": "20:00",
           "timeEnd": "21:30",
-          "title": "最後晚餐：沖繩料理",
+          "title": "晚餐：Naha Main Place 或居酒屋",
           "type": "meal",
-          "area": "那霸",
-          "description": "在國際通附近選一間沖繩傳統料理店，點苦瓜炒蛋、泡盛、海葡萄，為這趟旅程畫下美食句點。"
+          "area": "那霸 Omoromachi",
+          "description": "飯店樓下就是 Naha Main Place 商場，或步行至 Omoromachi 附近選一間居酒屋，享用最後一個完整的沖繩夜晚。",
+          "mapQuery": "Naha Main Place Omoromachi"
         }
       ]
     },
     {
       "date": "2026-07-11",
-      "theme": "最後採買・返台",
+      "theme": "最後衝刺・晚班機返台",
       "items": [
         {
           "timeStart": "09:00",
           "timeEnd": "11:00",
-          "title": "早晨自由時間・周邊散步",
-          "type": "walk",
-          "area": "那霸",
-          "description": "最後一個早晨，可輕鬆在飯店附近的牧志公設市場逛逛，或在咖啡廳吃個悠閒早餐。",
-          "mapQuery": "牧志公設市場 那霸"
+          "title": "國際通散策 or T Galleria 免稅店",
+          "type": "shopping",
+          "area": "那霸 國際通",
+          "description": "最後購物機會：國際通逛御菓子御殿、藥妝、在地名產；或前往飯店對面的 T Galleria（DFS）挑選免稅品。",
+          "mapQuery": "T Galleria DFS Okinawa 那霸",
+          "lat": 26.2126,
+          "lng": 127.6876
         },
         {
           "timeStart": "11:30",
-          "timeEnd": "13:00",
-          "title": "Ashibinaa Outlet・最後採購",
+          "timeEnd": "13:30",
+          "title": "午餐：瀨長島 Umikaji Terrace",
+          "type": "meal",
+          "area": "豐見城 瀨長島",
+          "description": "白色地中海風建築群，邊看飛機起降邊用餐，景色絕佳。距那霸機場約 10 分鐘，是行程最後的亮點。",
+          "mapQuery": "瀨長島 Umikaji Terrace",
+          "lat": 26.1686,
+          "lng": 127.6477,
+          "notes": ["可以近距離欣賞飛機降落，孩子最喜歡"]
+        },
+        {
+          "timeStart": "14:00",
+          "timeEnd": "15:30",
+          "title": "Ashibinaa Outlet 最後採購",
           "type": "shopping",
           "area": "豐見城 Ashibinaa",
-          "description": "機場附近的 Outlet，距那霸機場約 10 分鐘，可快速掃最後一波購物。",
+          "description": "距那霸機場約 10 分鐘的 Outlet，快速掃貨後準備還車。",
           "mapQuery": "Ashibinaa Outlet 豐見城"
         },
         {
-          "timeStart": "16:00",
-          "timeEnd": "17:30",
-          "title": "那霸機場 Check-in",
+          "timeStart": "18:00",
+          "timeEnd": "18:30",
+          "title": "OTS 臨空豐崎營業所還車",
+          "type": "transport",
+          "area": "豐見城 臨空豐崎",
+          "description": "於 18:00 前到 OTS 臨空豐崎營業所還車（就在 Outlet 旁邊），OTS 提供免費接送至機場。",
+          "mapQuery": "OTS 臨空豐崎 レンタカー",
+          "notes": ["OTS 提供免費接駁巴士送至那霸機場，預留 30 分鐘"]
+        },
+        {
+          "timeStart": "18:30",
+          "timeEnd": "20:30",
+          "title": "那霸機場・出境手續",
           "type": "arrival",
-          "area": "那霸機場",
-          "description": "提前抵達機場完成報到手續、託運行李。建議至少 3 小時前到達以防排隊。",
+          "area": "那霸機場 國際線",
+          "description": "辦理報到、託運行李，通關後逛免稅區。",
           "mapQuery": "那霸機場 国際線",
-          "notes": ["免稅店在通關後，建議預留 30 分鐘逛免稅"]
+          "notes": ["通關後免稅店有最後購物機會"]
         },
         {
           "timeStart": "20:55",
-          "timeEnd": "22:40",
-          "title": "那霸 → 桃園（華航 CI）",
+          "title": "那霸 → 桃園（華航 CI）返台",
           "type": "arrival",
-          "area": "那霸機場 → 台灣桃園",
-          "description": "搭乘 20:55 華航班機返台，結束愉快的沖繩親子之旅！"
+          "area": "那霸機場",
+          "description": "搭乘 20:55 華航班機返回台灣桃園，結束沖繩親子浮潛之旅！"
         }
       ]
     }
