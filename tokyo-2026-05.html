@@ -5,24 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>東京 3 天 2 夜慢走美食行</title>
   <meta name="description" content="核心路線：淺草 → 上野 → 晴空塔。以慢走、美食、少趕路為主，重點是把旅行節奏做舒服。" />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <meta name="generator" content="travel-planner v2" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
+    /* ── Design Tokens ── */
     :root {
       --bg: #f4f7fb;
-      --card: #ffffff;
+      --card: #fff;
       --text: #1f2937;
       --muted: #6b7280;
       --line: #e5e7eb;
       --brand: #2563eb;
       --brand-soft: #eaf2ff;
+      --brand-deep: #1d4ed8;
       --meal: #fff4e8;
       --meal-line: #f59e0b;
-      --note: #fff8e7;
+      --note-bg: #fff8e7;
       --note-line: #fbbf24;
       --warn-bg: #fff1f2;
       --warn-text: #be123c;
@@ -32,10 +31,12 @@
       --tip-text: #1d4ed8;
       --neutral-bg: #f3f4f6;
       --neutral-text: #374151;
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --shadow: 0 10px 30px rgba(15,23,42,.08);
       --radius: 18px;
+      --nav-h: 52px;
     }
-    * { box-sizing: border-box; }
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
@@ -46,153 +47,132 @@
         var(--bg);
       line-height: 1.6;
     }
-    .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 40px; }
+    /* ── Layout ── */
+    .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+    /* ── Hero ── */
     .hero {
       background: linear-gradient(135deg, #1d4ed8, #3b82f6 60%, #60a5fa);
-      color: #fff; border-radius: 24px; padding: 26px 20px; box-shadow: var(--shadow); margin-bottom: 18px;
+      color: #fff; border-radius: 24px; padding: 28px 22px;
+      box-shadow: var(--shadow); margin-bottom: 18px;
     }
     .hero h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
     .hero .meta { font-size: 14px; opacity: .95; margin-bottom: 12px; }
     .hero p { margin: 0; font-size: 15px; opacity: .98; }
+    .hero .gen-date { font-size: 12px; opacity: .7; margin-top: 10px; }
+    /* ── Day Nav ── */
+    .daynav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding: 8px 0; margin-bottom: 16px;
+      background: linear-gradient(to bottom, rgba(244,247,251,.97) 90%, transparent);
+      scrollbar-width: none;
+    }
+    .daynav::-webkit-scrollbar { display: none; }
+    .daynav-link {
+      display: inline-flex; flex-direction: column; align-items: center;
+      text-decoration: none; padding: 6px 12px; border-radius: 12px;
+      background: var(--card); box-shadow: var(--shadow);
+      border: 1px solid var(--line); white-space: nowrap; flex-shrink: 0;
+      transition: background .15s, transform .15s;
+    }
+    .daynav-link:hover { background: var(--brand-soft); transform: translateY(-1px); }
+    .daynav-num { font-size: 12px; font-weight: 800; color: var(--brand); }
+    .daynav-date { font-size: 11px; color: var(--muted); }
+    /* ── Cards ── */
     .tags, .chips, .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
     .tags, .chips { margin-top: 14px; }
-    .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+    .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 5px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; }
     .tag { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.2); }
-    .summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .chip { background: var(--brand-soft); color: var(--brand); }
+    .pill.neutral { background: var(--neutral-bg); color: var(--neutral-text); }
+    .pill.good { background: var(--good-bg); color: var(--good-text); }
+    .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
+    .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
+    .summary { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-bottom: 16px; }
     .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
     .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
     .card p { margin: 0; color: var(--muted); font-size: 14px; }
-    .chip { background: var(--brand-soft); color: var(--brand); }
-    .trip-map-card {
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #eef4ff, #f8fbff);
-      border: 1px solid #dbeafe;
-    }
-    .trip-map-head {
-      display: flex; justify-content: space-between; align-items: center; gap: 16px;
-    }
-    .trip-map-link {
-      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
-      padding: 10px 14px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
-    }
-    .trip-map-embed-wrap {
-      margin-top: 14px; border-radius: 16px; overflow: hidden; border: 1px solid #cfe0ff; background: #fff;
-    }
-    .trip-map-legend {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
-    }
-    .legend-item {
-      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px;
-      background: rgba(255,255,255,.75); color: var(--text); font-size: 12px; font-weight: 700;
-    }
-    .legend-dot {
-      width: 12px; height: 12px; border-radius: 999px; display: inline-block;
-    }
-    .leaflet-fallback-wrap {
-      position: relative;
-    }
-    .trip-map-embed {
-      width: 100%; height: 320px; border: 0; display: block;
-    }
-    .day-map-embed {
-      height: 220px;
-    }
-    .leaflet-overlay-hidden {
-      display: none;
-    }
-    .leaflet-overlay-active {
-      display: block;
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-    }
-    .leaflet-map {
-      width: 100%; height: 360px;
-    }
-    .day-map-summary {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px;
-    }
-    .day-map-head {
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    }
-    .day-marker-icon-wrap {
-      background: transparent;
-      border: 0;
-    }
-    .day-marker-icon {
-      width: 28px; height: 28px; border-radius: 999px; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800; box-shadow: 0 4px 10px rgba(15,23,42,.22);
-      border: 2px solid rgba(255,255,255,.92);
-    }
+    /* ── Trip Map Card ── */
+    .trip-map-card { margin-bottom: 16px; background: linear-gradient(135deg,#eef4ff,#f8fbff); border: 1px solid #dbeafe; }
+    .trip-map-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .trip-map-link { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; padding: 10px 14px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700; }
+    .trip-map-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.75); font-size: 12px; font-weight: 700; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 999px; display: inline-block; }
+    /* ── Prep ── */
+    .prep-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-bottom: 16px; }
+    .prep-card { background: linear-gradient(135deg,#f8fbff,#fff); border: 1px solid #dbeafe; }
+    .prep-intro { margin-bottom: 10px !important; font-size: 13px; }
+    .prep-list li { margin-bottom: 5px; }
+    /* ── Day ── */
     .days { display: grid; gap: 18px; }
-    .day { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); }
-    .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .day { background: var(--card); border-radius: 22px; padding: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); scroll-margin-top: calc(var(--nav-h) + 8px); }
+    .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
     .day-title { margin: 0; font-size: 20px; }
     .day-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
     .badge { background: #eff6ff; color: var(--brand); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 6px 10px; white-space: nowrap; }
-    .day-map-card {
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-      background: linear-gradient(135deg, #eff6ff, #f8fbff); border: 1px solid #dbeafe;
-      border-radius: 16px; padding: 14px 16px; margin: 12px 0;
-    }
+    /* ── Day Map Card ── */
+    .day-map-card { background: linear-gradient(135deg,#eff6ff,#f8fbff); border: 1px solid #dbeafe; border-radius: 16px; padding: 14px 16px; margin: 12px 0; }
+    .day-map-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .map-card-text { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
-    .map-card-link {
-      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
-      padding: 8px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
-    }
-    .day-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 16px; }
+    .map-card-link { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; padding: 8px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700; }
+    .day-map-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-top: 12px; }
+    /* ── Day Panels ── */
+    .day-panels { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 12px 0 16px; }
     .subcard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; }
-    .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
     .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
     .empty { margin: 0; color: var(--muted); font-size: 13px; }
+    /* ── Timeline ── */
     .timeline { display: grid; gap: 12px; margin-top: 12px; }
-    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background-color .2s ease, box-shadow .2s ease; }
+    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background .2s, box-shadow .2s; }
     .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
-    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.18); padding: 12px 14px; }
+    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.2); padding: 12px 14px; }
     .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
     .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
     .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
     .item-meta span { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-text); font-size: 12px; font-weight: 600; }
     .desc { color: var(--muted); font-size: 14px; margin: 0; }
     .map-link-row { margin-top: 8px; }
-    .map-link {
-      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-      color: var(--brand); font-size: 13px; font-weight: 700;
-    }
+    .map-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--brand); font-size: 13px; font-weight: 700; }
     .map-link:hover { text-decoration: underline; }
     .food-block { margin-top: 10px; background: rgba(255,255,255,.55); }
-    .notes-block { margin-top: 10px; background: var(--note); border-color: #fde68a; }
+    .notes-block { margin-top: 10px; background: var(--note-bg); border-color: #fde68a; }
     .note-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
     .note-list.compact { font-size: 13px; }
-    .pill { font-size: 12px; }
-    .pill.neutral { background: var(--neutral-bg); color: var(--neutral-text); }
-    .pill.good { background: var(--good-bg); color: var(--good-text); }
-    .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
-    .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
-    .prep-card {
-      background: linear-gradient(135deg, #f8fbff, #ffffff);
-      border: 1px solid #dbeafe;
-    }
-    .prep-intro {
-      margin-bottom: 10px !important;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .prep-list li {
-      margin-bottom: 6px;
-    }
+    /* ── Footer ── */
     .footer-note { margin-top: 18px; background: #f8fafc; border: 1px dashed #cbd5e1; }
     .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    /* ── Back to Top ── */
+    .back-top {
+      position: fixed; bottom: 24px; right: 20px; z-index: 200;
+      width: 44px; height: 44px; border-radius: 999px;
+      background: var(--brand); color: #fff; border: 0; cursor: pointer;
+      font-size: 20px; display: none; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(37,99,235,.4); transition: transform .15s;
+    }
+    .back-top:hover { transform: translateY(-2px); }
+    .back-top.visible { display: flex; }
+    /* ── Responsive ── */
     @media (max-width: 720px) {
-      .summary { grid-template-columns: 1fr; }
+      .summary, .prep-grid { grid-template-columns: 1fr; }
+      .day-panels { grid-template-columns: 1fr; }
+      .day-map-summary { grid-template-columns: 1fr; }
       .trip-map-head { flex-direction: column; align-items: flex-start; }
-      .trip-map-embed { height: 260px; }
-      .leaflet-map { height: 280px; }
-      .day-header { flex-direction: column; }
       .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
-      .day-map-summary, .day-panels { grid-template-columns: 1fr; }
+      .day-header { flex-direction: column; }
       .hero h1 { font-size: 24px; }
+    }
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; font-size: 12pt; }
+      .daynav, .back-top, .map-card-link, .trip-map-link { display: none !important; }
+      .wrap { padding: 0; max-width: 100%; }
+      .hero { border-radius: 0; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .card, .day { box-shadow: none; border: 1px solid #ddd; }
+      .day { break-inside: avoid; }
+      .item { break-inside: avoid; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: 10pt; color: #999; }
     }
   </style>
 </head>
@@ -202,499 +182,461 @@
       <h1>東京 3 天 2 夜慢走美食行</h1>
       <div class="meta">2026-05-10 ～ 2026-05-12｜2 人｜中等預算</div>
       <p>第一天下午到、不想太早起、不想排隊太久</p>
-      <div class="tags">
-        <span class="tag">美食</span><span class="tag">散步</span><span class="tag">少趕路</span><span class="tag">第一天下午到</span><span class="tag">不想太早起</span>
-      </div>
+      <div class="tags"><span class="tag">美食</span><span class="tag">散步</span><span class="tag">少趕路</span><span class="tag">第一天下午到</span><span class="tag">不想太早起</span></div>
+      <div class="gen-date">由 travel-planner v2 生成・2026-04-13</div>
     </section>
+
+    <nav class="daynav" aria-label="日程導覽"><a class="daynav-link" href="#day-1" aria-label="跳到 Day 1"><span class="daynav-num">D1</span><span class="daynav-date">05/10</span></a><a class="daynav-link" href="#day-2" aria-label="跳到 Day 2"><span class="daynav-num">D2</span><span class="daynav-date">05/11</span></a><a class="daynav-link" href="#day-3" aria-label="跳到 Day 3"><span class="daynav-num">D3</span><span class="daynav-date">05/12</span></a></nav>
 
     <section class="summary">
       <div class="card">
         <h2>旅程摘要</h2>
         <p>核心路線：淺草 → 上野 → 晴空塔。以慢走、美食、少趕路為主，重點是把旅行節奏做舒服。</p>
-        <div class="chips">
-          <span class="chip">美食</span><span class="chip">散步</span><span class="chip">少趕路</span>
-        </div>
+        <div class="chips"><span class="chip">美食</span><span class="chip">散步</span><span class="chip">少趕路</span></div>
       </div>
       <div class="card">
         <h2>安排原則</h2>
-        <p>這份頁面由結構化資料自動整理成草稿，重點是先把骨架做穩，再把交通、用餐與注意事項補到夠實用。</p>
+        <p>以重點景點與整體節奏優先，避免趕場清單，餐飲以順路穩定為主。</p>
         <div class="chips">
-          <span class="chip">以重點景點與整體節奏優先</span><span class="chip">避免把每天塞成趕場清單</span><span class="chip">餐飲安排以順路、穩定、可執行為主</span>
+          <span class="chip">重點優先</span>
+          <span class="chip">節奏舒適</span>
+          <span class="chip">彈性保留</span>
         </div>
       </div>
     </section>
 
     
-    <section class="card trip-map-card">
-      <div class="trip-map-head">
-        <div>
-          <h2>旅程總覽</h2>
-          <p>先看這趟旅程的主要區域與重點景點，再決定每天怎麼走；跨天移動改用外部總地圖，避免站內白框。</p>
-          <div class="chips">
-            <span class="chip">Tokyo</span>
-            <span class="chip">3 天行程</span>
-          </div>
-        </div>
-        <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E8%BB%8A%E7%AB%99%20%E6%B7%BA%E8%8D%89%E5%AF%BA%20%E6%9D%B1%E4%BA%AC%20%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90%20%E9%9A%85%E7%94%B0%E5%B7%9D%E6%AD%A5%E9%81%93%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E5%85%AC%E5%9C%92%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
-      </div>
-      <div class="day-panels" style="margin-top:14px;">
-        <div class="subcard">
-          <div class="subcard-title">主要區域</div>
-          <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span><span class="pill neutral">淺草／押上</span></div>
-        </div>
-        <div class="subcard">
-          <div class="subcard-title">重點景點</div>
-          <div class="pill-row"><span class="pill neutral">抵達東京、進市區、入住</span><span class="pill neutral">淺草寺＋仲見世商店街散步</span><span class="pill neutral">隅田川夜間散步（可選）</span><span class="pill neutral">上野公園散步＋館舍擇一</span><span class="pill neutral">阿美橫町自由逛街</span><span class="pill neutral">晴空塔商場晚餐＋夜景</span><span class="pill neutral">補逛淺草／押上周邊</span></div>
-        </div>
-        <div class="subcard">
-          <div class="subcard-title">使用方式</div>
-          <ul class="note-list compact">
-            <li>頁內先看每日小地圖</li>
-            <li>跨天移動用外部整趟地圖</li>
-            <li>點各景點可直接開地圖</li>
-          </ul>
+  <section class="card trip-map-card">
+    <div class="trip-map-head">
+      <div>
+        <h2>旅程總覽</h2>
+        <p>先掌握整趟主要區域與景點，再決定每天怎麼走。</p>
+        <div class="chips">
+          <span class="chip">Tokyo</span>
+          <span class="chip">3 天行程</span>
         </div>
       </div>
-      <div class="trip-map-legend">
-        <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5</span>
+      <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E8%BB%8A%E7%AB%99%20%E6%B7%BA%E8%8D%89%E5%AF%BA%20%E6%9D%B1%E4%BA%AC%20%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90%20%E9%9A%85%E7%94%B0%E5%B7%9D%E6%AD%A5%E9%81%93%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC%20%E4%B8%8A%E9%87%8E%E5%85%AC%E5%9C%92%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
+    </div>
+    <div class="day-panels" style="margin-top:14px">
+      <div class="subcard">
+        <div class="subcard-title">主要區域</div>
+        <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span><span class="pill neutral">淺草／押上</span></div>
       </div>
-    </section>
+      <div class="subcard">
+        <div class="subcard-title">重點景點</div>
+        <div class="pill-row"><span class="pill neutral">抵達東京、進市區、入住</span><span class="pill neutral">淺草寺＋仲見世商店街散步</span><span class="pill neutral">隅田川夜間散步（可選）</span><span class="pill neutral">上野公園散步＋館舍擇一</span><span class="pill neutral">阿美橫町自由逛街</span><span class="pill neutral">晴空塔商場晚餐＋夜景</span><span class="pill neutral">補逛淺草／押上周邊</span></div>
+      </div>
+      <div class="subcard">
+        <div class="subcard-title">使用方式</div>
+        <ul class="note-list compact">
+          <li>先看每日小地圖掌握動線</li>
+          <li>跨天移動用整趟地圖</li>
+          <li>點景點連結直接導航</li>
+        </ul>
+      </div>
+    </div>
+    <div class="trip-map-legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5+</span>
+    </div>
+  </section>
 
     
-    <section class="summary prep-grid">
-      <div class="card prep-card">
-        <h2>出發前要先做</h2>
-        <p class="prep-intro">先把需要提早處理的事情收斂成一區，避免出發前才臨時補救。</p>
-        <div class="subcard-label">已預約 / 要確認</div><ul class="note-list prep-list"><li>若想上晴空塔展望台，可先看是否需要預約或先買票</li></ul>
-        <div class="subcard-label">票券 / 入場</div><ul class="note-list prep-list"><li>機場到市區交通票券可先決定要用哪種方案</li></ul>
-      </div>
-      <div class="card prep-card">
-        <h2>當天注意事項</h2>
-        <p class="prep-intro">把真正會影響行程順暢度的提醒留下來，現場照這區看就夠。</p>
-        <ul class="note-list prep-list"><li>第一天下午抵達，行程不要排太硬</li><li>熱門用餐時段盡量提早或延後</li></ul>
-      </div>
-    </section>
+  <section class="summary prep-grid">
+    <div class="card prep-card">
+      <h2>出發前要先做</h2>
+      <p class="prep-intro">提前處理，避免出發前臨時補救。</p>
+      <div class="subcard-label">已預約 / 要確認</div><ul class="note-list prep-list"><li>若想上晴空塔展望台，可先看是否需要預約或先買票</li></ul>
+      <div class="subcard-label">票券 / 入場</div><ul class="note-list prep-list"><li>機場到市區交通票券可先決定要用哪種方案</li></ul>
+    </div>
+    <div class="card prep-card">
+      <h2>當天注意事項</h2>
+      <p class="prep-intro">影響行程順暢度的提醒，現場對照用。</p>
+      <ul class="note-list prep-list"><li>第一天下午抵達，行程不要排太硬</li><li>熱門用餐時段盡量提早或延後</li></ul>
+    </div>
+  </section>
 
     <section class="days">
       
-      <article class="day">
-        <div class="day-header">
+    <article class="day" id="day-1">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 1｜淺草輕鬆開場</h2>
+          <div class="day-sub">05/10・行程安排</div>
+        </div>
+        <span class="badge">Day 1</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
           <div>
-            <h2 class="day-title">Day 1｜淺草輕鬆開場</h2>
-            <div class="day-sub">05/10・行程安排</div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 東京車站 為起點查看今日動線。</p>
           </div>
-          <span class="badge">Day 1</span>
+          <a class="map-card-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
-        
-        
-        <div class="day-map-card">
-          <div class="day-map-head">
-            <div>
-              <div class="subcard-title">今日地圖</div>
-              <p class="map-card-text">以 東京車站 為起點查看今天的主要區域與動線。</p>
-            </div>
-            <a class="map-card-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
-          </div>
-          <div class="day-map-summary">
-            <div class="subcard">
-              <div class="subcard-title">今日區域</div>
-              <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span></div>
-            </div>
-            <div class="subcard">
-              <div class="subcard-title">主要地點</div>
-              <div class="pill-row"><span class="pill neutral">抵達東京、進市區、入住</span><span class="pill neutral">淺草寺＋仲見世商店街散步</span><span class="pill neutral">隅田川夜間散步（可選）</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="day-panels">
+        <div class="day-map-summary">
           <div class="subcard">
-            <div class="subcard-title">今日重點區域</div>
+            <div class="subcard-title">今日區域</div>
             <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span></div>
           </div>
           <div class="subcard">
-            <div class="subcard-title">今日交通</div>
-            <div class="pill-row"><span class="pill neutral">機場到市區交通</span><span class="pill neutral">步行</span></div>
-          </div>
-          <div class="subcard">
-            <div class="subcard-title">今日提醒</div>
-            <ul class="note-list compact"><li>保留彈性，避免第一天太趕</li><li>若太累可直接縮短停留</li><li>可選行程，不強制</li></ul>
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">抵達東京、進市區、入住</span><span class="pill neutral">淺草寺＋仲見世商店街散步</span><span class="pill neutral">隅田川夜間散步（可選）</span></div>
           </div>
         </div>
-        <div class="timeline">
-          <div class="item" data-map-key="1-14:00-抵達東京、進市區、入住">
-            <div class="time">14:00–16:00</div>
-            <div class="item-title">抵達東京、進市區、入住</div>
-            <div class="item-meta"><span>區域：東京市區</span><span>交通：機場到市區交通</span></div>
-            <p class="desc">抵達後先進市區、放行李、休息，不安排高強度行程。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>保留彈性，避免第一天太趕</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item" data-map-key="1-16:30-淺草寺＋仲見世商店街散步">
-            <div class="time">16:30–18:30</div>
-            <div class="item-title">淺草寺＋仲見世商店街散步</div>
-            <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
-            <p class="desc">輕鬆散步，先進入旅行節奏，不排硬景點。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7148%2C139.7967" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>若太累可直接縮短停留</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="1-18:30-淺草晚餐">
-            <div class="time">18:30–20:00</div>
-            <div class="item-title">淺草晚餐</div>
-            <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
-            <p class="desc">以天婦羅、日式定食、老店型餐廳為主，不追排隊名店。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">天婦羅</span><span class="pill good">日式定食</span><span class="pill good">老店日料</span><span class="pill good">和風小吃</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">超熱門排隊店</span><span class="pill warn">跨區找餐廳</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">避開 18:00–19:30 最尖峰</span><span class="pill tip">主街太擠可轉旁邊巷弄</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="1-20:00-隅田川夜間散步（可選）">
-            <div class="time">20:00–21:00</div>
-            <div class="item-title">隅田川夜間散步（可選）</div>
-            <div class="item-meta"><span>區域：淺草／隅田川</span><span>交通：步行</span></div>
-            <p class="desc">飯後輕鬆散步看夜景，若累可直接回飯店。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7101%2C139.7986" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>可選行程，不強制</li>
-              </ul>
-            </div>
-          </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">東京市區</span><span class="pill neutral">淺草</span><span class="pill neutral">淺草／隅田川</span></div>
         </div>
-      </article>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <div class="pill-row"><span class="pill neutral">機場到市區交通</span><span class="pill neutral">步行</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>保留彈性，避免第一天太趕</li><li>若太累可直接縮短停留</li><li>可選行程，不強制</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="1-14:00-抵達東京、進市區、入住">
+          <div class="time">14:00–16:00</div>
+          <div class="item-title">抵達東京、進市區、入住</div>
+          <div class="item-meta"><span>區域：東京市區</span><span>交通：機場到市區交通</span></div>
+          <p class="desc">抵達後先進市區、放行李、休息，不安排高強度行程。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.6812%2C139.7671" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>保留彈性，避免第一天太趕</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="1-16:30-淺草寺＋仲見世商店街散步">
+          <div class="time">16:30–18:30</div>
+          <div class="item-title">淺草寺＋仲見世商店街散步</div>
+          <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
+          <p class="desc">輕鬆散步，先進入旅行節奏，不排硬景點。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7148%2C139.7967" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>若太累可直接縮短停留</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="1-18:30-淺草晚餐">
+          <div class="time">18:30–20:00</div>
+          <div class="item-title">淺草晚餐</div>
+          <div class="item-meta"><span>區域：淺草</span><span>交通：步行</span></div>
+          <p class="desc">以天婦羅、日式定食、老店型餐廳為主，不追排隊名店。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%B7%BA%E8%8D%89%20%E6%99%9A%E9%A4%90" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">天婦羅</span><span class="pill good">日式定食</span><span class="pill good">老店日料</span><span class="pill good">和風小吃</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">超熱門排隊店</span><span class="pill warn">跨區找餐廳</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">避開 18:00–19:30 最尖峰</span><span class="pill tip">主街太擠可轉旁邊巷弄</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="1-20:00-隅田川夜間散步（可選）">
+          <div class="time">20:00–21:00</div>
+          <div class="item-title">隅田川夜間散步（可選）</div>
+          <div class="item-meta"><span>區域：淺草／隅田川</span><span>交通：步行</span></div>
+          <p class="desc">飯後輕鬆散步看夜景，若累可直接回飯店。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7101%2C139.7986" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>可選行程，不強制</li></ul>
+      </div>
+        </div>
+      </div>
+    </article>
 
-      <article class="day">
-        <div class="day-header">
+    <article class="day" id="day-2">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 2｜上野散步＋阿美橫町＋晴空塔夜景</h2>
+          <div class="day-sub">05/11・行程安排</div>
+        </div>
+        <span class="badge">Day 2</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
           <div>
-            <h2 class="day-title">Day 2｜上野散步＋阿美橫町＋晴空塔夜景</h2>
-            <div class="day-sub">05/11・行程安排</div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 上野站 東京 為起點查看今日動線。</p>
           </div>
-          <span class="badge">Day 2</span>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
-        
-        
-        <div class="day-map-card">
-          <div class="day-map-head">
-            <div>
-              <div class="subcard-title">今日地圖</div>
-              <p class="map-card-text">以 上野站 東京 為起點查看今天的主要區域與動線。</p>
-            </div>
-            <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
-          </div>
-          <div class="day-map-summary">
-            <div class="subcard">
-              <div class="subcard-title">今日區域</div>
-              <div class="pill-row"><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span></div>
-            </div>
-            <div class="subcard">
-              <div class="subcard-title">主要地點</div>
-              <div class="pill-row"><span class="pill neutral">上野公園散步＋館舍擇一</span><span class="pill neutral">阿美橫町自由逛街</span><span class="pill neutral">晴空塔商場晚餐＋夜景</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="day-panels">
+        <div class="day-map-summary">
           <div class="subcard">
-            <div class="subcard-title">今日重點區域</div>
-            <div class="pill-row"><span class="pill neutral">住宿區</span><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span><span class="pill neutral">東京市區</span></div>
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span></div>
           </div>
           <div class="subcard">
-            <div class="subcard-title">今日交通</div>
-            <div class="pill-row"><span class="pill neutral">步行／電車</span><span class="pill neutral">步行</span><span class="pill neutral">電車＋步行</span><span class="pill neutral">電車</span></div>
-          </div>
-          <div class="subcard">
-            <div class="subcard-title">今日提醒</div>
-            <ul class="note-list compact"><li>館舍可依當天體力與興趣決定</li><li>可穿插小吃與咖啡休息</li><li>若要上展望台，當天再看排隊情況</li></ul>
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">上野公園散步＋館舍擇一</span><span class="pill neutral">阿美橫町自由逛街</span><span class="pill neutral">晴空塔商場晚餐＋夜景</span></div>
           </div>
         </div>
-        <div class="timeline">
-          <div class="item" data-map-key="2-10:00-晚一點出門">
-            <div class="time">10:00–10:30</div>
-            <div class="item-title">晚一點出門</div>
-            <div class="item-meta"><span>區域：住宿區</span><span>交通：步行／電車</span></div>
-            <p class="desc">維持不早起節奏，保留旅行舒適感。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-          </div>
-          <div class="item" data-map-key="2-10:30-上野公園散步＋館舍擇一">
-            <div class="time">10:30–12:30</div>
-            <div class="item-title">上野公園散步＋館舍擇一</div>
-            <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
-            <p class="desc">在上野公園散步，再視興趣選一個館進去參觀。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7141%2C139.7736" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>館舍可依當天體力與興趣決定</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="2-12:30-上野午餐">
-            <div class="time">12:30–14:00</div>
-            <div class="item-title">上野午餐</div>
-            <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
-            <p class="desc">以商店街小吃、拉麵、燒肉、海鮮丼等中等預算選擇為主。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%20%E7%BE%8E%E9%A3%9F" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">拉麵</span><span class="pill good">海鮮丼</span><span class="pill good">燒肉</span><span class="pill good">商店街小吃</span><span class="pill good">居酒屋午餐</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">網紅爆紅排隊店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">先逛再選店</span><span class="pill tip">以座位流動快的店為優先</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="2-14:00-阿美橫町自由逛街">
-            <div class="time">14:00–16:30</div>
-            <div class="item-title">阿美橫町自由逛街</div>
-            <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
-            <p class="desc">逛街、買零食、看伴手禮，保持機動彈性。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.709%2C139.7745" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>可穿插小吃與咖啡休息</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="2-17:30-晴空塔商場晚餐＋夜景">
-            <div class="time">17:30–20:30</div>
-            <div class="item-title">晴空塔商場晚餐＋夜景</div>
-            <div class="item-meta"><span>區域：押上／晴空塔</span><span>交通：電車＋步行</span></div>
-            <p class="desc">傍晚移動到晴空塔，先逛商場、吃晚餐，再視情況看夜景。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7101%2C139.8107" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">商場餐廳</span><span class="pill good">景觀餐廳</span><span class="pill good">咖啡館</span><span class="pill good">家庭式日料</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">高峰時硬排熱門名店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">若展望台人多先吃飯</span><span class="pill tip">可選非熱門樓層餐廳避開尖峰</span></div>
-            </div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>若要上展望台，當天再看排隊情況</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item" data-map-key="2-21:00-返回住宿">
-            <div class="time">21:00–21:30</div>
-            <div class="item-title">返回住宿</div>
-            <div class="item-meta"><span>區域：東京市區</span><span>交通：電車</span></div>
-            <p class="desc">結束主力行程日，回飯店休息。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E9%A3%AF%E5%BA%97" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-          </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">住宿區</span><span class="pill neutral">上野</span><span class="pill neutral">押上／晴空塔</span><span class="pill neutral">東京市區</span></div>
         </div>
-      </article>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <div class="pill-row"><span class="pill neutral">步行／電車</span><span class="pill neutral">步行</span><span class="pill neutral">電車＋步行</span><span class="pill neutral">電車</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>館舍可依當天體力與興趣決定</li><li>可穿插小吃與咖啡休息</li><li>若要上展望台，當天再看排隊情況</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="2-10:00-晚一點出門">
+          <div class="time">10:00–10:30</div>
+          <div class="item-title">晚一點出門</div>
+          <div class="item-meta"><span>區域：住宿區</span><span>交通：步行／電車</span></div>
+          <p class="desc">維持不早起節奏，保留旅行舒適感。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%E7%AB%99%20%E6%9D%B1%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+        <div class="item" data-map-key="2-10:30-上野公園散步＋館舍擇一">
+          <div class="time">10:30–12:30</div>
+          <div class="item-title">上野公園散步＋館舍擇一</div>
+          <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
+          <p class="desc">在上野公園散步，再視興趣選一個館進去參觀。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7141%2C139.7736" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>館舍可依當天體力與興趣決定</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="2-12:30-上野午餐">
+          <div class="time">12:30–14:00</div>
+          <div class="item-title">上野午餐</div>
+          <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
+          <p class="desc">以商店街小吃、拉麵、燒肉、海鮮丼等中等預算選擇為主。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%8A%E9%87%8E%20%E7%BE%8E%E9%A3%9F" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">拉麵</span><span class="pill good">海鮮丼</span><span class="pill good">燒肉</span><span class="pill good">商店街小吃</span><span class="pill good">居酒屋午餐</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">網紅爆紅排隊店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">先逛再選店</span><span class="pill tip">以座位流動快的店為優先</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="2-14:00-阿美橫町自由逛街">
+          <div class="time">14:00–16:30</div>
+          <div class="item-title">阿美橫町自由逛街</div>
+          <div class="item-meta"><span>區域：上野</span><span>交通：步行</span></div>
+          <p class="desc">逛街、買零食、看伴手禮，保持機動彈性。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.709%2C139.7745" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>可穿插小吃與咖啡休息</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="2-17:30-晴空塔商場晚餐＋夜景">
+          <div class="time">17:30–20:30</div>
+          <div class="item-title">晴空塔商場晚餐＋夜景</div>
+          <div class="item-meta"><span>區域：押上／晴空塔</span><span>交通：電車＋步行</span></div>
+          <p class="desc">傍晚移動到晴空塔，先逛商場、吃晚餐，再視情況看夜景。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7101%2C139.8107" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">商場餐廳</span><span class="pill good">景觀餐廳</span><span class="pill good">咖啡館</span><span class="pill good">家庭式日料</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">高峰時硬排熱門名店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">若展望台人多先吃飯</span><span class="pill tip">可選非熱門樓層餐廳避開尖峰</span></div>
+      </div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>若要上展望台，當天再看排隊情況</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="2-21:00-返回住宿">
+          <div class="time">21:00–21:30</div>
+          <div class="item-title">返回住宿</div>
+          <div class="item-meta"><span>區域：東京市區</span><span>交通：電車</span></div>
+          <p class="desc">結束主力行程日，回飯店休息。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E9%A3%AF%E5%BA%97" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+        </div>
+      </div>
+    </article>
 
-      <article class="day">
-        <div class="day-header">
+    <article class="day" id="day-3">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 3｜輕鬆收尾與伴手禮時間</h2>
+          <div class="day-sub">05/12・行程安排</div>
+        </div>
+        <span class="badge">Day 3</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
           <div>
-            <h2 class="day-title">Day 3｜輕鬆收尾與伴手禮時間</h2>
-            <div class="day-sub">05/12・行程安排</div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 東京 早午餐 為起點查看今日動線。</p>
           </div>
-          <span class="badge">Day 3</span>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
-        
-        
-        <div class="day-map-card">
-          <div class="day-map-head">
-            <div>
-              <div class="subcard-title">今日地圖</div>
-              <p class="map-card-text">以 東京 早午餐 為起點查看今天的主要區域與動線。</p>
-            </div>
-            <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
-          </div>
-          <div class="day-map-summary">
-            <div class="subcard">
-              <div class="subcard-title">今日區域</div>
-              <div class="pill-row"><span class="pill neutral">淺草／押上</span></div>
-            </div>
-            <div class="subcard">
-              <div class="subcard-title">主要地點</div>
-              <div class="pill-row"><span class="pill neutral">補逛淺草／押上周邊</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="day-panels">
+        <div class="day-map-summary">
           <div class="subcard">
-            <div class="subcard-title">今日重點區域</div>
-            <div class="pill-row"><span class="pill neutral">住宿區附近</span><span class="pill neutral">淺草／押上</span><span class="pill neutral">淺草／上野／押上擇一</span><span class="pill neutral">東京市區</span></div>
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">淺草／押上</span></div>
           </div>
           <div class="subcard">
-            <div class="subcard-title">今日交通</div>
-            <div class="pill-row"><span class="pill neutral">步行</span><span class="pill neutral">步行／短程電車</span><span class="pill neutral">市區到機場／車站交通</span></div>
-          </div>
-          <div class="subcard">
-            <div class="subcard-title">今日提醒</div>
-            <ul class="note-list compact"><li>依住宿地點彈性選區域</li><li>預留交通與托運時間</li></ul>
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">補逛淺草／押上周邊</span></div>
           </div>
         </div>
-        <div class="timeline">
-          <div class="item meal" data-map-key="3-09:30-早午餐">
-            <div class="time">09:30–10:30</div>
-            <div class="item-title">早午餐</div>
-            <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
-            <p class="desc">不早起，悠閒吃早午餐再出發。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">咖啡店</span><span class="pill good">輕食</span><span class="pill good">日式早餐</span><span class="pill good">商場早午餐</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要特地排隊的熱門店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以順路、舒適、可久坐為主</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="3-11:00-補逛淺草／押上周邊">
-            <div class="time">11:00–13:00</div>
-            <div class="item-title">補逛淺草／押上周邊</div>
-            <div class="item-meta"><span>區域：淺草／押上</span><span>交通：步行／短程電車</span></div>
-            <p class="desc">補逛前兩天沒走完的地方，保留最後的散步與拍照時間。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7107%2C139.8129" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>依住宿地點彈性選區域</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="3-13:00-最後一餐＋伴手禮採買">
-            <div class="time">13:00–14:30</div>
-            <div class="item-title">最後一餐＋伴手禮採買</div>
-            <div class="item-meta"><span>區域：淺草／上野／押上擇一</span><span>交通：步行</span></div>
-            <p class="desc">安排一頓輕鬆收尾型餐食，順手買最後伴手禮。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E4%BC%B4%E6%89%8B%E7%A6%AE%20%E5%95%86%E5%A0%B4" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">簡單日料</span><span class="pill good">咖啡簡餐</span><span class="pill good">商場餐廳</span><span class="pill good">小吃補完</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要長時間排隊的名店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以離回程動線近的區域優先</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="3-15:00-前往機場或下一站">
-            <div class="time">15:00–18:00</div>
-            <div class="item-title">前往機場或下一站</div>
-            <div class="item-meta"><span>區域：東京市區</span><span>交通：市區到機場／車站交通</span></div>
-            <p class="desc">依回程班機或下一段移動安排離開。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E6%A9%9F%E5%A0%B4" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>預留交通與托運時間</li>
-              </ul>
-            </div>
-          </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">住宿區附近</span><span class="pill neutral">淺草／押上</span><span class="pill neutral">淺草／上野／押上擇一</span><span class="pill neutral">東京市區</span></div>
         </div>
-      </article>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <div class="pill-row"><span class="pill neutral">步行</span><span class="pill neutral">步行／短程電車</span><span class="pill neutral">市區到機場／車站交通</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>依住宿地點彈性選區域</li><li>預留交通與托運時間</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item meal" data-map-key="3-09:30-早午餐">
+          <div class="time">09:30–10:30</div>
+          <div class="item-title">早午餐</div>
+          <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
+          <p class="desc">不早起，悠閒吃早午餐再出發。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E6%97%A9%E5%8D%88%E9%A4%90" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">咖啡店</span><span class="pill good">輕食</span><span class="pill good">日式早餐</span><span class="pill good">商場早午餐</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要特地排隊的熱門店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以順路、舒適、可久坐為主</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="3-11:00-補逛淺草／押上周邊">
+          <div class="time">11:00–13:00</div>
+          <div class="item-title">補逛淺草／押上周邊</div>
+          <div class="item-meta"><span>區域：淺草／押上</span><span>交通：步行／短程電車</span></div>
+          <p class="desc">補逛前兩天沒走完的地方，保留最後的散步與拍照時間。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=35.7107%2C139.8129" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>依住宿地點彈性選區域</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="3-13:00-最後一餐＋伴手禮採買">
+          <div class="time">13:00–14:30</div>
+          <div class="item-title">最後一餐＋伴手禮採買</div>
+          <div class="item-meta"><span>區域：淺草／上野／押上擇一</span><span>交通：步行</span></div>
+          <p class="desc">安排一頓輕鬆收尾型餐食，順手買最後伴手禮。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%20%E4%BC%B4%E6%89%8B%E7%A6%AE%20%E5%95%86%E5%A0%B4" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">簡單日料</span><span class="pill good">咖啡簡餐</span><span class="pill good">商場餐廳</span><span class="pill good">小吃補完</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要長時間排隊的名店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以離回程動線近的區域優先</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="3-15:00-前往機場或下一站">
+          <div class="time">15:00–18:00</div>
+          <div class="item-title">前往機場或下一站</div>
+          <div class="item-meta"><span>區域：東京市區</span><span>交通：市區到機場／車站交通</span></div>
+          <p class="desc">依回程班機或下一段移動安排離開。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%9D%B1%E4%BA%AC%E6%A9%9F%E5%A0%B4" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>預留交通與托運時間</li></ul>
+      </div>
+        </div>
+      </div>
+    </article>
     </section>
 
     <section class="card footer-note">
       <h3>提醒</h3>
       <ul>
-        <li>這是一份由 JSON 資料產生的 HTML 草稿，可再人工微調。</li>
-        <li>目前已把交通、區域、用餐策略、注意事項呈現出來，作為更實用的旅程頁基礎。</li>
-        <li>若 JSON 裡有 prep.booking、prep.tickets、prep.reminders，頁面會自動顯示票券 / 預約 / 行前提醒。</li>
+        <li>由 JSON 資料自動生成，可人工微調。</li>
+        <li>JSON 是原始資料，HTML 是衍生物——修改請從 JSON 開始再重新生成。</li>
+        <li>有 prep.booking / tickets / reminders 欄位時，頁面自動顯示行前清單。</li>
+        <li>回到首頁：<a href="index.html">Travel Planner 首頁</a></li>
       </ul>
     </section>
   </div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script>
-    (function () {
-      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;抵達東京、進市區、入住&quot;,&quot;area&quot;:&quot;東京市區&quot;,&quot;mapQuery&quot;:&quot;東京車站&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:00&quot;,&quot;type&quot;:&quot;arrival&quot;,&quot;key&quot;:&quot;1-14:00-抵達東京、進市區、入住&quot;,&quot;lat&quot;:35.6812,&quot;lng&quot;:139.7671},{&quot;day&quot;:1,&quot;title&quot;:&quot;淺草寺＋仲見世商店街散步&quot;,&quot;area&quot;:&quot;淺草&quot;,&quot;mapQuery&quot;:&quot;淺草寺 東京&quot;,&quot;timeStart&quot;:&quot;16:30&quot;,&quot;timeEnd&quot;:&quot;18:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;1-16:30-淺草寺＋仲見世商店街散步&quot;,&quot;lat&quot;:35.7148,&quot;lng&quot;:139.7967},{&quot;day&quot;:1,&quot;title&quot;:&quot;隅田川夜間散步（可選）&quot;,&quot;area&quot;:&quot;淺草／隅田川&quot;,&quot;mapQuery&quot;:&quot;隅田川步道 東京&quot;,&quot;timeStart&quot;:&quot;20:00&quot;,&quot;timeEnd&quot;:&quot;21:00&quot;,&quot;type&quot;:&quot;walk&quot;,&quot;key&quot;:&quot;1-20:00-隅田川夜間散步（可選）&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.7986},{&quot;day&quot;:2,&quot;title&quot;:&quot;上野公園散步＋館舍擇一&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;上野公園 東京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;12:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;2-10:30-上野公園散步＋館舍擇一&quot;,&quot;lat&quot;:35.7141,&quot;lng&quot;:139.7736},{&quot;day&quot;:2,&quot;title&quot;:&quot;阿美橫町自由逛街&quot;,&quot;area&quot;:&quot;上野&quot;,&quot;mapQuery&quot;:&quot;阿美橫町 東京&quot;,&quot;timeStart&quot;:&quot;14:00&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;shopping&quot;,&quot;key&quot;:&quot;2-14:00-阿美橫町自由逛街&quot;,&quot;lat&quot;:35.709,&quot;lng&quot;:139.7745},{&quot;day&quot;:2,&quot;title&quot;:&quot;晴空塔商場晚餐＋夜景&quot;,&quot;area&quot;:&quot;押上／晴空塔&quot;,&quot;mapQuery&quot;:&quot;東京晴空塔&quot;,&quot;timeStart&quot;:&quot;17:30&quot;,&quot;timeEnd&quot;:&quot;20:30&quot;,&quot;type&quot;:&quot;sightseeing_meal&quot;,&quot;key&quot;:&quot;2-17:30-晴空塔商場晚餐＋夜景&quot;,&quot;lat&quot;:35.7101,&quot;lng&quot;:139.8107},{&quot;day&quot;:3,&quot;title&quot;:&quot;補逛淺草／押上周邊&quot;,&quot;area&quot;:&quot;淺草／押上&quot;,&quot;mapQuery&quot;:&quot;押上 東京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;key&quot;:&quot;3-11:00-補逛淺草／押上周邊&quot;,&quot;lat&quot;:35.7107,&quot;lng&quot;:139.8129}]');
-      if (!points.length) return;
 
-      const dayColors = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
-      const createDayIcon = (day) => L.divIcon({
-        className: 'day-marker-icon-wrap',
-        html: '<div class="day-marker-icon" style="background:' + dayColors[(day - 1) % dayColors.length] + '">D' + day + '</div>',
+  <button class="back-top" id="backTop" aria-label="回到頂部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+  (function () {
+    // Back to top
+    const btn = document.getElementById('backTop');
+    window.addEventListener('scroll', function () {
+      btn.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+
+    // Leaflet map
+    const points = [{"day":1,"title":"抵達東京、進市區、入住","area":"東京市區","mapQuery":"東京車站","timeStart":"14:00","timeEnd":"16:00","type":"arrival","key":"1-14:00-抵達東京、進市區、入住","lat":35.6812,"lng":139.7671},{"day":1,"title":"淺草寺＋仲見世商店街散步","area":"淺草","mapQuery":"淺草寺 東京","timeStart":"16:30","timeEnd":"18:30","type":"sightseeing","key":"1-16:30-淺草寺＋仲見世商店街散步","lat":35.7148,"lng":139.7967},{"day":1,"title":"隅田川夜間散步（可選）","area":"淺草／隅田川","mapQuery":"隅田川步道 東京","timeStart":"20:00","timeEnd":"21:00","type":"walk","key":"1-20:00-隅田川夜間散步（可選）","lat":35.7101,"lng":139.7986},{"day":2,"title":"上野公園散步＋館舍擇一","area":"上野","mapQuery":"上野公園 東京","timeStart":"10:30","timeEnd":"12:30","type":"sightseeing","key":"2-10:30-上野公園散步＋館舍擇一","lat":35.7141,"lng":139.7736},{"day":2,"title":"阿美橫町自由逛街","area":"上野","mapQuery":"阿美橫町 東京","timeStart":"14:00","timeEnd":"16:30","type":"shopping","key":"2-14:00-阿美橫町自由逛街","lat":35.709,"lng":139.7745},{"day":2,"title":"晴空塔商場晚餐＋夜景","area":"押上／晴空塔","mapQuery":"東京晴空塔","timeStart":"17:30","timeEnd":"20:30","type":"sightseeing_meal","key":"2-17:30-晴空塔商場晚餐＋夜景","lat":35.7101,"lng":139.8107},{"day":3,"title":"補逛淺草／押上周邊","area":"淺草／押上","mapQuery":"押上 東京","timeStart":"11:00","timeEnd":"13:00","type":"free_walk","key":"3-11:00-補逛淺草／押上周邊","lat":35.7107,"lng":139.8129}];
+    if (!points.length) return;
+    const dayColors = ['#2563eb','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
+
+    function createIcon(day) {
+      return L.divIcon({
+        className: '',
+        html: '<div style="width:28px;height:28px;border-radius:50%;background:' + dayColors[(day-1)%dayColors.length] + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 8px rgba(0,0,0,.25)">D' + day + '</div>',
         iconSize: [28, 28],
         iconAnchor: [14, 14],
-        popupAnchor: [0, -12]
+        popupAnchor: [0, -14]
       });
+    }
 
-      const showFallback = (elementId) => {
-        const mapEl = document.getElementById(elementId);
-        if (mapEl) {
-          mapEl.classList.remove('leaflet-overlay-active');
-          mapEl.classList.add('leaflet-overlay-hidden');
-        }
-      };
+    // Active highlight
+    function highlightItem(key) {
+      document.querySelectorAll('.active-map-target').forEach(el => el.classList.remove('active-map-target'));
+      if (!key) return;
+      const el = document.querySelector('[data-map-key="' + CSS.escape(key) + '"]');
+      if (!el) return;
+      el.classList.add('active-map-target');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
-      const showLeaflet = (elementId) => {
-        const mapEl = document.getElementById(elementId);
-        if (mapEl) {
-          mapEl.classList.remove('leaflet-overlay-hidden');
-          mapEl.classList.add('leaflet-overlay-active');
-        }
-      };
-
-      const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
-        const el = document.getElementById(elementId);
-        if (!el || !pointsData.length) return;
-        if (typeof L === 'undefined') {
-          showFallback(elementId);
-          return;
-        }
-
-        let map;
-        try {
-          map = L.map(elementId);
-          showLeaflet(elementId);
-        } catch (error) {
-          showFallback(elementId);
-          return;
-        }
+    // Try to render a Leaflet map if there's a container
+    try {
+      const mapEl = document.getElementById('leaflet-map');
+      if (mapEl && typeof L !== 'undefined') {
+        const map = L.map(mapEl);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; OpenStreetMap contributors'
+          maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
-
         const bounds = [];
-        pointsData.forEach(point => {
-          const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
-          const lines = ['<strong>' + point.title + '</strong>'];
-          if (point.timeStart || point.timeEnd) {
-            lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
-          }
-          if (point.area) lines.push('區域：' + point.area);
-          lines.push('Day ' + point.day);
-          if (point.mapQuery) {
-            const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
-            lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
-          }
-          marker.bindPopup(lines.join('<br>'));
-          marker.on('click', () => {
-            document.querySelectorAll('.active-map-target').forEach(node => node.classList.remove('active-map-target'));
-            if (!point.key) return;
-            const selector = '[data-map-key="' + CSS.escape(point.key) + '"]';
-            const target = document.querySelector(selector);
-            if (!target) return;
-            target.classList.add('active-map-target');
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          });
-          bounds.push([point.lat, point.lng]);
+        points.forEach(function (p) {
+          const m = L.marker([p.lat, p.lng], { icon: createIcon(p.day) }).addTo(map);
+          const popup = ['<strong>' + p.title + '</strong>'];
+          if (p.timeStart) popup.push(p.timeStart + (p.timeEnd ? '–' + p.timeEnd : ''));
+          if (p.area) popup.push('區域：' + p.area);
+          popup.push('Day ' + p.day);
+          if (p.mapQuery) popup.push('<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.mapQuery) + '" target="_blank">Google Maps ↗</a>');
+          m.bindPopup(popup.join('<br>'));
+          m.on('click', function () { highlightItem(p.key); });
+          bounds.push([p.lat, p.lng]);
         });
-
-        if (bounds.length === 1) {
-          map.setView(bounds[0], zoomIfSingle || 13);
-        } else {
-          map.fitBounds(bounds, { padding: [24, 24] });
-        }
-      };
-
-      // 每日地圖改為穩定版摘要卡，避免 mobile iframe / embed 不穩。
-    })();
+        if (bounds.length === 1) map.setView(bounds[0], 14);
+        else map.fitBounds(bounds, { padding: [24, 24] });
+      }
+    } catch (e) {}
+  })();
   </script>
 </body>
 </html>

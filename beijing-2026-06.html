@@ -5,24 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>北京 3 天 2 夜歷史景點美食行</title>
   <meta name="description" content="北京 3 天 2 夜歷史景點美食行：以 北京 為主的旅程安排，依照既有資料整理成可展示頁面。" />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <meta name="generator" content="travel-planner v2" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <style>
+    /* ── Design Tokens ── */
     :root {
       --bg: #f4f7fb;
-      --card: #ffffff;
+      --card: #fff;
       --text: #1f2937;
       --muted: #6b7280;
       --line: #e5e7eb;
       --brand: #2563eb;
       --brand-soft: #eaf2ff;
+      --brand-deep: #1d4ed8;
       --meal: #fff4e8;
       --meal-line: #f59e0b;
-      --note: #fff8e7;
+      --note-bg: #fff8e7;
       --note-line: #fbbf24;
       --warn-bg: #fff1f2;
       --warn-text: #be123c;
@@ -32,10 +31,12 @@
       --tip-text: #1d4ed8;
       --neutral-bg: #f3f4f6;
       --neutral-text: #374151;
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --shadow: 0 10px 30px rgba(15,23,42,.08);
       --radius: 18px;
+      --nav-h: 52px;
     }
-    * { box-sizing: border-box; }
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
@@ -46,153 +47,132 @@
         var(--bg);
       line-height: 1.6;
     }
-    .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 40px; }
+    /* ── Layout ── */
+    .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+    /* ── Hero ── */
     .hero {
       background: linear-gradient(135deg, #1d4ed8, #3b82f6 60%, #60a5fa);
-      color: #fff; border-radius: 24px; padding: 26px 20px; box-shadow: var(--shadow); margin-bottom: 18px;
+      color: #fff; border-radius: 24px; padding: 28px 22px;
+      box-shadow: var(--shadow); margin-bottom: 18px;
     }
     .hero h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.2; }
     .hero .meta { font-size: 14px; opacity: .95; margin-bottom: 12px; }
     .hero p { margin: 0; font-size: 15px; opacity: .98; }
+    .hero .gen-date { font-size: 12px; opacity: .7; margin-top: 10px; }
+    /* ── Day Nav ── */
+    .daynav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+      padding: 8px 0; margin-bottom: 16px;
+      background: linear-gradient(to bottom, rgba(244,247,251,.97) 90%, transparent);
+      scrollbar-width: none;
+    }
+    .daynav::-webkit-scrollbar { display: none; }
+    .daynav-link {
+      display: inline-flex; flex-direction: column; align-items: center;
+      text-decoration: none; padding: 6px 12px; border-radius: 12px;
+      background: var(--card); box-shadow: var(--shadow);
+      border: 1px solid var(--line); white-space: nowrap; flex-shrink: 0;
+      transition: background .15s, transform .15s;
+    }
+    .daynav-link:hover { background: var(--brand-soft); transform: translateY(-1px); }
+    .daynav-num { font-size: 12px; font-weight: 800; color: var(--brand); }
+    .daynav-date { font-size: 11px; color: var(--muted); }
+    /* ── Cards ── */
     .tags, .chips, .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
     .tags, .chips { margin-top: 14px; }
-    .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+    .tag, .chip, .pill { display: inline-flex; align-items: center; padding: 5px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; }
     .tag { background: rgba(255,255,255,.18); color: #fff; border: 1px solid rgba(255,255,255,.2); }
-    .summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .chip { background: var(--brand-soft); color: var(--brand); }
+    .pill.neutral { background: var(--neutral-bg); color: var(--neutral-text); }
+    .pill.good { background: var(--good-bg); color: var(--good-text); }
+    .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
+    .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
+    .summary { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-bottom: 16px; }
     .card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
     .card h2, .card h3 { margin: 0 0 10px; font-size: 18px; }
     .card p { margin: 0; color: var(--muted); font-size: 14px; }
-    .chip { background: var(--brand-soft); color: var(--brand); }
-    .trip-map-card {
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #eef4ff, #f8fbff);
-      border: 1px solid #dbeafe;
-    }
-    .trip-map-head {
-      display: flex; justify-content: space-between; align-items: center; gap: 16px;
-    }
-    .trip-map-link {
-      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
-      padding: 10px 14px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
-    }
-    .trip-map-embed-wrap {
-      margin-top: 14px; border-radius: 16px; overflow: hidden; border: 1px solid #cfe0ff; background: #fff;
-    }
-    .trip-map-legend {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;
-    }
-    .legend-item {
-      display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px;
-      background: rgba(255,255,255,.75); color: var(--text); font-size: 12px; font-weight: 700;
-    }
-    .legend-dot {
-      width: 12px; height: 12px; border-radius: 999px; display: inline-block;
-    }
-    .leaflet-fallback-wrap {
-      position: relative;
-    }
-    .trip-map-embed {
-      width: 100%; height: 320px; border: 0; display: block;
-    }
-    .day-map-embed {
-      height: 220px;
-    }
-    .leaflet-overlay-hidden {
-      display: none;
-    }
-    .leaflet-overlay-active {
-      display: block;
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-    }
-    .leaflet-map {
-      width: 100%; height: 360px;
-    }
-    .day-map-summary {
-      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px;
-    }
-    .day-map-head {
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    }
-    .day-marker-icon-wrap {
-      background: transparent;
-      border: 0;
-    }
-    .day-marker-icon {
-      width: 28px; height: 28px; border-radius: 999px; color: #fff;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800; box-shadow: 0 4px 10px rgba(15,23,42,.22);
-      border: 2px solid rgba(255,255,255,.92);
-    }
+    /* ── Trip Map Card ── */
+    .trip-map-card { margin-bottom: 16px; background: linear-gradient(135deg,#eef4ff,#f8fbff); border: 1px solid #dbeafe; }
+    .trip-map-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .trip-map-link { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; padding: 10px 14px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700; }
+    .trip-map-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.75); font-size: 12px; font-weight: 700; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 999px; display: inline-block; }
+    /* ── Prep ── */
+    .prep-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; margin-bottom: 16px; }
+    .prep-card { background: linear-gradient(135deg,#f8fbff,#fff); border: 1px solid #dbeafe; }
+    .prep-intro { margin-bottom: 10px !important; font-size: 13px; }
+    .prep-list li { margin-bottom: 5px; }
+    /* ── Day ── */
     .days { display: grid; gap: 18px; }
-    .day { background: var(--card); border-radius: 22px; padding: 18px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); }
-    .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+    .day { background: var(--card); border-radius: 22px; padding: 20px; box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,.6); scroll-margin-top: calc(var(--nav-h) + 8px); }
+    .day-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
     .day-title { margin: 0; font-size: 20px; }
     .day-sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
     .badge { background: #eff6ff; color: var(--brand); font-size: 12px; font-weight: 700; border-radius: 999px; padding: 6px 10px; white-space: nowrap; }
-    .day-map-card {
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-      background: linear-gradient(135deg, #eff6ff, #f8fbff); border: 1px solid #dbeafe;
-      border-radius: 16px; padding: 14px 16px; margin: 12px 0;
-    }
+    /* ── Day Map Card ── */
+    .day-map-card { background: linear-gradient(135deg,#eff6ff,#f8fbff); border: 1px solid #dbeafe; border-radius: 16px; padding: 14px 16px; margin: 12px 0; }
+    .day-map-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
     .map-card-text { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
-    .map-card-link {
-      display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap;
-      padding: 8px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
-    }
-    .day-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 16px; }
+    .map-card-link { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; padding: 8px 12px; border-radius: 999px; background: var(--brand); color: #fff; font-size: 13px; font-weight: 700; }
+    .day-map-summary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin-top: 12px; }
+    /* ── Day Panels ── */
+    .day-panels { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin: 12px 0 16px; }
     .subcard { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; }
-    .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .subcard-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
     .subcard-label { font-size: 12px; color: var(--muted); margin: 10px 0 6px; font-weight: 700; }
     .empty { margin: 0; color: var(--muted); font-size: 13px; }
+    /* ── Timeline ── */
     .timeline { display: grid; gap: 12px; margin-top: 12px; }
-    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background-color .2s ease, box-shadow .2s ease; }
+    .item { border-left: 3px solid var(--line); padding: 2px 0 2px 14px; transition: background .2s, box-shadow .2s; }
     .item.meal { border-left-color: var(--meal-line); background: var(--meal); border-radius: 14px; padding: 12px 14px; }
-    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.18); padding: 12px 14px; }
+    .item.active-map-target { background: #eef6ff; border-radius: 14px; box-shadow: 0 0 0 2px rgba(37,99,235,.2); padding: 12px 14px; }
     .time { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
     .item-title { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
     .item-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
     .item-meta span { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: var(--neutral-bg); color: var(--neutral-text); font-size: 12px; font-weight: 600; }
     .desc { color: var(--muted); font-size: 14px; margin: 0; }
     .map-link-row { margin-top: 8px; }
-    .map-link {
-      display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-      color: var(--brand); font-size: 13px; font-weight: 700;
-    }
+    .map-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--brand); font-size: 13px; font-weight: 700; }
     .map-link:hover { text-decoration: underline; }
     .food-block { margin-top: 10px; background: rgba(255,255,255,.55); }
-    .notes-block { margin-top: 10px; background: var(--note); border-color: #fde68a; }
+    .notes-block { margin-top: 10px; background: var(--note-bg); border-color: #fde68a; }
     .note-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
     .note-list.compact { font-size: 13px; }
-    .pill { font-size: 12px; }
-    .pill.neutral { background: var(--neutral-bg); color: var(--neutral-text); }
-    .pill.good { background: var(--good-bg); color: var(--good-text); }
-    .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
-    .pill.tip { background: var(--tip-bg); color: var(--tip-text); }
-    .prep-card {
-      background: linear-gradient(135deg, #f8fbff, #ffffff);
-      border: 1px solid #dbeafe;
-    }
-    .prep-intro {
-      margin-bottom: 10px !important;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .prep-list li {
-      margin-bottom: 6px;
-    }
+    /* ── Footer ── */
     .footer-note { margin-top: 18px; background: #f8fafc; border: 1px dashed #cbd5e1; }
     .footer-note ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    /* ── Back to Top ── */
+    .back-top {
+      position: fixed; bottom: 24px; right: 20px; z-index: 200;
+      width: 44px; height: 44px; border-radius: 999px;
+      background: var(--brand); color: #fff; border: 0; cursor: pointer;
+      font-size: 20px; display: none; align-items: center; justify-content: center;
+      box-shadow: 0 6px 18px rgba(37,99,235,.4); transition: transform .15s;
+    }
+    .back-top:hover { transform: translateY(-2px); }
+    .back-top.visible { display: flex; }
+    /* ── Responsive ── */
     @media (max-width: 720px) {
-      .summary { grid-template-columns: 1fr; }
+      .summary, .prep-grid { grid-template-columns: 1fr; }
+      .day-panels { grid-template-columns: 1fr; }
+      .day-map-summary { grid-template-columns: 1fr; }
       .trip-map-head { flex-direction: column; align-items: flex-start; }
-      .trip-map-embed { height: 260px; }
-      .leaflet-map { height: 280px; }
-      .day-header { flex-direction: column; }
       .day-map-head, .day-map-card { flex-direction: column; align-items: flex-start; }
-      .day-map-summary, .day-panels { grid-template-columns: 1fr; }
+      .day-header { flex-direction: column; }
       .hero h1 { font-size: 24px; }
+    }
+    /* ── Print ── */
+    @media print {
+      body { background: #fff; font-size: 12pt; }
+      .daynav, .back-top, .map-card-link, .trip-map-link { display: none !important; }
+      .wrap { padding: 0; max-width: 100%; }
+      .hero { border-radius: 0; box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .card, .day { box-shadow: none; border: 1px solid #ddd; }
+      .day { break-inside: avoid; }
+      .item { break-inside: avoid; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: 10pt; color: #999; }
     }
   </style>
 </head>
@@ -202,505 +182,467 @@
       <h1>北京 3 天 2 夜歷史景點美食行</h1>
       <div class="meta">2026-06-01 ～ 2026-06-03｜3 人｜中等預算</div>
       <p>不想太早起、約 9 點多出門、最後一天是回程日</p>
-      <div class="tags">
-        <span class="tag">歷史景點</span><span class="tag">美食</span><span class="tag">不想太早起</span><span class="tag">約 9 點多出門</span>
-      </div>
+      <div class="tags"><span class="tag">歷史景點</span><span class="tag">美食</span><span class="tag">不想太早起</span><span class="tag">約 9 點多出門</span></div>
+      <div class="gen-date">由 travel-planner v2 生成・2026-04-13</div>
     </section>
+
+    <nav class="daynav" aria-label="日程導覽"><a class="daynav-link" href="#day-1" aria-label="跳到 Day 1"><span class="daynav-num">D1</span><span class="daynav-date">06/01</span></a><a class="daynav-link" href="#day-2" aria-label="跳到 Day 2"><span class="daynav-num">D2</span><span class="daynav-date">06/02</span></a><a class="daynav-link" href="#day-3" aria-label="跳到 Day 3"><span class="daynav-num">D3</span><span class="daynav-date">06/03</span></a></nav>
 
     <section class="summary">
       <div class="card">
         <h2>旅程摘要</h2>
         <p>北京 3 天 2 夜歷史景點美食行：以 北京 為主的旅程安排，依照既有資料整理成可展示頁面。</p>
-        <div class="chips">
-          <span class="chip">歷史景點</span><span class="chip">美食</span>
-        </div>
+        <div class="chips"><span class="chip">歷史景點</span><span class="chip">美食</span></div>
       </div>
       <div class="card">
         <h2>安排原則</h2>
-        <p>這份頁面由結構化資料自動整理成草稿，重點是先把骨架做穩，再把交通、用餐與注意事項補到夠實用。</p>
+        <p>以重點景點與整體節奏優先，避免趕場清單，餐飲以順路穩定為主。</p>
         <div class="chips">
-          <span class="chip">以重點景點與整體節奏優先</span><span class="chip">避免把每天塞成趕場清單</span><span class="chip">餐飲安排以順路、穩定、可執行為主</span>
+          <span class="chip">重點優先</span>
+          <span class="chip">節奏舒適</span>
+          <span class="chip">彈性保留</span>
         </div>
       </div>
     </section>
 
     
-    <section class="card trip-map-card">
-      <div class="trip-map-head">
-        <div>
-          <h2>旅程總覽</h2>
-          <p>先看這趟旅程的主要區域與重點景點，再決定每天怎麼走；跨天移動改用外部總地圖，避免站內白框。</p>
-          <div class="chips">
-            <span class="chip">北京</span>
-            <span class="chip">3 天行程</span>
-          </div>
-        </div>
-        <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9C%92%20%E5%8C%97%E4%BA%AC%20%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
-      </div>
-      <div class="day-panels" style="margin-top:14px;">
-        <div class="subcard">
-          <div class="subcard-title">主要區域</div>
-          <div class="pill-row"><span class="pill neutral">北京市區</span><span class="pill neutral">東城區</span><span class="pill neutral">北京近郊</span><span class="pill neutral">萬里長城</span></div>
-        </div>
-        <div class="subcard">
-          <div class="subcard-title">重點景點</div>
-          <div class="pill-row"><span class="pill neutral">從住宿區出發前往天安門周邊</span><span class="pill neutral">天安門廣場＋紫禁城主線</span><span class="pill neutral">景山公園或王府井周邊慢走</span><span class="pill neutral">從市區前往萬里長城</span><span class="pill neutral">萬里長城主行程</span><span class="pill neutral">市區補逛一個順路歷史／老街區</span></div>
-        </div>
-        <div class="subcard">
-          <div class="subcard-title">使用方式</div>
-          <ul class="note-list compact">
-            <li>頁內先看每日小地圖</li>
-            <li>跨天移動用外部整趟地圖</li>
-            <li>點各景點可直接開地圖</li>
-          </ul>
+  <section class="card trip-map-card">
+    <div class="trip-map-head">
+      <div>
+        <h2>旅程總覽</h2>
+        <p>先掌握整趟主要區域與景點，再決定每天怎麼走。</p>
+        <div class="chips">
+          <span class="chip">北京</span>
+          <span class="chip">3 天行程</span>
         </div>
       </div>
-      <div class="trip-map-legend">
-        <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
-        <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5</span>
+      <a class="trip-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%A4%A9%E5%AE%89%E9%96%80%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%20%E5%8C%97%E4%BA%AC%20%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9C%92%20%E5%8C%97%E4%BA%AC%20%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC%20%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">開啟整趟地圖 ↗</a>
+    </div>
+    <div class="day-panels" style="margin-top:14px">
+      <div class="subcard">
+        <div class="subcard-title">主要區域</div>
+        <div class="pill-row"><span class="pill neutral">北京市區</span><span class="pill neutral">東城區</span><span class="pill neutral">北京近郊</span><span class="pill neutral">萬里長城</span></div>
       </div>
-    </section>
+      <div class="subcard">
+        <div class="subcard-title">重點景點</div>
+        <div class="pill-row"><span class="pill neutral">從住宿區出發前往天安門周邊</span><span class="pill neutral">天安門廣場＋紫禁城主線</span><span class="pill neutral">景山公園或王府井周邊慢走</span><span class="pill neutral">從市區前往萬里長城</span><span class="pill neutral">萬里長城主行程</span><span class="pill neutral">市區補逛一個順路歷史／老街區</span></div>
+      </div>
+      <div class="subcard">
+        <div class="subcard-title">使用方式</div>
+        <ul class="note-list compact">
+          <li>先看每日小地圖掌握動線</li>
+          <li>跨天移動用整趟地圖</li>
+          <li>點景點連結直接導航</li>
+        </ul>
+      </div>
+    </div>
+    <div class="trip-map-legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#2563eb"></span>Day 1</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>Day 2</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#10b981"></span>Day 3</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Day 4</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#8b5cf6"></span>Day 5+</span>
+    </div>
+  </section>
 
     
-    <section class="summary prep-grid">
-      <div class="card prep-card">
-        <h2>出發前要先做</h2>
-        <p class="prep-intro">先把需要提早處理的事情收斂成一區，避免出發前才臨時補救。</p>
-        <div class="subcard-label">已預約 / 要確認</div><ul class="note-list prep-list"><li>若北京烤鴨想吃較熱門店，建議先訂位</li><li>長城交通方案建議前一天先確認</li></ul>
-        <div class="subcard-label">票券 / 入場</div><ul class="note-list prep-list"><li>紫禁城相關參觀時段與入場規則建議先查</li><li>若採高鐵／接駁方案前往長城，先確認班次</li></ul>
-      </div>
-      <div class="card prep-card">
-        <h2>當天注意事項</h2>
-        <p class="prep-intro">把真正會影響行程順暢度的提醒留下來，現場照這區看就夠。</p>
-        <ul class="note-list prep-list"><li>長城主力日建議穿好走的鞋</li><li>回程日不要把最後一個景點排太重</li></ul>
-      </div>
-    </section>
+  <section class="summary prep-grid">
+    <div class="card prep-card">
+      <h2>出發前要先做</h2>
+      <p class="prep-intro">提前處理，避免出發前臨時補救。</p>
+      <div class="subcard-label">已預約 / 要確認</div><ul class="note-list prep-list"><li>若北京烤鴨想吃較熱門店，建議先訂位</li><li>長城交通方案建議前一天先確認</li></ul>
+      <div class="subcard-label">票券 / 入場</div><ul class="note-list prep-list"><li>紫禁城相關參觀時段與入場規則建議先查</li><li>若採高鐵／接駁方案前往長城，先確認班次</li></ul>
+    </div>
+    <div class="card prep-card">
+      <h2>當天注意事項</h2>
+      <p class="prep-intro">影響行程順暢度的提醒，現場對照用。</p>
+      <ul class="note-list prep-list"><li>長城主力日建議穿好走的鞋</li><li>回程日不要把最後一個景點排太重</li></ul>
+    </div>
+  </section>
 
     <section class="days">
       
-      <article class="day">
-        <div class="day-header">
+    <article class="day" id="day-1">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 1｜紫禁城歷史主線＋北京烤鴨</h2>
+          <div class="day-sub">06/01・行程安排</div>
+        </div>
+        <span class="badge">Day 1</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
           <div>
-            <h2 class="day-title">Day 1｜紫禁城歷史主線＋北京烤鴨</h2>
-            <div class="day-sub">06/01・行程安排</div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 天安門 北京 為起點查看今日動線。</p>
           </div>
-          <span class="badge">Day 1</span>
+          <a class="map-card-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
-        
-        
-        <div class="day-map-card">
-          <div class="day-map-head">
-            <div>
-              <div class="subcard-title">今日地圖</div>
-              <p class="map-card-text">以 天安門 北京 為起點查看今天的主要區域與動線。</p>
-            </div>
-            <a class="map-card-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
-          </div>
-          <div class="day-map-summary">
-            <div class="subcard">
-              <div class="subcard-title">今日區域</div>
-              <div class="pill-row"><span class="pill neutral">北京市區</span><span class="pill neutral">東城區</span></div>
-            </div>
-            <div class="subcard">
-              <div class="subcard-title">主要地點</div>
-              <div class="pill-row"><span class="pill neutral">從住宿區出發前往天安門周邊</span><span class="pill neutral">天安門廣場＋紫禁城主線</span><span class="pill neutral">景山公園或王府井周邊慢走</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="day-panels">
+        <div class="day-map-summary">
           <div class="subcard">
-            <div class="subcard-title">今日重點區域</div>
-            <div class="pill-row"><span class="pill neutral">北京市區</span><span class="pill neutral">東城區</span><span class="pill neutral">紫禁城周邊</span></div>
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">北京市區</span><span class="pill neutral">東城區</span></div>
           </div>
           <div class="subcard">
-            <div class="subcard-title">今日交通</div>
-            <div class="pill-row"><span class="pill neutral">地鐵／計程車</span><span class="pill neutral">步行</span></div>
-          </div>
-          <div class="subcard">
-            <div class="subcard-title">今日提醒</div>
-            <ul class="note-list compact"><li>住宿建議以交通方便的市區區域為主</li><li>核心歷史景點優先</li><li>避免同天再塞太多重景點</li><li>依體力與天氣彈性調整</li></ul>
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">從住宿區出發前往天安門周邊</span><span class="pill neutral">天安門廣場＋紫禁城主線</span><span class="pill neutral">景山公園或王府井周邊慢走</span></div>
           </div>
         </div>
-        <div class="timeline">
-          <div class="item" data-map-key="1-09:30-從住宿區出發前往天安門周邊">
-            <div class="time">09:30–10:00</div>
-            <div class="item-title">從住宿區出發前往天安門周邊</div>
-            <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
-            <p class="desc">以 9 點多出門為節奏，避免太早起，先進入市區主景點區域。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>住宿建議以交通方便的市區區域為主</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item" data-map-key="1-10:00-天安門廣場＋紫禁城主線">
-            <div class="time">10:00–13:00</div>
-            <div class="item-title">天安門廣場＋紫禁城主線</div>
-            <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
-            <p class="desc">第一天先處理北京最核心的歷史景點，作為整趟旅程的主軸開場。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9163%2C116.3972" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>核心歷史景點優先</li><li>避免同天再塞太多重景點</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="1-13:00-景點周邊午餐">
-            <div class="time">13:00–14:00</div>
-            <div class="item-title">景點周邊午餐</div>
-            <div class="item-meta"><span>區域：紫禁城周邊</span><span>交通：步行</span></div>
-            <p class="desc">以順路、穩定、休息方便的店家為主，不追熱門排隊名店。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">北方家常菜</span><span class="pill good">簡單中式套餐</span><span class="pill good">麵食</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">超長排隊名店</span><span class="pill warn">需特地繞路的餐廳</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以景點周邊順路店為主</span><span class="pill tip">優先有座位、可休息的店</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="1-14:30-景山公園或王府井周邊慢走">
-            <div class="time">14:30–16:30</div>
-            <div class="item-title">景山公園或王府井周邊慢走</div>
-            <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
-            <p class="desc">下午保留彈性，可選景山公園收視野，或改走王府井一帶做城市感補充。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9289%2C116.396" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>依體力與天氣彈性調整</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="1-18:00-北京烤鴨晚餐">
-            <div class="time">18:00–20:00</div>
-            <div class="item-title">北京烤鴨晚餐</div>
-            <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
-            <p class="desc">安排代表性正餐，作為第一天收尾。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">北京烤鴨</span><span class="pill good">經典京菜</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">太遠的餐廳</span><span class="pill warn">高峰時段超長排隊店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">建議提早選店或預約</span><span class="pill tip">以交通回住宿方便為優先</span></div>
-            </div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>第一天安排一餐正式主餐</li>
-              </ul>
-            </div>
-          </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">北京市區</span><span class="pill neutral">東城區</span><span class="pill neutral">紫禁城周邊</span></div>
         </div>
-      </article>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <div class="pill-row"><span class="pill neutral">地鐵／計程車</span><span class="pill neutral">步行</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>住宿建議以交通方便的市區區域為主</li><li>核心歷史景點優先</li><li>避免同天再塞太多重景點</li><li>依體力與天氣彈性調整</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="1-09:30-從住宿區出發前往天安門周邊">
+          <div class="time">09:30–10:00</div>
+          <div class="item-title">從住宿區出發前往天安門周邊</div>
+          <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
+          <p class="desc">以 9 點多出門為節奏，避免太早起，先進入市區主景點區域。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9087%2C116.3975" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>住宿建議以交通方便的市區區域為主</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="1-10:00-天安門廣場＋紫禁城主線">
+          <div class="time">10:00–13:00</div>
+          <div class="item-title">天安門廣場＋紫禁城主線</div>
+          <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
+          <p class="desc">第一天先處理北京最核心的歷史景點，作為整趟旅程的主軸開場。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9163%2C116.3972" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>核心歷史景點優先</li><li>避免同天再塞太多重景點</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="1-13:00-景點周邊午餐">
+          <div class="time">13:00–14:00</div>
+          <div class="item-title">景點周邊午餐</div>
+          <div class="item-meta"><span>區域：紫禁城周邊</span><span>交通：步行</span></div>
+          <p class="desc">以順路、穩定、休息方便的店家為主，不追熱門排隊名店。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%95%85%E5%AE%AE%E5%8D%9A%E7%89%A9%E9%99%A2%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">北方家常菜</span><span class="pill good">簡單中式套餐</span><span class="pill good">麵食</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">超長排隊名店</span><span class="pill warn">需特地繞路的餐廳</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以景點周邊順路店為主</span><span class="pill tip">優先有座位、可休息的店</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="1-14:30-景山公園或王府井周邊慢走">
+          <div class="time">14:30–16:30</div>
+          <div class="item-title">景山公園或王府井周邊慢走</div>
+          <div class="item-meta"><span>區域：東城區</span><span>交通：步行</span></div>
+          <p class="desc">下午保留彈性，可選景山公園收視野，或改走王府井一帶做城市感補充。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9289%2C116.396" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>依體力與天氣彈性調整</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="1-18:00-北京烤鴨晚餐">
+          <div class="time">18:00–20:00</div>
+          <div class="item-title">北京烤鴨晚餐</div>
+          <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／計程車</span></div>
+          <p class="desc">安排代表性正餐，作為第一天收尾。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%E7%83%A4%E9%B4%A8%20%E9%A4%90%E5%BB%B3%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">北京烤鴨</span><span class="pill good">經典京菜</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">太遠的餐廳</span><span class="pill warn">高峰時段超長排隊店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">建議提早選店或預約</span><span class="pill tip">以交通回住宿方便為優先</span></div>
+      </div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>第一天安排一餐正式主餐</li></ul>
+      </div>
+        </div>
+      </div>
+    </article>
 
-      <article class="day">
-        <div class="day-header">
+    <article class="day" id="day-2">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 2｜萬里長城主力日</h2>
+          <div class="day-sub">06/02・行程安排</div>
+        </div>
+        <span class="badge">Day 2</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
           <div>
-            <h2 class="day-title">Day 2｜萬里長城主力日</h2>
-            <div class="day-sub">06/02・行程安排</div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 八達嶺長城 北京 為起點查看今日動線。</p>
           </div>
-          <span class="badge">Day 2</span>
+          <a class="map-card-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
-        
-        
-        <div class="day-map-card">
-          <div class="day-map-head">
-            <div>
-              <div class="subcard-title">今日地圖</div>
-              <p class="map-card-text">以 八達嶺長城 北京 為起點查看今天的主要區域與動線。</p>
-            </div>
-            <a class="map-card-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
-          </div>
-          <div class="day-map-summary">
-            <div class="subcard">
-              <div class="subcard-title">今日區域</div>
-              <div class="pill-row"><span class="pill neutral">北京近郊</span><span class="pill neutral">萬里長城</span></div>
-            </div>
-            <div class="subcard">
-              <div class="subcard-title">主要地點</div>
-              <div class="pill-row"><span class="pill neutral">從市區前往萬里長城</span><span class="pill neutral">萬里長城主行程</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="day-panels">
+        <div class="day-map-summary">
           <div class="subcard">
-            <div class="subcard-title">今日重點區域</div>
-            <div class="pill-row"><span class="pill neutral">北京近郊</span><span class="pill neutral">萬里長城</span><span class="pill neutral">長城周邊</span><span class="pill neutral">北京市區</span><span class="pill neutral">住宿區附近</span></div>
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">北京近郊</span><span class="pill neutral">萬里長城</span></div>
           </div>
           <div class="subcard">
-            <div class="subcard-title">今日交通</div>
-            <div class="pill-row"><span class="pill neutral">包車／旅遊巴士／高鐵轉接駁</span><span class="pill neutral">步行</span><span class="pill neutral">步行／短程車程</span></div>
-          </div>
-          <div class="subcard">
-            <div class="subcard-title">今日提醒</div>
-            <ul class="note-list compact"><li>建議前一天先確認交通方案</li><li>全日主力景點</li><li>依體力決定停留長度</li></ul>
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">從市區前往萬里長城</span><span class="pill neutral">萬里長城主行程</span></div>
           </div>
         </div>
-        <div class="timeline">
-          <div class="item" data-map-key="2-09:00-從市區前往萬里長城">
-            <div class="time">09:00–10:30</div>
-            <div class="item-title">從市區前往萬里長城</div>
-            <div class="item-meta"><span>區域：北京近郊</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
-            <p class="desc">第二天獨立做長城主力日，避免與市區重景點硬排在同一天。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>建議前一天先確認交通方案</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item" data-map-key="2-10:30-萬里長城主行程">
-            <div class="time">10:30–15:30</div>
-            <div class="item-title">萬里長城主行程</div>
-            <div class="item-meta"><span>區域：萬里長城</span><span>交通：步行</span></div>
-            <p class="desc">把整天主力放在長城，不再額外塞其他高體力景點。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>全日主力景點</li><li>依體力決定停留長度</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="2-12:30-長城周邊簡單午餐">
-            <div class="time">12:30–13:30</div>
-            <div class="item-title">長城周邊簡單午餐</div>
-            <div class="item-meta"><span>區域：長城周邊</span><span>交通：步行</span></div>
-            <p class="desc">以方便、快速、補充體力為主，不把重點放在這餐。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">簡餐</span><span class="pill good">麵食</span><span class="pill good">熱食套餐</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">繞遠路找名店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以順路補充體力為優先</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="2-16:00-返回北京市區">
-            <div class="time">16:00–17:30</div>
-            <div class="item-title">返回北京市區</div>
-            <div class="item-meta"><span>區域：北京市區</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
-            <p class="desc">結束長城主力行程後回市區，避免晚上再安排高強度活動。</p>
-            
-          </div>
-          <div class="item meal" data-map-key="2-18:30-市區輕鬆晚餐">
-            <div class="time">18:30–20:00</div>
-            <div class="item-title">市區輕鬆晚餐</div>
-            <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行／短程車程</span></div>
-            <p class="desc">以回住宿方便、輕鬆收尾為主，不再安排高壓排隊餐廳。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E5%B8%82%E5%8D%80%20%E9%A4%90%E5%BB%B3" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">家常菜</span><span class="pill good">麵食</span><span class="pill good">地方小吃</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">跨區找餐廳</span><span class="pill warn">高強度熱門店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以近住宿區為優先</span><span class="pill tip">重點是休息</span></div>
-            </div>
-          </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">北京近郊</span><span class="pill neutral">萬里長城</span><span class="pill neutral">長城周邊</span><span class="pill neutral">北京市區</span><span class="pill neutral">住宿區附近</span></div>
         </div>
-      </article>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <div class="pill-row"><span class="pill neutral">包車／旅遊巴士／高鐵轉接駁</span><span class="pill neutral">步行</span><span class="pill neutral">步行／短程車程</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>建議前一天先確認交通方案</li><li>全日主力景點</li><li>依體力決定停留長度</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item" data-map-key="2-09:00-從市區前往萬里長城">
+          <div class="time">09:00–10:30</div>
+          <div class="item-title">從市區前往萬里長城</div>
+          <div class="item-meta"><span>區域：北京近郊</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
+          <p class="desc">第二天獨立做長城主力日，避免與市區重景點硬排在同一天。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>建議前一天先確認交通方案</li></ul>
+      </div>
+        </div>
+        <div class="item" data-map-key="2-10:30-萬里長城主行程">
+          <div class="time">10:30–15:30</div>
+          <div class="item-title">萬里長城主行程</div>
+          <div class="item-meta"><span>區域：萬里長城</span><span>交通：步行</span></div>
+          <p class="desc">把整天主力放在長城，不再額外塞其他高體力景點。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=40.3564%2C116.0206" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>全日主力景點</li><li>依體力決定停留長度</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="2-12:30-長城周邊簡單午餐">
+          <div class="time">12:30–13:30</div>
+          <div class="item-title">長城周邊簡單午餐</div>
+          <div class="item-meta"><span>區域：長城周邊</span><span>交通：步行</span></div>
+          <p class="desc">以方便、快速、補充體力為主，不把重點放在這餐。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%85%AB%E9%81%94%E5%B6%BA%E9%95%B7%E5%9F%8E%E9%99%84%E8%BF%91%E9%A4%90%E5%BB%B3" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">簡餐</span><span class="pill good">麵食</span><span class="pill good">熱食套餐</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">繞遠路找名店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以順路補充體力為優先</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="2-16:00-返回北京市區">
+          <div class="time">16:00–17:30</div>
+          <div class="item-title">返回北京市區</div>
+          <div class="item-meta"><span>區域：北京市區</span><span>交通：包車／旅遊巴士／高鐵轉接駁</span></div>
+          <p class="desc">結束長城主力行程後回市區，避免晚上再安排高強度活動。</p>
+          
+        </div>
+        <div class="item meal" data-map-key="2-18:30-市區輕鬆晚餐">
+          <div class="time">18:30–20:00</div>
+          <div class="item-title">市區輕鬆晚餐</div>
+          <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行／短程車程</span></div>
+          <p class="desc">以回住宿方便、輕鬆收尾為主，不再安排高壓排隊餐廳。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E5%B8%82%E5%8D%80%20%E9%A4%90%E5%BB%B3" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">家常菜</span><span class="pill good">麵食</span><span class="pill good">地方小吃</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">跨區找餐廳</span><span class="pill warn">高強度熱門店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以近住宿區為優先</span><span class="pill tip">重點是休息</span></div>
+      </div>
+        </div>
+      </div>
+    </article>
 
-      <article class="day">
-        <div class="day-header">
+    <article class="day" id="day-3">
+      <div class="day-header">
+        <div>
+          <h2 class="day-title">Day 3｜市區補逛＋蘭州拉麵＋回程</h2>
+          <div class="day-sub">06/03・行程安排</div>
+        </div>
+        <span class="badge">Day 3</span>
+      </div>
+      
+      
+      <div class="day-map-card">
+        <div class="day-map-head">
           <div>
-            <h2 class="day-title">Day 3｜市區補逛＋蘭州拉麵＋回程</h2>
-            <div class="day-sub">06/03・行程安排</div>
+            <div class="subcard-title">今日地圖</div>
+            <p class="map-card-text">以 北京 早餐 咖啡店 為起點查看今日動線。</p>
           </div>
-          <span class="badge">Day 3</span>
+          <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
         </div>
-        
-        
-        <div class="day-map-card">
-          <div class="day-map-head">
-            <div>
-              <div class="subcard-title">今日地圖</div>
-              <p class="map-card-text">以 北京 早餐 咖啡店 為起點查看今天的主要區域與動線。</p>
-            </div>
-            <a class="map-card-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">開啟今日地圖 ↗</a>
-          </div>
-          <div class="day-map-summary">
-            <div class="subcard">
-              <div class="subcard-title">今日區域</div>
-              <div class="pill-row"><span class="pill neutral">北京市區</span></div>
-            </div>
-            <div class="subcard">
-              <div class="subcard-title">主要地點</div>
-              <div class="pill-row"><span class="pill neutral">市區補逛一個順路歷史／老街區</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="day-panels">
+        <div class="day-map-summary">
           <div class="subcard">
-            <div class="subcard-title">今日重點區域</div>
-            <div class="pill-row"><span class="pill neutral">住宿區附近</span><span class="pill neutral">北京市區</span></div>
+            <div class="subcard-title">今日區域</div>
+            <div class="pill-row"><span class="pill neutral">北京市區</span></div>
           </div>
           <div class="subcard">
-            <div class="subcard-title">今日交通</div>
-            <div class="pill-row"><span class="pill neutral">步行</span><span class="pill neutral">地鐵／步行</span><span class="pill neutral">步行／短程車程</span><span class="pill neutral">市區到機場／車站交通</span></div>
-          </div>
-          <div class="subcard">
-            <div class="subcard-title">今日提醒</div>
-            <ul class="note-list compact"><li>可依住宿與回程動線決定地點</li><li>以回程穩定為優先</li></ul>
+            <div class="subcard-title">主要地點</div>
+            <div class="pill-row"><span class="pill neutral">市區補逛一個順路歷史／老街區</span></div>
           </div>
         </div>
-        <div class="timeline">
-          <div class="item meal" data-map-key="3-09:30-早午餐或晚一點出門">
-            <div class="time">09:30–10:30</div>
-            <div class="item-title">早午餐或晚一點出門</div>
-            <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
-            <p class="desc">最後一天維持不太早起節奏，不把回程日做成趕場日。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">咖啡店</span><span class="pill good">簡單早餐</span><span class="pill good">麵食</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要特地排隊的早餐名店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以舒適、順路為主</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="3-11:00-市區補逛一個順路歷史／老街區">
-            <div class="time">11:00–13:00</div>
-            <div class="item-title">市區補逛一個順路歷史／老街區</div>
-            <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／步行</span></div>
-            <p class="desc">最後一天補一個不太重的市區點，保留散步與收尾感。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9393%2C116.3872" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>可依住宿與回程動線決定地點</li>
-              </ul>
-            </div>
-          </div>
-          <div class="item meal" data-map-key="3-13:00-蘭州拉麵午餐">
-            <div class="time">13:00–14:00</div>
-            <div class="item-title">蘭州拉麵午餐</div>
-            <div class="item-meta"><span>區域：北京市區</span><span>交通：步行／短程車程</span></div>
-            <p class="desc">安排一餐明確想吃的麵食，作為回程日前的輕鬆收尾。</p>
-            <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E8%98%AD%E5%B7%9E%E6%8B%89%E9%BA%B5%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
-            <div class="subcard food-block">
-              <div class="subcard-title">用餐策略</div>
-              <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">蘭州拉麵</span><span class="pill good">牛肉麵</span><span class="pill good">麵食館</span></div>
-              <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">太遠的名店</span></div>
-              <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以回程方便、順路為主</span></div>
-            </div>
-          </div>
-          <div class="item" data-map-key="3-15:00-返回機場或車站">
-            <div class="time">15:00–18:00</div>
-            <div class="item-title">返回機場或車站</div>
-            <div class="item-meta"><span>區域：北京市區</span><span>交通：市區到機場／車站交通</span></div>
-            <p class="desc">預留足夠時間處理交通與整理，避免最後一天過度壓縮。</p>
-            
-            <div class="subcard notes-block">
-              <div class="subcard-title">注意事項</div>
-              <ul class="note-list">
-                <li>以回程穩定為優先</li>
-              </ul>
-            </div>
-          </div>
+      </div>
+      <div class="day-panels">
+        <div class="subcard">
+          <div class="subcard-title">今日重點區域</div>
+          <div class="pill-row"><span class="pill neutral">住宿區附近</span><span class="pill neutral">北京市區</span></div>
         </div>
-      </article>
+        <div class="subcard">
+          <div class="subcard-title">今日交通</div>
+          <div class="pill-row"><span class="pill neutral">步行</span><span class="pill neutral">地鐵／步行</span><span class="pill neutral">步行／短程車程</span><span class="pill neutral">市區到機場／車站交通</span></div>
+        </div>
+        <div class="subcard">
+          <div class="subcard-title">今日提醒</div>
+          <ul class="note-list compact"><li>可依住宿與回程動線決定地點</li><li>以回程穩定為優先</li></ul>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="item meal" data-map-key="3-09:30-早午餐或晚一點出門">
+          <div class="time">09:30–10:30</div>
+          <div class="item-title">早午餐或晚一點出門</div>
+          <div class="item-meta"><span>區域：住宿區附近</span><span>交通：步行</span></div>
+          <p class="desc">最後一天維持不太早起節奏，不把回程日做成趕場日。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%8C%97%E4%BA%AC%20%E6%97%A9%E9%A4%90%20%E5%92%96%E5%95%A1%E5%BA%97" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">咖啡店</span><span class="pill good">簡單早餐</span><span class="pill good">麵食</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">需要特地排隊的早餐名店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以舒適、順路為主</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="3-11:00-市區補逛一個順路歷史／老街區">
+          <div class="time">11:00–13:00</div>
+          <div class="item-title">市區補逛一個順路歷史／老街區</div>
+          <div class="item-meta"><span>區域：北京市區</span><span>交通：地鐵／步行</span></div>
+          <p class="desc">最後一天補一個不太重的市區點，保留散步與收尾感。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps?q=39.9393%2C116.3872" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>可依住宿與回程動線決定地點</li></ul>
+      </div>
+        </div>
+        <div class="item meal" data-map-key="3-13:00-蘭州拉麵午餐">
+          <div class="time">13:00–14:00</div>
+          <div class="item-title">蘭州拉麵午餐</div>
+          <div class="item-meta"><span>區域：北京市區</span><span>交通：步行／短程車程</span></div>
+          <p class="desc">安排一餐明確想吃的麵食，作為回程日前的輕鬆收尾。</p>
+          <div class="map-link-row"><a class="map-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E8%98%AD%E5%B7%9E%E6%8B%89%E9%BA%B5%20%E5%8C%97%E4%BA%AC" target="_blank" rel="noreferrer">查看地圖 ↗</a></div>
+      <div class="subcard food-block">
+        <div class="subcard-title">用餐策略</div>
+        <div class="subcard-label">優先</div><div class="pill-row"><span class="pill good">蘭州拉麵</span><span class="pill good">牛肉麵</span><span class="pill good">麵食館</span></div>
+        <div class="subcard-label">避免</div><div class="pill-row"><span class="pill warn">太遠的名店</span></div>
+        <div class="subcard-label">提醒</div><div class="pill-row"><span class="pill tip">以回程方便、順路為主</span></div>
+      </div>
+        </div>
+        <div class="item" data-map-key="3-15:00-返回機場或車站">
+          <div class="time">15:00–18:00</div>
+          <div class="item-title">返回機場或車站</div>
+          <div class="item-meta"><span>區域：北京市區</span><span>交通：市區到機場／車站交通</span></div>
+          <p class="desc">預留足夠時間處理交通與整理，避免最後一天過度壓縮。</p>
+          
+      <div class="subcard notes-block">
+        <div class="subcard-title">注意事項</div>
+        <ul class="note-list"><li>以回程穩定為優先</li></ul>
+      </div>
+        </div>
+      </div>
+    </article>
     </section>
 
     <section class="card footer-note">
       <h3>提醒</h3>
       <ul>
-        <li>這是一份由 JSON 資料產生的 HTML 草稿，可再人工微調。</li>
-        <li>目前已把交通、區域、用餐策略、注意事項呈現出來，作為更實用的旅程頁基礎。</li>
-        <li>若 JSON 裡有 prep.booking、prep.tickets、prep.reminders，頁面會自動顯示票券 / 預約 / 行前提醒。</li>
+        <li>由 JSON 資料自動生成，可人工微調。</li>
+        <li>JSON 是原始資料，HTML 是衍生物——修改請從 JSON 開始再重新生成。</li>
+        <li>有 prep.booking / tickets / reminders 欄位時，頁面自動顯示行前清單。</li>
+        <li>回到首頁：<a href="index.html">Travel Planner 首頁</a></li>
       </ul>
     </section>
   </div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script>
-    (function () {
-      const points = JSON.parse('[{&quot;day&quot;:1,&quot;title&quot;:&quot;從住宿區出發前往天安門周邊&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;天安門 北京&quot;,&quot;timeStart&quot;:&quot;09:30&quot;,&quot;timeEnd&quot;:&quot;10:00&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;key&quot;:&quot;1-09:30-從住宿區出發前往天安門周邊&quot;,&quot;lat&quot;:39.9087,&quot;lng&quot;:116.3975},{&quot;day&quot;:1,&quot;title&quot;:&quot;天安門廣場＋紫禁城主線&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;故宮博物院 北京&quot;,&quot;timeStart&quot;:&quot;10:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;1-10:00-天安門廣場＋紫禁城主線&quot;,&quot;lat&quot;:39.9163,&quot;lng&quot;:116.3972},{&quot;day&quot;:1,&quot;title&quot;:&quot;景山公園或王府井周邊慢走&quot;,&quot;area&quot;:&quot;東城區&quot;,&quot;mapQuery&quot;:&quot;景山公園 北京&quot;,&quot;timeStart&quot;:&quot;14:30&quot;,&quot;timeEnd&quot;:&quot;16:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;1-14:30-景山公園或王府井周邊慢走&quot;,&quot;lat&quot;:39.9289,&quot;lng&quot;:116.396},{&quot;day&quot;:2,&quot;title&quot;:&quot;從市區前往萬里長城&quot;,&quot;area&quot;:&quot;北京近郊&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;09:00&quot;,&quot;timeEnd&quot;:&quot;10:30&quot;,&quot;type&quot;:&quot;departure&quot;,&quot;key&quot;:&quot;2-09:00-從市區前往萬里長城&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:2,&quot;title&quot;:&quot;萬里長城主行程&quot;,&quot;area&quot;:&quot;萬里長城&quot;,&quot;mapQuery&quot;:&quot;八達嶺長城 北京&quot;,&quot;timeStart&quot;:&quot;10:30&quot;,&quot;timeEnd&quot;:&quot;15:30&quot;,&quot;type&quot;:&quot;sightseeing&quot;,&quot;key&quot;:&quot;2-10:30-萬里長城主行程&quot;,&quot;lat&quot;:40.3564,&quot;lng&quot;:116.0206},{&quot;day&quot;:3,&quot;title&quot;:&quot;市區補逛一個順路歷史／老街區&quot;,&quot;area&quot;:&quot;北京市區&quot;,&quot;mapQuery&quot;:&quot;什剎海 北京&quot;,&quot;timeStart&quot;:&quot;11:00&quot;,&quot;timeEnd&quot;:&quot;13:00&quot;,&quot;type&quot;:&quot;free_walk&quot;,&quot;key&quot;:&quot;3-11:00-市區補逛一個順路歷史／老街區&quot;,&quot;lat&quot;:39.9393,&quot;lng&quot;:116.3872}]');
-      if (!points.length) return;
 
-      const dayColors = ['#2563eb', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6'];
-      const createDayIcon = (day) => L.divIcon({
-        className: 'day-marker-icon-wrap',
-        html: '<div class="day-marker-icon" style="background:' + dayColors[(day - 1) % dayColors.length] + '">D' + day + '</div>',
+  <button class="back-top" id="backTop" aria-label="回到頂部" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+  (function () {
+    // Back to top
+    const btn = document.getElementById('backTop');
+    window.addEventListener('scroll', function () {
+      btn.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+
+    // Leaflet map
+    const points = [{"day":1,"title":"從住宿區出發前往天安門周邊","area":"北京市區","mapQuery":"天安門 北京","timeStart":"09:30","timeEnd":"10:00","type":"departure","key":"1-09:30-從住宿區出發前往天安門周邊","lat":39.9087,"lng":116.3975},{"day":1,"title":"天安門廣場＋紫禁城主線","area":"東城區","mapQuery":"故宮博物院 北京","timeStart":"10:00","timeEnd":"13:00","type":"sightseeing","key":"1-10:00-天安門廣場＋紫禁城主線","lat":39.9163,"lng":116.3972},{"day":1,"title":"景山公園或王府井周邊慢走","area":"東城區","mapQuery":"景山公園 北京","timeStart":"14:30","timeEnd":"16:30","type":"sightseeing","key":"1-14:30-景山公園或王府井周邊慢走","lat":39.9289,"lng":116.396},{"day":2,"title":"從市區前往萬里長城","area":"北京近郊","mapQuery":"八達嶺長城 北京","timeStart":"09:00","timeEnd":"10:30","type":"departure","key":"2-09:00-從市區前往萬里長城","lat":40.3564,"lng":116.0206},{"day":2,"title":"萬里長城主行程","area":"萬里長城","mapQuery":"八達嶺長城 北京","timeStart":"10:30","timeEnd":"15:30","type":"sightseeing","key":"2-10:30-萬里長城主行程","lat":40.3564,"lng":116.0206},{"day":3,"title":"市區補逛一個順路歷史／老街區","area":"北京市區","mapQuery":"什剎海 北京","timeStart":"11:00","timeEnd":"13:00","type":"free_walk","key":"3-11:00-市區補逛一個順路歷史／老街區","lat":39.9393,"lng":116.3872}];
+    if (!points.length) return;
+    const dayColors = ['#2563eb','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
+
+    function createIcon(day) {
+      return L.divIcon({
+        className: '',
+        html: '<div style="width:28px;height:28px;border-radius:50%;background:' + dayColors[(day-1)%dayColors.length] + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 8px rgba(0,0,0,.25)">D' + day + '</div>',
         iconSize: [28, 28],
         iconAnchor: [14, 14],
-        popupAnchor: [0, -12]
+        popupAnchor: [0, -14]
       });
+    }
 
-      const showFallback = (elementId) => {
-        const mapEl = document.getElementById(elementId);
-        if (mapEl) {
-          mapEl.classList.remove('leaflet-overlay-active');
-          mapEl.classList.add('leaflet-overlay-hidden');
-        }
-      };
+    // Active highlight
+    function highlightItem(key) {
+      document.querySelectorAll('.active-map-target').forEach(el => el.classList.remove('active-map-target'));
+      if (!key) return;
+      const el = document.querySelector('[data-map-key="' + CSS.escape(key) + '"]');
+      if (!el) return;
+      el.classList.add('active-map-target');
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
-      const showLeaflet = (elementId) => {
-        const mapEl = document.getElementById(elementId);
-        if (mapEl) {
-          mapEl.classList.remove('leaflet-overlay-hidden');
-          mapEl.classList.add('leaflet-overlay-active');
-        }
-      };
-
-      const renderPointsMap = (elementId, pointsData, zoomIfSingle) => {
-        const el = document.getElementById(elementId);
-        if (!el || !pointsData.length) return;
-        if (typeof L === 'undefined') {
-          showFallback(elementId);
-          return;
-        }
-
-        let map;
-        try {
-          map = L.map(elementId);
-          showLeaflet(elementId);
-        } catch (error) {
-          showFallback(elementId);
-          return;
-        }
+    // Try to render a Leaflet map if there's a container
+    try {
+      const mapEl = document.getElementById('leaflet-map');
+      if (mapEl && typeof L !== 'undefined') {
+        const map = L.map(mapEl);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '&copy; OpenStreetMap contributors'
+          maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
-
         const bounds = [];
-        pointsData.forEach(point => {
-          const marker = L.marker([point.lat, point.lng], { icon: createDayIcon(point.day) }).addTo(map);
-          const lines = ['<strong>' + point.title + '</strong>'];
-          if (point.timeStart || point.timeEnd) {
-            lines.push((point.timeStart || '') + (point.timeEnd ? '–' + point.timeEnd : ''));
-          }
-          if (point.area) lines.push('區域：' + point.area);
-          lines.push('Day ' + point.day);
-          if (point.mapQuery) {
-            const url = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(point.mapQuery);
-            lines.push('<a href="' + url + '" target="_blank" rel="noreferrer">Google Maps ↗</a>');
-          }
-          marker.bindPopup(lines.join('<br>'));
-          marker.on('click', () => {
-            document.querySelectorAll('.active-map-target').forEach(node => node.classList.remove('active-map-target'));
-            if (!point.key) return;
-            const selector = '[data-map-key="' + CSS.escape(point.key) + '"]';
-            const target = document.querySelector(selector);
-            if (!target) return;
-            target.classList.add('active-map-target');
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          });
-          bounds.push([point.lat, point.lng]);
+        points.forEach(function (p) {
+          const m = L.marker([p.lat, p.lng], { icon: createIcon(p.day) }).addTo(map);
+          const popup = ['<strong>' + p.title + '</strong>'];
+          if (p.timeStart) popup.push(p.timeStart + (p.timeEnd ? '–' + p.timeEnd : ''));
+          if (p.area) popup.push('區域：' + p.area);
+          popup.push('Day ' + p.day);
+          if (p.mapQuery) popup.push('<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.mapQuery) + '" target="_blank">Google Maps ↗</a>');
+          m.bindPopup(popup.join('<br>'));
+          m.on('click', function () { highlightItem(p.key); });
+          bounds.push([p.lat, p.lng]);
         });
-
-        if (bounds.length === 1) {
-          map.setView(bounds[0], zoomIfSingle || 13);
-        } else {
-          map.fitBounds(bounds, { padding: [24, 24] });
-        }
-      };
-
-      // 每日地圖改為穩定版摘要卡，避免 mobile iframe / embed 不穩。
-    })();
+        if (bounds.length === 1) map.setView(bounds[0], 14);
+        else map.fitBounds(bounds, { padding: [24, 24] });
+      }
+    } catch (e) {}
+  })();
   </script>
 </body>
 </html>

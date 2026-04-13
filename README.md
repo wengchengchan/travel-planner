@@ -1,64 +1,35 @@
-# Travel Planner MVP
+# Travel Planner
 
-這是旅遊規劃工具的第一版最小可用原型（MVP），目前已從單一行程頁，長成可累積的多行程展示站。
+旅遊行程規劃展示站。把每一趟旅程的 JSON 資料自動生成成可展示的 HTML 頁面，部署到 GitHub Pages。
 
-## 目前內容
+## 網站
 
-- `index.html`：首頁列表頁
-- `tokyo-2026-05.html`：東京正式行程頁
-- `beijing-2026-06.html`：北京正式行程頁
-- `trip-tokyo-draft.json`：東京資料底稿
-- `trip-beijing-draft.json`：北京資料底稿
-- `NEW-TRIP-SOP.md`：新增行程 SOP
-- `NAMING-RULES.md`：命名規則
-- `generate-trip-page.js`：由 trip draft 生成 HTML 頁
-- `generate-index.js`：由 trip draft 生成首頁列表
+[wengchengchan.github.io/travel-planner](https://wengchengchan.github.io/travel-planner/)
 
-## 現在的工作流
+## 目前行程
 
-1. 用問答方式收旅遊需求
-2. 先出第一版行程安排
-3. 整理成 `trip-<city>-draft.json`
-4. 用生成器產出 `<city>-YYYY-MM.html`
-5. 重跑首頁生成器更新 `index.html`
-6. commit / push 到 GitHub Pages
+| 行程 | 日期 | 頁面 |
+|-----|------|------|
+| 東京 3 天 2 夜慢走美食行 | 2026-05-10 ～ 2026-05-12 | [tokyo-2026-05.html](./tokyo-2026-05.html) |
+| 北京 3 天 2 夜歷史景點美食行 | 2026-06-01 ～ 2026-06-03 | [beijing-2026-06.html](./beijing-2026-06.html) |
 
-## 生成指令
-
-### 1) 生成單一行程頁
+## 新增旅程
 
 ```bash
-node generate-trip-page.js trip-<city>-draft.json <city>-YYYY-MM.html
-```
+# 1. 建立 trip-<city>-draft.json（參考現有 JSON 格式）
+# 2. 生成旅程頁
+node generate-trip-page.js trip-<city>-draft.json
 
-例如：
-
-```bash
-node generate-trip-page.js trip-beijing-draft.json beijing-2026-06.html
-```
-
-### 2) 重新生成首頁
-
-```bash
+# 3. 更新首頁
 node generate-index.js
+
+# 4. Commit + Push（GitHub Actions 自動部署）
+git add -A && git commit -m "feat: add <city> itinerary" && git push
 ```
 
-## 最小上版流程
+## 技術說明
 
-```bash
-git add index.html trip-<city>-draft.json <city>-YYYY-MM.html
-git commit -m "Add new trip page"
-git push
-```
-
-## 原則
-
-目前先求：
-
-- 穩
-- 清楚
-- 可維護
-- 可延續
-
-先把資料流與頁面流程做穩，再慢慢補自動化與功能。
-
+- 純 Node.js，無外部依賴
+- 地圖：Google Maps 外部連結 + Leaflet.js（OpenStreetMap）
+- 部署：GitHub Actions → GitHub Pages
+- 生成器：`generate-trip-page.js`（單一旅程）、`generate-index.js`（首頁）
